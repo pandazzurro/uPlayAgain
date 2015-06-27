@@ -28,6 +28,7 @@ namespace uPlayAgain.Controllers
         public async Task<IHttpActionResult> GetGame(int id)
         {
             Game game = await db.Games.FindAsync(id);
+
             if (game == null)
             {
                 return NotFound();

@@ -17,6 +17,7 @@ namespace uPlayAgain.Models
     
         public uPlayAgainContext() : base("name=uPlayAgainContext")
         {
+            this.Configuration.ProxyCreationEnabled = false;
         }
 
         public DbSet<Game> Games { get; set; }
