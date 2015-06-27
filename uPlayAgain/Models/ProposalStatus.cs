@@ -7,11 +7,11 @@ using System.Web;
 
 namespace uPlayAgain.Models
 {
-    public class Genre
+    public class ProposalStatus
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public string GenreId { get; set; }
-        public string Name { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int ProposalStatusId { get; set; }
+        public string Description { get; set; }
     }
 }

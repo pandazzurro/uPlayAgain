@@ -15,40 +15,43 @@ namespace uPlayAgain.Migrations
                         ShortName = c.String(),
                         Title = c.String(),
                         Description = c.String(),
-                        GenreName = c.String(maxLength: 128),
-                        PlatformName = c.String(maxLength: 128),
+                        GenreId = c.String(maxLength: 128),
+                        PlatformId = c.String(maxLength: 128),
                     })
                 .PrimaryKey(t => t.GameId)
-                .ForeignKey("dbo.Genres", t => t.GenreName)
-                .ForeignKey("dbo.Platforms", t => t.PlatformName)
-                .Index(t => t.GenreName)
-                .Index(t => t.PlatformName);
+                .ForeignKey("dbo.Genres", t => t.GenreId)
+                .ForeignKey("dbo.Platforms", t => t.PlatformId)
+                .Index(t => t.GenreId)
+                .Index(t => t.PlatformId);
             
             CreateTable(
                 "dbo.Genres",
                 c => new
                     {
-                        Name = c.String(nullable: false, maxLength: 128),
+                        GenreId = c.String(nullable: false, maxLength: 128),
+                        Name = c.String(),
                     })
-                .PrimaryKey(t => t.Name);
+                .PrimaryKey(t => t.GenreId);
             
             CreateTable(
                 "dbo.Platforms",
                 c => new
                     {
-                        Name = c.String(nullable: false, maxLength: 128),
-                        IconName = c.String(),
+                        PlatformId = c.String(nullable: false, maxLength: 128),
+                        Class = c.String(),
+                        Name = c.String(),
+                        IdImport = c.Int(nullable: false),
                     })
-                .PrimaryKey(t => t.Name);
+                .PrimaryKey(t => t.PlatformId);
             
         }
         
         public override void Down()
         {
-            DropForeignKey("dbo.Games", "PlatformName", "dbo.Platforms");
-            DropForeignKey("dbo.Games", "GenreName", "dbo.Genres");
-            DropIndex("dbo.Games", new[] { "PlatformName" });
-            DropIndex("dbo.Games", new[] { "GenreName" });
+            DropForeignKey("dbo.Games", "PlatformId", "dbo.Platforms");
+            DropForeignKey("dbo.Games", "GenreId", "dbo.Genres");
+            DropIndex("dbo.Games", new[] { "PlatformId" });
+            DropIndex("dbo.Games", new[] { "GenreId" });
             DropTable("dbo.Platforms");
             DropTable("dbo.Genres");
             DropTable("dbo.Games");

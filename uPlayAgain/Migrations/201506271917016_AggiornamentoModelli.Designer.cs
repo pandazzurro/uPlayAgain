@@ -6,14 +6,14 @@ namespace uPlayAgain.Migrations
     using System.Data.Entity.Migrations.Infrastructure;
     using System.Resources;
     
-    [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class Start : IMigrationMetadata
+    [GeneratedCode("EntityFramework.Migrations", "6.1.2-31219")]
+    public sealed partial class AggiornamentoModelli : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Start));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(AggiornamentoModelli));
         
         string IMigrationMetadata.Id
         {
-            get { return "201506271106437_Start"; }
+            get { return "201506271917016_AggiornamentoModelli"; }
         }
         
         string IMigrationMetadata.Source

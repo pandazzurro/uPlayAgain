@@ -11,8 +11,11 @@ namespace uPlayAgain.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public string PlatformId { get; set; }
+        public string Class { get; set; }
+
         public string Name { get; set; }
 
-        public string IconName { get; set; }
+        public int IdImport { get; set; }
     }
 }
