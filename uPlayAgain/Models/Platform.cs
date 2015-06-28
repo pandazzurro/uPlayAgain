@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -12,10 +13,11 @@ namespace uPlayAgain.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string PlatformId { get; set; }
+        [JsonProperty(Required = Required.AllowNull)]
         public string Class { get; set; }
-
+        [JsonProperty(Required = Required.AllowNull)]
         public string Name { get; set; }
 
-        public int IdImport { get; set; }
+        public int ImportId { get; set; }
     }
 }

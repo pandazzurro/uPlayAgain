@@ -36,7 +36,7 @@ namespace uPlayAgain.Controllers
 
             return Ok(game);
         }
-
+        
         // PUT: api/Games/5
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> PutGame(int id, Game game)
@@ -80,10 +80,10 @@ namespace uPlayAgain.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+            
             db.Games.Add(game);
             await db.SaveChangesAsync();
-
+            
             return CreatedAtRoute("DefaultApi", new { id = game.GameId }, game);
         }
 

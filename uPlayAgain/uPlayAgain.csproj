@@ -111,6 +111,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\XmlDocument.xml" />
     <Content Include="Areas\HelpPage\HelpPage.css" />
     <Content Include="Global.asax" />
     <Content Include="Web.config">
@@ -148,6 +149,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\FeedbacksController.cs" />
+    <Compile Include="Controllers\GameImportController.cs" />
     <Compile Include="Controllers\GameLanguagesController.cs" />
     <Compile Include="Controllers\GamesController.cs" />
     <Compile Include="Controllers\GenresController.cs" />
@@ -172,6 +174,22 @@
     <Compile Include="Migrations\201506271917016_AggiornamentoModelli.Designer.cs">
       <DependentUpon>201506271917016_AggiornamentoModelli.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201506280721247_UpdateMessageAndImport.cs" />
+    <Compile Include="Migrations\201506280721247_UpdateMessageAndImport.Designer.cs">
+      <DependentUpon>201506280721247_UpdateMessageAndImport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506280724143_UpdateMessage.cs" />
+    <Compile Include="Migrations\201506280724143_UpdateMessage.Designer.cs">
+      <DependentUpon>201506280724143_UpdateMessage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506280805578_UpdateImportId.cs" />
+    <Compile Include="Migrations\201506280805578_UpdateImportId.Designer.cs">
+      <DependentUpon>201506280805578_UpdateImportId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506280939351_UserImage.cs" />
+    <Compile Include="Migrations\201506280939351_UserImage.Designer.cs">
+      <DependentUpon>201506280939351_UserImage.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Feedback.cs" />
     <Compile Include="Models\Game.cs" />
@@ -179,6 +197,7 @@
     <Compile Include="Models\Genre.cs" />
     <Compile Include="Models\Library.cs" />
     <Compile Include="Models\LibraryComponent.cs" />
+    <Compile Include="Models\Message.cs" />
     <Compile Include="Models\Platform.cs" />
     <Compile Include="Models\Proposal.cs" />
     <Compile Include="Models\ProposalComponent.cs" />
@@ -219,15 +238,25 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201506271409385_Start.resx">
       <DependentUpon>201506271409385_Start.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201506271917016_AggiornamentoModelli.resx">
       <DependentUpon>201506271917016_AggiornamentoModelli.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506280721247_UpdateMessageAndImport.resx">
+      <DependentUpon>201506280721247_UpdateMessageAndImport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506280724143_UpdateMessage.resx">
+      <DependentUpon>201506280724143_UpdateMessage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506280805578_UpdateImportId.resx">
+      <DependentUpon>201506280805578_UpdateImportId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506280939351_UserImage.resx">
+      <DependentUpon>201506280939351_UserImage.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
