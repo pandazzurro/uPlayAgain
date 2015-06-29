@@ -10,6 +10,11 @@ namespace uPlayAgain.Models
 {
     public class User
     {
+        public User()
+        {
+            Libraries = new List<Library>();
+        }
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UserId { get; set; }
@@ -18,5 +23,8 @@ namespace uPlayAgain.Models
         public byte[] Image { get; set; }
         public string Provider { get; set; }
         public DbGeography PositionUser { get; set; }
+
+        public int LibraryId { get; set; }
+        public virtual IList<Library> Libraries { get; set; }
     }
 }

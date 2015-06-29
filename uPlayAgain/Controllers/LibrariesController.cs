@@ -20,14 +20,14 @@ namespace uPlayAgain.Controllers
         // GET: api/Libraries
         public IQueryable<Library> GetLibrarys()
         {
-            return db.Librarys;
+            return db.Libraries;
         }
 
         // GET: api/Libraries/5
         [ResponseType(typeof(Library))]
         public async Task<IHttpActionResult> GetLibrary(int id)
         {
-            Library library = await db.Librarys.FindAsync(id);
+            Library library = await db.Libraries.FindAsync(id);
             if (library == null)
             {
                 return NotFound();
@@ -80,7 +80,7 @@ namespace uPlayAgain.Controllers
                 return BadRequest(ModelState);
             }
 
-            db.Librarys.Add(library);
+            db.Libraries.Add(library);
             await db.SaveChangesAsync();
 
             return CreatedAtRoute("DefaultApi", new { id = library.LibraryId }, library);
@@ -90,13 +90,13 @@ namespace uPlayAgain.Controllers
         [ResponseType(typeof(Library))]
         public async Task<IHttpActionResult> DeleteLibrary(int id)
         {
-            Library library = await db.Librarys.FindAsync(id);
+            Library library = await db.Libraries.FindAsync(id);
             if (library == null)
             {
                 return NotFound();
             }
 
-            db.Librarys.Remove(library);
+            db.Libraries.Remove(library);
             await db.SaveChangesAsync();
 
             return Ok(library);
@@ -113,7 +113,7 @@ namespace uPlayAgain.Controllers
 
         private bool LibraryExists(int id)
         {
-            return db.Librarys.Count(e => e.LibraryId == id) > 0;
+            return db.Libraries.Count(e => e.LibraryId == id) > 0;
         }
     }
 }

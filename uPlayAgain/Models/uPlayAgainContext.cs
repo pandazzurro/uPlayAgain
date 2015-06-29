@@ -13,7 +13,7 @@ namespace uPlayAgain.Models
         public DbSet<Platform> Platforms { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<GameLanguage> GameLanguages { get; set; }
-        public DbSet<Library> Librarys { get; set; }
+        public DbSet<Library> Libraries { get; set; }
         public DbSet<LibraryComponent> LibraryComponents { get; set; }
         public DbSet<Proposal> Proposals { get; set; }
         public DbSet<ProposalComponent> ProposalComponents { get; set; }
