@@ -81,7 +81,7 @@ namespace uPlayAgain.Controllers
                 return BadRequest(ModelState);
             }
             
-            db.Games.Add(game);
+            db.Games.Add(game);            
             await db.SaveChangesAsync();
             
             return CreatedAtRoute("DefaultApi", new { id = game.GameId }, game);

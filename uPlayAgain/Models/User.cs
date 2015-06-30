@@ -12,7 +12,6 @@ namespace uPlayAgain.Models
     {
         public User()
         {
-            Libraries = new List<Library>();
         }
 
         [Key]
@@ -22,9 +21,6 @@ namespace uPlayAgain.Models
         public string Password { get; set; }
         public byte[] Image { get; set; }
         public string Provider { get; set; }
-        public DbGeography PositionUser { get; set; }
-
-        public int LibraryId { get; set; }
-        public virtual IList<Library> Libraries { get; set; }
+        public DbGeography PositionUser { get; set; }       
     }
 }

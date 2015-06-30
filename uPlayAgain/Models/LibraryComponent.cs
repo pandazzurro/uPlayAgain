@@ -10,6 +10,7 @@ namespace uPlayAgain.Models
     public class LibraryComponent
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int LibraryComponentId { get; set; }
 
         //Chiavi esterne

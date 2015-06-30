@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
@@ -26,7 +27,9 @@ namespace uPlayAgain.Models
 
         public uPlayAgainContext() : base("name=uPlayAgainContext")
         {
-            this.Configuration.ProxyCreationEnabled = false;            
+            this.Configuration.ProxyCreationEnabled = false;
+            // Log query DB
+            this.Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -60,7 +63,7 @@ namespace uPlayAgain.Models
                 .HasRequired<User>(p => p.UserReceiving)
                 .WithMany()
                 .WillCascadeOnDelete(false);
-                        
+
             base.OnModelCreating(modelBuilder);
         }
 
