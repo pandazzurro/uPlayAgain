@@ -9,6 +9,9 @@ namespace uPlayAgain
     {
         public static void Register(HttpConfiguration config)
         {
+            // Enable cors
+            config.EnableCors();
+
             // Servizi e configurazione dell'API Web
 
             // Route dell'API Web

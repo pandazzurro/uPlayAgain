@@ -51,8 +51,8 @@ namespace uPlayAgain.Controllers
                 return BadRequest();
             }
 
-            db.Entry(game).State = EntityState.Modified;
-
+            db.Entry(await CheckGenrePlatform(game)).State = EntityState.Modified;
+            
             try
             {
                 await db.SaveChangesAsync();
@@ -81,15 +81,8 @@ namespace uPlayAgain.Controllers
                 return BadRequest(ModelState);
             }
             
-            db.Games.Add(game);
-            try
-            {
-                await db.SaveChangesAsync();
-            }        
-            catch(Exception ex)
-            {
-                Console.Write(ex.Message);
-            }
+            db.Games.Add(await CheckGenrePlatform(game));
+            await db.SaveChangesAsync();
             
             return CreatedAtRoute("DefaultApi", new { id = game.GameId }, game);
         }
@@ -122,6 +115,23 @@ namespace uPlayAgain.Controllers
         private bool GameExists(int id)
         {
             return db.Games.Count(e => e.GameId == id) > 0;
+        }
+
+        private async Task<Game> CheckGenrePlatform(Game game)
+        {
+            if (game.Genre != null)
+            {
+                if (await db.Genres.Where(gr => gr.GenreId == game.Genre.GenreId).AnyAsync()) game.Genre = null;
+                else Conflict();
+            }
+
+            if (game.Platform != null)
+            {
+                if (await db.Platforms.Where(p => p.PlatformId == game.Platform.PlatformId).AnyAsync()) game.Platform = null;
+                else Conflict();
+            }
+
+            return game;
         }
     }
 }
