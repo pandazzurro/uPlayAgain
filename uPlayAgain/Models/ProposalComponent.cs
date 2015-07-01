@@ -11,9 +11,10 @@ namespace uPlayAgain.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ProposalId { get; set; }        
+        public int ProposalComponentId { get; set; } 
+               
         public int LibraryComponentId { get; set; }
         [ForeignKey("LibraryComponentId")]
-        public virtual IList<LibraryComponent> LibraryComponents { get; set; }
+        public virtual LibraryComponent LibraryComponents { get; set; }
     }
 }

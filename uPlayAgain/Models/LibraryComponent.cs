@@ -16,7 +16,7 @@ namespace uPlayAgain.Models
         //Chiavi esterne
         public int GameId { get; set; }
         [ForeignKey("GameId")]
-        public virtual IList<Game> Games { get; set; }
+        public virtual Game Games { get; set; }
         public int LibraryId { get; set; }
         [ForeignKey("LibraryId")]
         public virtual Library Library { get; set; }

@@ -169,41 +169,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201506271409385_Start.cs" />
-    <Compile Include="Migrations\201506271409385_Start.Designer.cs">
-      <DependentUpon>201506271409385_Start.cs</DependentUpon>
+    <Compile Include="Migrations\201507010537113_start.cs" />
+    <Compile Include="Migrations\201507010537113_start.Designer.cs">
+      <DependentUpon>201507010537113_start.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201506271917016_AggiornamentoModelli.cs" />
-    <Compile Include="Migrations\201506271917016_AggiornamentoModelli.Designer.cs">
-      <DependentUpon>201506271917016_AggiornamentoModelli.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201506280721247_UpdateMessageAndImport.cs" />
-    <Compile Include="Migrations\201506280721247_UpdateMessageAndImport.Designer.cs">
-      <DependentUpon>201506280721247_UpdateMessageAndImport.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201506280724143_UpdateMessage.cs" />
-    <Compile Include="Migrations\201506280724143_UpdateMessage.Designer.cs">
-      <DependentUpon>201506280724143_UpdateMessage.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201506280805578_UpdateImportId.cs" />
-    <Compile Include="Migrations\201506280805578_UpdateImportId.Designer.cs">
-      <DependentUpon>201506280805578_UpdateImportId.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201506280939351_UserImage.cs" />
-    <Compile Include="Migrations\201506280939351_UserImage.Designer.cs">
-      <DependentUpon>201506280939351_UserImage.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201506291717585_PK.cs" />
-    <Compile Include="Migrations\201506291717585_PK.Designer.cs">
-      <DependentUpon>201506291717585_PK.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201506291738571_PrimaryKey.cs" />
-    <Compile Include="Migrations\201506291738571_PrimaryKey.Designer.cs">
-      <DependentUpon>201506291738571_PrimaryKey.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201506300539204_UpdateUser.cs" />
-    <Compile Include="Migrations\201506300539204_UpdateUser.Designer.cs">
-      <DependentUpon>201506300539204_UpdateUser.cs</DependentUpon>
+    <Compile Include="Migrations\201507010554044_correctImportId.cs" />
+    <Compile Include="Migrations\201507010554044_correctImportId.Designer.cs">
+      <DependentUpon>201507010554044_correctImportId.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Feedback.cs" />
@@ -253,34 +225,12 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201506271409385_Start.resx">
-      <DependentUpon>201506271409385_Start.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201507010537113_start.resx">
+      <DependentUpon>201507010537113_start.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201506271917016_AggiornamentoModelli.resx">
-      <DependentUpon>201506271917016_AggiornamentoModelli.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201506280721247_UpdateMessageAndImport.resx">
-      <DependentUpon>201506280721247_UpdateMessageAndImport.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201506280724143_UpdateMessage.resx">
-      <DependentUpon>201506280724143_UpdateMessage.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201506280805578_UpdateImportId.resx">
-      <DependentUpon>201506280805578_UpdateImportId.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201506280939351_UserImage.resx">
-      <DependentUpon>201506280939351_UserImage.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201506291717585_PK.resx">
-      <DependentUpon>201506291717585_PK.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201506291738571_PrimaryKey.resx">
-      <DependentUpon>201506291738571_PrimaryKey.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201506300539204_UpdateUser.resx">
-      <DependentUpon>201506300539204_UpdateUser.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201507010554044_correctImportId.resx">
+      <DependentUpon>201507010554044_correctImportId.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

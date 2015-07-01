@@ -20,9 +20,9 @@ namespace uPlayAgain.Models
         public int TransactionId { get; set; }
         [ForeignKey("TransactionId")]
         public virtual Transaction Transaction { get; set; }
-        public int ProposalStatusId { get; set; }
-        [ForeignKey("ProposalStatusId")]
-        public virtual LibraryComponent LibraryComponent { get; set; }
+        public int ProposalComponentId { get; set; }
+        [ForeignKey("ProposalComponentId")]
+        public virtual IList<ProposalComponent> ProposalComponents { get; set; }
         //public int UserLastChangesId { get; set; }
         //[ForeignKey("UserLastChangesId")]
         public virtual User UserLastChanges { get; set; }

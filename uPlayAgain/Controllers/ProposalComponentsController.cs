@@ -45,7 +45,7 @@ namespace uPlayAgain.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != proposalComponent.ProposalId)
+            if (id != proposalComponent.ProposalComponentId)
             {
                 return BadRequest();
             }
@@ -83,7 +83,7 @@ namespace uPlayAgain.Controllers
             db.ProposalComponents.Add(proposalComponent);
             await db.SaveChangesAsync();
 
-            return CreatedAtRoute("DefaultApi", new { id = proposalComponent.ProposalId }, proposalComponent);
+            return CreatedAtRoute("DefaultApi", new { id = proposalComponent.ProposalComponentId }, proposalComponent);
         }
 
         // DELETE: api/ProposalComponents/5
@@ -113,7 +113,7 @@ namespace uPlayAgain.Controllers
 
         private bool ProposalComponentExists(int id)
         {
-            return db.ProposalComponents.Count(e => e.ProposalId == id) > 0;
+            return db.ProposalComponents.Count(e => e.ProposalComponentId == id) > 0;
         }
     }
 }

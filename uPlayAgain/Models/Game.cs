@@ -20,7 +20,7 @@ namespace uPlayAgain.Models
         [JsonProperty(Required = Required.AllowNull)]
         public string Description { get; set; }
         [JsonProperty(Required = Required.AllowNull)]
-        public int ImportId { get; set; }
+        public int? ImportId { get; set; }
         public byte[] Image { get; set; }
 
         // Foreign key

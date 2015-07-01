@@ -3,16 +3,16 @@ namespace uPlayAgain.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class UserImage : DbMigration
+    public partial class correctImportId : DbMigration
     {
         public override void Up()
         {
-            AddColumn("dbo.Games", "Image", c => c.Binary());
+            AlterColumn("dbo.Games", "ImportId", c => c.Int());
         }
         
         public override void Down()
         {
-            DropColumn("dbo.Games", "Image");
+            AlterColumn("dbo.Games", "ImportId", c => c.Int(nullable: false));
         }
     }
 }
