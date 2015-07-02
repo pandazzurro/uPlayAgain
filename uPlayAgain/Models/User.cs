@@ -21,6 +21,7 @@ namespace uPlayAgain.Models
         public string Password { get; set; }
         public byte[] Image { get; set; }
         public string Provider { get; set; }
-        public DbGeography PositionUser { get; set; }       
+        public DbGeography PositionUser { get; set; }   
+        public DateTimeOffset LastLogin { get; set; }    
     }
 }

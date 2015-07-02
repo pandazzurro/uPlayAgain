@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using uPlayAgain.Models;
@@ -12,11 +11,29 @@ namespace uPlayAgain.Controllers
     public class AuthController : ApiController
     {
         uPlayAgainContext db = new uPlayAgainContext();
-        // GET: api/Auth/5
-        public async Task<IHttpActionResult> Get(string username, string password)
+        
+        public async Task<IHttpActionResult> PostAuth(User user)
         {
-            if (db.Users.Where(t => string.Compare(t.Username, username, true) == 0 && string.Compare(t.Password, password, true) == 0).Any())
-                return Ok();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            User userLogin = await db.Users.AsQueryable()
+                                     .Where(t => string.Compare(t.Username, user.Username, true) == 0)
+                                     .Where(t => string.Compare(t.Password, user.Password, true) == 0)
+                                     .FirstOrDefaultAsync();
+            if(userLogin != null)
+            {
+                // impongo un orario di aggiornamento se dal Json non arriva.
+                if(userLogin.LastLogin == DateTimeOffset.MinValue)
+                    userLogin.LastLogin = DateTimeOffset.Now;
+
+                db.Entry(userLogin).State = EntityState.Modified;
+                await db.SaveChangesAsync();
+
+                return Ok(userLogin);
+            }
             return NotFound();
         }
 
