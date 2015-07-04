@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Data.Entity.Spatial;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace uPlayAgain.Models
 {

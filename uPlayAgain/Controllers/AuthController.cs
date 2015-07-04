@@ -24,9 +24,10 @@ namespace uPlayAgain.Controllers
                                      .FirstOrDefaultAsync();
             if(userLogin != null)
             {
+                DateTimeOffset now = DateTimeOffset.Now;
                 // impongo un orario di aggiornamento se dal Json non arriva.
-                if(userLogin.LastLogin == DateTimeOffset.MinValue)
-                    userLogin.LastLogin = DateTimeOffset.Now;
+                if (userLogin.LastLogin == DateTimeOffset.MinValue || userLogin.LastLogin < now)
+                    userLogin.LastLogin = now;
 
                 db.Entry(userLogin).State = EntityState.Modified;
                 await db.SaveChangesAsync();

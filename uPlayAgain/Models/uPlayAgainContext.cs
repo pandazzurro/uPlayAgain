@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.Identity.EntityFramework;
 using System.Data.Entity;
+using uPlayAgain.Entities;
 
 namespace uPlayAgain.Models
 {
@@ -20,6 +21,8 @@ namespace uPlayAgain.Models
         public DbSet<TransactionStatus> TransactionStatus { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Client> Clients { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         public uPlayAgainContext() : base("name=uPlayAgainContext")
         {
