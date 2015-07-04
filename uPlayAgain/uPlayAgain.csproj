@@ -245,6 +245,10 @@
     <Compile Include="Migrations\201507020541313_lastLogin.Designer.cs">
       <DependentUpon>201507020541313_lastLogin.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201507040848209_LoginOwin.cs" />
+    <Compile Include="Migrations\201507040848209_LoginOwin.Designer.cs">
+      <DependentUpon>201507040848209_LoginOwin.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AuthRepository.cs" />
     <Compile Include="Models\Feedback.cs" />
@@ -305,6 +309,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201507020541313_lastLogin.resx">
       <DependentUpon>201507020541313_lastLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507040848209_LoginOwin.resx">
+      <DependentUpon>201507040848209_LoginOwin.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />
