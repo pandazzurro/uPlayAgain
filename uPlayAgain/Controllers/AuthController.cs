@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data.Entity;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using uPlayAgain.Models;
@@ -20,7 +19,7 @@ namespace uPlayAgain.Controllers
             }
 
             User userLogin = await db.Users.AsQueryable()
-                                     .Where(t => string.Compare(t.Username, user.Username, true) == 0)
+                                     .Where(t => string.Compare(t.UserName, user.UserName, true) == 0)
                                      .Where(t => string.Compare(t.Password, user.Password, true) == 0)
                                      .FirstOrDefaultAsync();
             if(userLogin != null)

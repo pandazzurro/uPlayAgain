@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Web;
 
 namespace uPlayAgain.Models
 {
@@ -26,5 +24,10 @@ namespace uPlayAgain.Models
         //public int UserLastChangesId { get; set; }
         //[ForeignKey("UserLastChangesId")]
         public virtual User UserLastChanges { get; set; }
+
+        public Proposal()
+        {
+            ProposalComponents = new List<ProposalComponent>();
+        }
     }
 }

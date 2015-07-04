@@ -1,8 +1,7 @@
 namespace uPlayAgain.Migrations
 {
-    using System;
     using System.Data.Entity.Migrations;
-    
+
     public partial class lastLogin : DbMigration
     {
         public override void Up()

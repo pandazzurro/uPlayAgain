@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
 using System.Data.Entity;
-using System.Linq;
-using System.Web;
 
 namespace uPlayAgain.Models
 {
-    public class uPlayAgainContext : DbContext
+    public class uPlayAgainContext : IdentityDbContext<IdentityUser>
     {
         public DbSet<Game> Games { get; set; }
         public DbSet<Genre> Genres { get; set; }
