@@ -2,6 +2,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.Data.Entity.Spatial;
 using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
+using uPlayAgain.Converters;
 
 namespace uPlayAgain.Models
 {
@@ -24,6 +26,8 @@ namespace uPlayAgain.Models
         public string ConfirmPassword { get; set; }
         public byte[] Image { get; set; }
         public string Provider { get; set; }
+
+        [JsonConverter(typeof(DbGeographyConverter))]
         public DbGeography PositionUser { get; set; }   
         public DateTimeOffset LastLogin { get; set; }
 

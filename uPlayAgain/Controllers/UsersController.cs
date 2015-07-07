@@ -1,10 +1,12 @@
-﻿using System.Data.Entity;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
+using System.Web.Http.ModelBinding;
 using uPlayAgain.Models;
 
 namespace uPlayAgain.Controllers
@@ -73,6 +75,10 @@ namespace uPlayAgain.Controllers
         {
             if (!ModelState.IsValid)
             {
+                List<ModelErrorCollection> errors = ModelState.Select(x => x.Value.Errors)
+                                                              .Where(y => y.Count > 0)
+                                                              .ToList();
+
                 return BadRequest(ModelState);
             }
 

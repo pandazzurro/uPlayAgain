@@ -1,4 +1,5 @@
 ﻿using System.Web.Http;
+using System.Web.Http.Validation;
 using System.Web.Mvc;
 
 namespace uPlayAgain
@@ -7,7 +8,8 @@ namespace uPlayAgain
     {
         protected void Application_Start()
         {
-            GlobalConfiguration.Configure(WebApiConfig.Register);
+            //GlobalConfiguration.Configure(WebApiConfig.Register);
+            //GlobalConfiguration.Configuration.Services.Replace(typeof(IBodyModelValidator), new CustomBodyModelValidator());
             AreaRegistration.RegisterAllAreas();
         }
     }

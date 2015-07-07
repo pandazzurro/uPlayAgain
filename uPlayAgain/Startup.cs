@@ -6,6 +6,8 @@ using System.Web.Http;
 using uPlayAgain.Providers;
 using Microsoft.Owin.Security.Google;
 using Microsoft.Owin.Security.Facebook;
+using System.Web.Http.Validation;
+using System.Web.Mvc;
 
 [assembly: OwinStartup(typeof(uPlayAgain.Startup))]
 namespace uPlayAgain
@@ -19,12 +21,12 @@ namespace uPlayAgain
         public void Configuration(IAppBuilder app)
         {
             HttpConfiguration config = new HttpConfiguration();
-
-            ConfigureOAuth(app);
-
             WebApiConfig.Register(config);
+            GlobalConfiguration.Configuration.Services.Replace(typeof(IBodyModelValidator), new CustomBodyModelValidator());
+            ConfigureOAuth(app);
+            
             app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
-            app.UseWebApi(config);
+            app.UseWebApi(config);            
         }
 
         public void ConfigureOAuth(IAppBuilder app)
