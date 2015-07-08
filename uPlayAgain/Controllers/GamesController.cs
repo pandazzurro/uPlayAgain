@@ -19,7 +19,7 @@ namespace uPlayAgain.Controllers
         {
             return db.Games;
         }
-
+        
         // GET: api/Games/5
         [ResponseType(typeof(Game))]
         public async Task<IHttpActionResult> GetGame(int id)
@@ -30,10 +30,25 @@ namespace uPlayAgain.Controllers
             {
                 return NotFound();
             }
-
+            
             return Ok(game);
         }
-        
+
+        // GET: api/Games/Image/5
+        [Route("api/Games/Image/{id:int}")]
+        [ResponseType(typeof(byte[]))]
+        public async Task<IHttpActionResult> GetGameImage(int id)
+        {
+            Game game = await db.Games.FindAsync(id);
+
+            if (game == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(game.Image);
+        }
+
         // PUT: api/Games/5
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> PutGame(int id, Game game)

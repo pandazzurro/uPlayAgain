@@ -240,6 +240,7 @@
     <Compile Include="Controllers\TransactionsController.cs" />
     <Compile Include="Controllers\TransactionStatusController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
+    <Compile Include="Converters\BitmapConverter.cs" />
     <Compile Include="Converters\DbGeographyConverter.cs" />
     <Compile Include="CustomBodyModelValidator.cs" />
     <Compile Include="Dto\SearchGame.cs" />

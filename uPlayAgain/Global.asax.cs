@@ -8,9 +8,7 @@ namespace uPlayAgain
     {
         protected void Application_Start()
         {
-            //GlobalConfiguration.Configure(WebApiConfig.Register);
-            //GlobalConfiguration.Configuration.Services.Replace(typeof(IBodyModelValidator), new CustomBodyModelValidator());
-            AreaRegistration.RegisterAllAreas();
+            //AreaRegistration.RegisterAllAreas();
         }
     }
 }
