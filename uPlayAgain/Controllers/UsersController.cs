@@ -82,10 +82,16 @@ namespace uPlayAgain.Controllers
                 return BadRequest(ModelState);
             }
 
-            db.Users.Add(user);
-            await db.SaveChangesAsync();
-
-            return CreatedAtRoute("DefaultApi", new { id = user.UserId }, user);
+            if (db.Users.Where(u => u.UserName.CompareTo(user.UserName) == 0 && u.Provider.CompareTo(user.Provider) == 0).Any())
+            {
+                return BadRequest("Utente già presente");                
+            }
+            else
+            {
+                db.Users.Add(user);
+                await db.SaveChangesAsync();
+                return CreatedAtRoute("DefaultApi", new { id = user.UserId }, user);
+            }            
         }
 
         // DELETE: api/Users/5
