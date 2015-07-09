@@ -27,6 +27,7 @@ namespace uPlayAgain
             config.Services.Clear(typeof(System.Web.Http.Validation.ModelValidatorProvider));
             // Configura il model validator corretto
             GlobalConfiguration.Configuration.Services.Replace(typeof(IBodyModelValidator), new CustomBodyModelValidator());
+            //Webapi
             AreaRegistration.RegisterAllAreas();
 
             ConfigureOAuth(app);
