@@ -39,7 +39,7 @@ namespace uPlayAgain.Controllers
         [ResponseType(typeof(Library))]
         public async Task<IHttpActionResult> GetLibraryByUser(int id)
         {
-            User user = await db.Users.FindAsync(id);
+            User user = db.Users.Find(id);
             if (user == null)
             {
                 return NotFound();

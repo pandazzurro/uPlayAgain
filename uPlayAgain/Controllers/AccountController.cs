@@ -68,7 +68,7 @@ namespace uPlayAgain.Controllers
                 return BadRequest("Invalid Provider or External Access Token");
             }
 
-            IdentityUser user = await _repo.FindAsync(new UserLoginInfo(model.Provider, verifiedAccessToken.user_id));
+            User user = await _repo.FindAsync(new UserLoginInfo(model.Provider, verifiedAccessToken.user_id));
 
             bool hasRegistered = user != null;
 
@@ -77,7 +77,7 @@ namespace uPlayAgain.Controllers
                 return BadRequest("External user is already registered");
             }
 
-            user = new IdentityUser() { UserName = model.UserName };
+            user = new User() { UserName = model.UserName };
 
             IdentityResult result = await _repo.CreateAsync(user);
             if (!result.Succeeded)

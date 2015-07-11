@@ -12,31 +12,26 @@ namespace uPlayAgain
 
     public class AuthRepository : IDisposable
     {
-        private AuthContext _ctx;
+        private uPlayAgainContext _ctx;
 
-        private UserManager<IdentityUser> _userManager;
+        private UserManager<User> _userManager;
 
         public AuthRepository()
         {
-            _ctx = new AuthContext();
-            _userManager = new UserManager<IdentityUser>(new UserStore<IdentityUser>(_ctx));
+            _ctx = new uPlayAgainContext();
+            _userManager = new UserManager<User>(new UserStore<User>(_ctx));
         }
 
-        public async Task<IdentityResult> RegisterUser(User userModel)
+        public async Task<IdentityResult> RegisterUser(User user)
         {
-            IdentityUser user = new IdentityUser
-            {
-                UserName = userModel.UserName
-            };
-
-            var result = await _userManager.CreateAsync(user, userModel.Password);
+            var result = await _userManager.CreateAsync(user, user.Password);
 
             return result;
         }
 
-        public async Task<IdentityUser> FindUser(string userName, string password)
+        public async Task<User> FindUser(string userName, string password)
         {
-            IdentityUser user = await _userManager.FindAsync(userName, password);
+            User user = await _userManager.FindAsync(userName, password);
 
             return user;
         }
@@ -93,14 +88,14 @@ namespace uPlayAgain
              return  _ctx.RefreshTokens.ToList();
         }
 
-        public async Task<IdentityUser> FindAsync(UserLoginInfo loginInfo)
+        public async Task<User> FindAsync(UserLoginInfo loginInfo)
         {
-            IdentityUser user = await _userManager.FindAsync(loginInfo);
+            User user = await _userManager.FindAsync(loginInfo);
 
             return user;
         }
 
-        public async Task<IdentityResult> CreateAsync(IdentityUser user)
+        public async Task<IdentityResult> CreateAsync(User user)
         {
             var result = await _userManager.CreateAsync(user);
 

@@ -25,8 +25,7 @@ namespace uPlayAgain.Controllers
         [ResponseType(typeof(User))]
         public async Task<IHttpActionResult> GetUser(int id)
         {
-            User user = await db.Users
-                                .FindAsync(id);
+            User user = await Task.Run(() => db.Users.Find(id));
             if (user == null)
             {
                 return NotFound();
@@ -99,7 +98,7 @@ namespace uPlayAgain.Controllers
         [ResponseType(typeof(User))]
         public async Task<IHttpActionResult> DeleteUser(int id)
         {
-            User user = await db.Users.FindAsync(id);
+            User user = db.Users.Find(id);
             if (user == null)
             {
                 return NotFound();

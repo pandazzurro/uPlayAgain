@@ -4,7 +4,7 @@ using uPlayAgain.Entities;
 
 namespace uPlayAgain.Models
 {
-    public class uPlayAgainContext : IdentityDbContext<IdentityUser>
+    public class uPlayAgainContext : IdentityDbContext<User>
     {
         public DbSet<Game> Games { get; set; }
         public DbSet<Genre> Genres { get; set; }
@@ -19,7 +19,7 @@ namespace uPlayAgain.Models
         public DbSet<Status> Status { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<TransactionStatus> TransactionStatus { get; set; }
-        public DbSet<User> Users { get; set; }
+        //public DbSet<User> Users { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
@@ -74,6 +74,16 @@ namespace uPlayAgain.Models
                 .WithRequiredDependent(x => x.Transaction);
 
             base.OnModelCreating(modelBuilder);
+
+            //modelBuilder.Entity<IdentityUser>()
+            //   .ToTable("User", "dbo")
+            //   .Property(p => p.Id)
+            //   .HasColumnName("User_Id");
+            modelBuilder.Entity<IdentityUser>().ToTable("Users");
+            modelBuilder.Entity<User>().ToTable("Users").HasKey(x => x.Id);
+            modelBuilder.Entity<IdentityUserRole>().ToTable("UserRoles");
+            modelBuilder.Entity<IdentityUserLogin>().ToTable("UserLogins");
+            modelBuilder.Entity<IdentityUserClaim>().ToTable("UserClaims");            
         }
 
     }

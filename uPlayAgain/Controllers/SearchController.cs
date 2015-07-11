@@ -24,7 +24,7 @@ namespace uPlayAgain.Controllers
             IList<SearchGame> result = db.Libraries
                                          .Join(db.Users,
                                                l => l.UserId,
-                                               u => u.UserId,
+                                               u => u.Id,
                                                (l, u) => new { User = u, Library = l })                          
                                          .Join(db.LibraryComponents,
                                                l => l.Library.LibraryComponentId,

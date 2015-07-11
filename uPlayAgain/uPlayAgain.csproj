@@ -228,7 +228,6 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
-    <Compile Include="AuthContext.cs" />
     <Compile Include="AuthRepository.cs" />
     <Compile Include="BaseProxy.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -261,19 +260,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helper.cs" />
-    <Compile Include="Migrations\201507110855479_Start.cs" />
-    <Compile Include="Migrations\201507110855479_Start.Designer.cs">
-      <DependentUpon>201507110855479_Start.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201507110950361_ProposalFix.cs" />
-    <Compile Include="Migrations\201507110950361_ProposalFix.Designer.cs">
-      <DependentUpon>201507110950361_ProposalFix.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201507111217303_UpdateReadMessage.cs" />
-    <Compile Include="Migrations\201507111217303_UpdateReadMessage.Designer.cs">
-      <DependentUpon>201507111217303_UpdateReadMessage.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationTypes.cs" />
     <Compile Include="Models\ExternalLoginData.cs" />
     <Compile Include="Models\ExternalLoginViewModel.cs" />
@@ -334,17 +320,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201507110855479_Start.resx">
-      <DependentUpon>201507110855479_Start.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201507110950361_ProposalFix.resx">
-      <DependentUpon>201507110950361_ProposalFix.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201507111217303_UpdateReadMessage.resx">
-      <DependentUpon>201507111217303_UpdateReadMessage.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

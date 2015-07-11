@@ -4,37 +4,40 @@ using System.Data.Entity.Spatial;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 using uPlayAgain.Converters;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace uPlayAgain.Models
 {
-    public class User 
+    public class User : IdentityUser
     {
-        [Key]
+        public User() : base()
+        { }
+
+        public User(string userName) 
+            : base(userName)
+        { }
+        
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int UserId { get; set; }
+        public int UserId { get; set; }        
+
         [Required]
-        [Display(Name = "User name")]
-        public string UserName { get; set; }
+        public override string UserName { get; set; }
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
         public string Password { get; set; }
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
         public byte[] Image { get; set; }
         public string Provider { get; set; }
         [DataType(DataType.EmailAddress)]
-        public string Email { get; set; }
+        public override string Email { get; set; }
 
+        
         [JsonConverter(typeof(DbGeographyConverter))]
         public DbGeography PositionUser { get; set; }   
         public DateTimeOffset LastLogin { get; set; }
 
-        public User()
-        {
-        }
     }
 }

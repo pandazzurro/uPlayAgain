@@ -12,7 +12,7 @@ namespace uPlayAgain.Models
         [ForeignKey("TransactionId")]
         public virtual Transaction Transaction { get; set; }
 
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         [ForeignKey("UserId")]
         public virtual User User { get; set; }
 
