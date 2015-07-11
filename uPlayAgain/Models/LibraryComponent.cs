@@ -1,5 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
+using System.Xml.Serialization;
 
 namespace uPlayAgain.Models
 {
@@ -13,9 +16,12 @@ namespace uPlayAgain.Models
         public int GameId { get; set; }
         [ForeignKey("GameId")]
         public virtual Game Games { get; set; }
-        public int LibraryId { get; set; }
-        [ForeignKey("LibraryId")]
+
+        public int LibraryId { get; set; }    
+        [JsonIgnore]
+        [XmlIgnore]
         public virtual Library Library { get; set; }
+
         public int StatusId { get; set; }
         [ForeignKey("StatusId")]
         public virtual Status Status { get; set; }

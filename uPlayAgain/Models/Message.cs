@@ -11,6 +11,7 @@ namespace uPlayAgain.Models
         public int MessageId { get; set; }
         public string MessageText { get; set; }
         public DateTimeOffset MessageDate { get; set; }
+        public bool IsAlreadyRead { get; set; }
 
         public virtual User UserReceiving { get; set; }
 

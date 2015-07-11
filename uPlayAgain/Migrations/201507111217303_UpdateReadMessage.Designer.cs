@@ -7,13 +7,13 @@ namespace uPlayAgain.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.2-31219")]
-    public sealed partial class LoginOwin : IMigrationMetadata
+    public sealed partial class UpdateReadMessage : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(LoginOwin));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(UpdateReadMessage));
         
         string IMigrationMetadata.Id
         {
-            get { return "201507040848209_LoginOwin"; }
+            get { return "201507111217303_UpdateReadMessage"; }
         }
         
         string IMigrationMetadata.Source

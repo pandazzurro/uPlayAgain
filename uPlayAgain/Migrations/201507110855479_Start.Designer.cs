@@ -7,13 +7,13 @@ namespace uPlayAgain.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.2-31219")]
-    public sealed partial class OWinClientToken : IMigrationMetadata
+    public sealed partial class Start : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(OWinClientToken));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Start));
         
         string IMigrationMetadata.Id
         {
-            get { return "201507041744549_OWinClientToken"; }
+            get { return "201507110855479_Start"; }
         }
         
         string IMigrationMetadata.Source

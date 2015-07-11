@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace uPlayAgain.Models
@@ -8,6 +9,9 @@ namespace uPlayAgain.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int TransactionId { get; set; }
+
+        public int ProposalId { get; set; }
+        public virtual Proposal Proposal { get; set; }
 
         //public int UserReceivingId { get ;set; }
         //[ForeignKey("UserReceivingId")]

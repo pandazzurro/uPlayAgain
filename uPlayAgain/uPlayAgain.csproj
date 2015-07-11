@@ -29,7 +29,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\uPlayAgain.xml</DocumentationFile>
+    <DocumentationFile>App_Data/XmlDocument.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -233,6 +233,7 @@
     <Compile Include="BaseProxy.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AuthController.cs" />
+    <Compile Include="Controllers\CounterController.cs" />
     <Compile Include="Controllers\FeedbacksController.cs" />
     <Compile Include="Controllers\GameImportController.cs" />
     <Compile Include="Controllers\GameLanguagesController.cs" />
@@ -240,6 +241,7 @@
     <Compile Include="Controllers\GenresController.cs" />
     <Compile Include="Controllers\LibrariesController.cs" />
     <Compile Include="Controllers\LibraryComponentsController.cs" />
+    <Compile Include="Controllers\MessagesController.cs" />
     <Compile Include="Controllers\PlatformsController.cs" />
     <Compile Include="Controllers\ProposalComponentsController.cs" />
     <Compile Include="Controllers\ProposalsController.cs" />
@@ -259,25 +261,17 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helper.cs" />
-    <Compile Include="Migrations\201507010537113_start.cs" />
-    <Compile Include="Migrations\201507010537113_start.Designer.cs">
-      <DependentUpon>201507010537113_start.cs</DependentUpon>
+    <Compile Include="Migrations\201507110855479_Start.cs" />
+    <Compile Include="Migrations\201507110855479_Start.Designer.cs">
+      <DependentUpon>201507110855479_Start.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201507010554044_correctImportId.cs" />
-    <Compile Include="Migrations\201507010554044_correctImportId.Designer.cs">
-      <DependentUpon>201507010554044_correctImportId.cs</DependentUpon>
+    <Compile Include="Migrations\201507110950361_ProposalFix.cs" />
+    <Compile Include="Migrations\201507110950361_ProposalFix.Designer.cs">
+      <DependentUpon>201507110950361_ProposalFix.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201507020541313_lastLogin.cs" />
-    <Compile Include="Migrations\201507020541313_lastLogin.Designer.cs">
-      <DependentUpon>201507020541313_lastLogin.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201507040848209_LoginOwin.cs" />
-    <Compile Include="Migrations\201507040848209_LoginOwin.Designer.cs">
-      <DependentUpon>201507040848209_LoginOwin.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201507041744549_OWinClientToken.cs" />
-    <Compile Include="Migrations\201507041744549_OWinClientToken.Designer.cs">
-      <DependentUpon>201507041744549_OWinClientToken.cs</DependentUpon>
+    <Compile Include="Migrations\201507111217303_UpdateReadMessage.cs" />
+    <Compile Include="Migrations\201507111217303_UpdateReadMessage.Designer.cs">
+      <DependentUpon>201507111217303_UpdateReadMessage.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationTypes.cs" />
@@ -339,24 +333,18 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201507010537113_start.resx">
-      <DependentUpon>201507010537113_start.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201507010554044_correctImportId.resx">
-      <DependentUpon>201507010554044_correctImportId.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201507020541313_lastLogin.resx">
-      <DependentUpon>201507020541313_lastLogin.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201507040848209_LoginOwin.resx">
-      <DependentUpon>201507040848209_LoginOwin.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201507041744549_OWinClientToken.resx">
-      <DependentUpon>201507041744549_OWinClientToken.cs</DependentUpon>
-    </EmbeddedResource>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+    <EmbeddedResource Include="Migrations\201507110855479_Start.resx">
+      <DependentUpon>201507110855479_Start.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507110950361_ProposalFix.resx">
+      <DependentUpon>201507110950361_ProposalFix.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507111217303_UpdateReadMessage.resx">
+      <DependentUpon>201507111217303_UpdateReadMessage.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

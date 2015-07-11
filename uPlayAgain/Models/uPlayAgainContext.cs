@@ -27,6 +27,7 @@ namespace uPlayAgain.Models
         public uPlayAgainContext() : base("name=uPlayAgainContext")
         {
             this.Configuration.ProxyCreationEnabled = false;
+            this.Configuration.LazyLoadingEnabled = false;            
             // Log query DB
             this.Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
         }
@@ -62,6 +63,15 @@ namespace uPlayAgain.Models
                 .HasRequired<User>(p => p.UserReceiving)
                 .WithMany()
                 .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Library>()
+                .HasMany(t => t.LibraryComponents)
+                .WithRequired(t => t.Library)
+                .HasForeignKey(p => p.LibraryId);
+
+            modelBuilder.Entity<Transaction>()
+                .HasRequired(x => x.Proposal)
+                .WithRequiredDependent(x => x.Transaction);
 
             base.OnModelCreating(modelBuilder);
         }

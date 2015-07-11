@@ -26,6 +26,8 @@ namespace uPlayAgain.Models
         public string ConfirmPassword { get; set; }
         public byte[] Image { get; set; }
         public string Provider { get; set; }
+        [DataType(DataType.EmailAddress)]
+        public string Email { get; set; }
 
         [JsonConverter(typeof(DbGeographyConverter))]
         public DbGeography PositionUser { get; set; }   
