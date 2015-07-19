@@ -25,7 +25,11 @@ namespace uPlayAgain.Controllers
         [ResponseType(typeof(Library))]
         public async Task<IHttpActionResult> GetLibrary(int id)
         {
-            Library library = await db.Libraries.FindAsync(id);
+            Library library = await db.Libraries
+                                      .Include(t => t.LibraryComponents)
+                                      .Include(t => t.User)
+                                      .Where(t => t.LibraryId == id)
+                                      .SingleOrDefaultAsync();
             if (library == null)
             {
                 return NotFound();

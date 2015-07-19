@@ -32,6 +32,22 @@ namespace uPlayAgain
         public async Task<User> FindUser(string userName, string password)
         {
             User user = await _userManager.FindAsync(userName, password);
+            
+            return user;
+        }
+
+        public async Task<User> RefreshUser(string userName, string password)
+        {
+            User user = await _userManager.FindAsync(userName, password);
+            if (user != null)
+            {
+                DateTimeOffset now = DateTimeOffset.Now;
+                // impongo un orario di aggiornamento se dal Json non arriva.
+                if (user.LastLogin == DateTimeOffset.MinValue || user.LastLogin < now)
+                    user.LastLogin = now;
+
+                await _userManager.UpdateAsync(user);
+            }
 
             return user;
         }
