@@ -27,18 +27,18 @@ namespace uPlayAgain.Controllers
                                                u => u.Id,
                                                (l, u) => new { User = u, Library = l })                          
                                          .Join(db.LibraryComponents,
-                                               l => l.Library.LibraryComponentId,
-                                               lc => lc.LibraryComponentId,
+                                               l => l.Library.LibraryId,
+                                               lc => lc.LibraryId,
                                                (l, lc) => new { Library = l, LibraryComponents = lc, l.User })
                                          .Join(db.Games,
-                                               lc => lc.LibraryComponents.LibraryComponentId,
+                                               lc => lc.LibraryComponents.GameId,
                                                g => g.GameId,
                                                (lc, g) => new { LibraryComponent = lc, Game = g, g.Genre, g.Platform, lc.User, lc.Library })
                                          .Where(u => u.User.UserId == userId)
                                          .Where(u => u.User.PositionUser.Distance(position) <= distance)
                                          .Where(g => string.IsNullOrEmpty(gameTitle) || g.Game.Title.Contains(gameTitle) )
-                                         .Where(gr => string.IsNullOrEmpty(genreId) && string.Compare(gr.Genre.GenreId, genreId, true) == 0)
-                                         .Where(p => string.IsNullOrEmpty(platformId) && string.Compare(p.Platform.PlatformId, platformId, true) == 0)
+                                         .Where(gr => string.IsNullOrEmpty(genreId) || string.Equals(gr.Genre.GenreId, genreId))
+                                         .Where(p => string.IsNullOrEmpty(platformId) || string.Equals(p.Platform.PlatformId, platformId))
                                          .Select(x => new SearchGame()
                                          {
                                              Status = x.LibraryComponent.LibraryComponents.Status,
