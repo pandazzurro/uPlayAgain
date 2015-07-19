@@ -38,7 +38,7 @@ namespace uPlayAgain.Controllers
         [ResponseType(typeof(Transaction))]
         public async Task<IHttpActionResult> GetTransactionByUser(int id)
         {
-            User user = db.Users.Find(id);
+            User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
             if (user == null)
             {
                 return NotFound();

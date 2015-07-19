@@ -22,7 +22,7 @@ namespace uPlayAgain.Controllers
         [ResponseType(typeof(int))]
         public async Task<IHttpActionResult> GetGamesByUser(int id)
         {
-            User user = db.Users.Find(id);
+            User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
             if (user == null)
             {
                 return NotFound();
@@ -40,7 +40,7 @@ namespace uPlayAgain.Controllers
         [ResponseType(typeof(int))]
         public async Task<IHttpActionResult> GetLibrariesByUser(int id)
         {
-            User user = db.Users.Find(id);
+            User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
             if (user == null)
             {
                 return NotFound();
@@ -57,7 +57,7 @@ namespace uPlayAgain.Controllers
         [ResponseType(typeof(int))]
         public async Task<IHttpActionResult> GetMessagesByUser(int id)
         {
-            User user = db.Users.Find(id);
+            User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
             if (user == null)
             {
                 return NotFound();

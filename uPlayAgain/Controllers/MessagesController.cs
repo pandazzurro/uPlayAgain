@@ -41,7 +41,7 @@ namespace uPlayAgain.Controllers
         [ResponseType(typeof(Message))]
         public async Task<IHttpActionResult> GetMessageByUser(int id)
         {
-            User user = db.Users.Find(id);
+            User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
             if (user == null)
             {
                 return NotFound();
