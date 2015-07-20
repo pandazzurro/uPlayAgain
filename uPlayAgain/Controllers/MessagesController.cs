@@ -37,9 +37,9 @@ namespace uPlayAgain.Controllers
         }
 
         // GET: api/Messages/ByUser/5
-        [Route("api/Messages/ByUser/{id:int}")]
+        [Route("api/Messages/Incoming/{id:int}")]
         [ResponseType(typeof(Message))]
-        public async Task<IHttpActionResult> GetMessageByUser(int id)
+        public async Task<IHttpActionResult> GetMessageIncoming(int id)
         {
             User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
             if (user == null)
@@ -49,7 +49,25 @@ namespace uPlayAgain.Controllers
             List<Message> messages = await db.Messages
                                              .Include(t => t.UserProponent)
                                              .Include(t => t.UserReceiving)
-                                             .Where(t => t.UserProponent.UserId == id || t.UserReceiving.UserId == id)
+                                             .Where(t => t.UserReceiving.UserId == id)
+                                             .ToListAsync();
+            return Ok(messages);
+        }
+
+        // GET: api/Messages/ByUser/5
+        [Route("api/Messages/Outgoing/{id:int}")]
+        [ResponseType(typeof(Message))]
+        public async Task<IHttpActionResult> GetMessageOutgoing(int id)
+        {
+            User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
+            if (user == null)
+            {
+                return NotFound();
+            }
+            List<Message> messages = await db.Messages
+                                             .Include(t => t.UserProponent)
+                                             .Include(t => t.UserReceiving)
+                                             .Where(t => t.UserProponent.UserId == id)
                                              .ToListAsync();
             return Ok(messages);
         }
