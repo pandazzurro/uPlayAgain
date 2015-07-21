@@ -3,12 +3,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace uPlayAgain.Models
 {
-    public class TransactionStatus
+    public enum TransactionStatus
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int TransactionStatusId { get; set; }
-
-        public string Description { get; set; }
+        Aperta,
+        InAttesa,
+        Conclusa
     }
 }

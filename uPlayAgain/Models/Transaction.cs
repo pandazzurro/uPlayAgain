@@ -12,6 +12,8 @@ namespace uPlayAgain.Models
 
         public int ProposalId { get; set; }
         public virtual Proposal Proposal { get; set; }
+        
+        public virtual TransactionStatus TransactionStatus { get; set; }
 
         //public int UserReceivingId { get ;set; }
         //[ForeignKey("UserReceivingId")]

@@ -69,6 +69,44 @@ namespace uPlayAgain.Controllers
             return Ok(result);
         }
 
+        // GET: api/Counter/TransactionsIngoingByUser/5
+        [Route("api/Counter/TransactionsIngoingByUser/{id:int}")]
+        [ResponseType(typeof(int))]
+        public async Task<IHttpActionResult> GetTransactionsIngoingByUser(int id)
+        {
+            User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
+            if (user == null)
+            {
+                return NotFound();
+            }
+            int result = await db.Transactions
+                                 .Include(t => t.UserReceiving)
+                                 .Include(t => t.Proposal)
+                                 .Where(t => t.UserReceiving.UserId == id)
+                                 .Where(t => t.TransactionStatus != TransactionStatus.Conclusa)
+                                 .CountAsync();
+            return Ok(result);
+        }
+
+        // GET: api/Counter/TransactionsOutgoingByUser/5
+        [Route("api/Counter/TransactionsOutgoingByUser/{id:int}")]
+        [ResponseType(typeof(int))]
+        public async Task<IHttpActionResult> GetTransactionsOutgoingByUser(int id)
+        {
+            User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
+            if (user == null)
+            {
+                return NotFound();
+            }
+            int result = await db.Transactions
+                                 .Include(t => t.UserReceiving)
+                                 .Include(t => t.Proposal)
+                                 .Where(t => t.UserProponent.UserId == id)
+                                 .Where(t => t.TransactionStatus != TransactionStatus.Conclusa)
+                                 .CountAsync();
+            return Ok(result);
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

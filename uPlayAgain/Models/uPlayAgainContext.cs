@@ -18,8 +18,6 @@ namespace uPlayAgain.Models
         public DbSet<ProposalStatus> ProposalStaus { get; set; }
         public DbSet<Status> Status { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
-        public DbSet<TransactionStatus> TransactionStatus { get; set; }
-        //public DbSet<User> Users { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }

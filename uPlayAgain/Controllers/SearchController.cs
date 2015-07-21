@@ -34,7 +34,7 @@ namespace uPlayAgain.Controllers
                                                lc => lc.LibraryComponents.GameId,
                                                g => g.GameId,
                                                (lc, g) => new { LibraryComponent = lc, Game = g, g.Genre, g.Platform, lc.User, lc.Library })
-                                         .Where(u => u.User.UserId == userId)
+                                         .Where(u => u.User.UserId != userId)
                                          .Where(u => u.User.PositionUser.Distance(position) <= distance)
                                          .Where(g => string.IsNullOrEmpty(gameTitle) || g.Game.Title.Contains(gameTitle) )
                                          .Where(gr => string.IsNullOrEmpty(genreId) || string.Equals(gr.Genre.GenreId, genreId))
