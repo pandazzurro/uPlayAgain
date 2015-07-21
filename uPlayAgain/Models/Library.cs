@@ -15,8 +15,7 @@ namespace uPlayAgain.Models
         [ForeignKey("UserId")]
         public virtual User User { get; set; }
 
-        public int LibraryComponentId { get; set; }
-        //[ForeignKey("LibraryComponentId")]
+        //public int LibraryComponentId { get; set; }
         public virtual IList<LibraryComponent> LibraryComponents { get; set; }
 
         public Library()

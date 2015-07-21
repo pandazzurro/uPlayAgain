@@ -75,10 +75,6 @@ namespace uPlayAgain.Models
 
             base.OnModelCreating(modelBuilder);
 
-            //modelBuilder.Entity<IdentityUser>()
-            //   .ToTable("User", "dbo")
-            //   .Property(p => p.Id)
-            //   .HasColumnName("User_Id");
             modelBuilder.Entity<IdentityUser>().ToTable("Users");
             modelBuilder.Entity<User>().ToTable("Users").HasKey(x => x.Id);
             modelBuilder.Entity<IdentityUserRole>().ToTable("UserRoles");

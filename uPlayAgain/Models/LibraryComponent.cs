@@ -17,6 +17,8 @@ namespace uPlayAgain.Models
         [ForeignKey("GameId")]
         public virtual Game Games { get; set; }
 
+        public string Note { get; set; }
+
         public int LibraryId { get; set; }    
         [JsonIgnore]
         [XmlIgnore]
