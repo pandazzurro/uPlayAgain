@@ -32,23 +32,46 @@ namespace uPlayAgain.Models
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder
-               .Entity<Transaction>()
-               .HasRequired<User>(p => p.UserProponent)
-               .WithMany()
-               .WillCascadeOnDelete(false);
+            // FK User
+            modelBuilder.Entity<User>()
+                .HasMany(c => c.TransactionsProponent)
+                .WithRequired(d => d.UserProponent)
+                .HasForeignKey(d => d.UserProponent_Id);
 
-            modelBuilder
-                .Entity<Transaction>()
-                .HasRequired<User>(p => p.UserReceiving)
-                .WithMany()
-                .WillCascadeOnDelete(false);
+            modelBuilder.Entity<User>()
+                .HasMany(c => c.TransactionsReceiving)
+                .WithRequired(d => d.UserReceiving)
+                .HasForeignKey(d => d.UserReceiving_Id);
+
+            modelBuilder.Entity<User>()
+               .HasMany(c => c.Libraries)
+               .WithRequired(d => d.User)
+               .HasForeignKey(d => d.UserId);
+
+            modelBuilder.Entity<User>()
+                 .HasMany(c => c.MessagesOut)
+                 .WithRequired(d => d.UserProponent)
+                 .HasForeignKey(d => d.UserProponent_Id);
+
+            modelBuilder.Entity<User>()
+                .HasMany(c => c.MessagesIn)
+                .WithRequired(d => d.UserReceiving)
+                .HasForeignKey(d => d.UserReceiving_Id);
+
+            // FK Transaction
+            modelBuilder.Entity<Transaction>()
+                .HasMany(c => c.Proposals)
+                .WithRequired(d => d.Transaction)
+                .HasForeignKey(d => d.TransactionId);
 
             modelBuilder
                 .Entity<Proposal>()
-                .HasRequired<User>(p => p.UserLastChanges)
-                .WithMany()
-                .WillCascadeOnDelete(false);
+                .HasRequired(p => p.UserLastChanges);
+
+            modelBuilder.Entity<Proposal>()
+                 .HasMany(c => c.ProposalComponents)
+                 .WithRequired(d => d.Proposal)
+                 .HasForeignKey(d => d.ProposalId);
 
             modelBuilder
               .Entity<Message>()
@@ -67,17 +90,19 @@ namespace uPlayAgain.Models
                 .WithRequired(t => t.Library)
                 .HasForeignKey(p => p.LibraryId);
 
-            modelBuilder.Entity<Transaction>()
-                .HasRequired(x => x.Proposal)
-                .WithRequiredDependent(x => x.Transaction);
 
             base.OnModelCreating(modelBuilder);
+            modelBuilder = UserReference(modelBuilder);
+        }
 
+        private DbModelBuilder UserReference(DbModelBuilder modelBuilder)
+        {
             modelBuilder.Entity<IdentityUser>().ToTable("Users");
             modelBuilder.Entity<User>().ToTable("Users").HasKey(x => x.Id);
             modelBuilder.Entity<IdentityUserRole>().ToTable("UserRoles");
             modelBuilder.Entity<IdentityUserLogin>().ToTable("UserLogins");
-            modelBuilder.Entity<IdentityUserClaim>().ToTable("UserClaims");            
+            modelBuilder.Entity<IdentityUserClaim>().ToTable("UserClaims");
+            return modelBuilder;
         }
 
     }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace uPlayAgain.Models
 {
-    public enum TransactionStatus
+    public enum TransactionStatus : int
     {
         Aperta,
         InAttesa,

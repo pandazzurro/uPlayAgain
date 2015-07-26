@@ -9,18 +9,15 @@ namespace uPlayAgain.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int TransactionId { get; set; }
-
-        public int ProposalId { get; set; }
-        public virtual Proposal Proposal { get; set; }
         
-        public virtual TransactionStatus TransactionStatus { get; set; }
+        public ICollection<Proposal> Proposals { get; set; }
 
-        //public int UserReceivingId { get ;set; }
-        //[ForeignKey("UserReceivingId")]
-        public virtual User UserReceiving { get; set; }
+        public TransactionStatus TransactionStatus { get; set; }
 
-        //public int UserProponentId { get; set; }
-        //[ForeignKey("UserProponentId")]
-        public virtual User UserProponent { get; set; }
+        public string UserReceiving_Id { get; set; }
+        public User UserReceiving { get; set; }
+
+        public string UserProponent_Id { get; set; }
+        public User UserProponent { get; set; }
     }
 }

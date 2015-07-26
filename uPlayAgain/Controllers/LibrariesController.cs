@@ -38,25 +38,6 @@ namespace uPlayAgain.Controllers
             return Ok(library);
         }
 
-        // GET: api/Libraries/ByUser/5
-        [Route("api/Libraries/ByUser/{id:int}")]
-        [ResponseType(typeof(Library))]
-        public async Task<IHttpActionResult> GetLibraryByUser(int id)
-        {
-            User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
-            if (user == null)
-            {
-                return NotFound();
-            }
-            List<Library> libs = await db.Libraries
-                                         .Include(t => t.LibraryComponents)
-                                         .Include(t => t.User)
-                                         .Where(t => t.User.UserId == id)
-                                         .ToListAsync();
-            return Ok(libs);            
-        }
-       
-
         // PUT: api/Libraries/5
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> PutLibrary(int id, Library library)

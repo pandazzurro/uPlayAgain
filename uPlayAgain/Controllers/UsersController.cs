@@ -110,6 +110,89 @@ namespace uPlayAgain.Controllers
             return Ok(user);
         }
 
+        #region ExtractByUser
+        // GET: api/Messages/ByUser/5
+        [Route("api/Transactions/ByUser/{id:int}")]
+        [ResponseType(typeof(Transaction))]
+        public async Task<IHttpActionResult> GetTransactionByUser(int id)
+        {
+            User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Esplicito di caricare gli oggetti Game, ProposalComponent e Library Component!
+            await db.Proposals.LoadAsync();
+            await db.ProposalComponents.LoadAsync();
+            await db.LibraryComponents.LoadAsync();
+            // Esplicito di caricare gli oggetti Game!
+            await db.Games.LoadAsync();
+            await db.Genres.LoadAsync();
+            await db.Platforms.LoadAsync();
+            await db.GameLanguages.LoadAsync();
+            await db.Status.LoadAsync();
+
+            List<User> users = await db.Users
+                                       .Include(t => t.TransactionsProponent)
+                                       .Include(t => t.TransactionsReceiving)
+                                       .Where(t => t.UserId == id)
+                                       .ToListAsync();
+            return Ok(users);
+        }
+
+
+        // GET: api/Messages/ByUser/5
+        [Route("api/Messages/ByUser/{id:int}")]
+        [ResponseType(typeof(Message))]
+        public async Task<IHttpActionResult> GetMessageIncoming(int id)
+        {
+            User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            List<User> users = await db.Users
+                                       .Include(t => t.MessagesIn)
+                                       .Include(t => t.MessagesIn.Select(p => p.UserProponent))
+                                       .Include(t => t.MessagesIn.Select(p => p.UserReceiving))
+                                       .Include(t => t.MessagesOut)
+                                       .Include(t => t.MessagesOut.Select(p => p.UserProponent))
+                                       .Include(t => t.MessagesOut.Select(p => p.UserReceiving))
+                                       .Where(t => t.UserId == id)
+                                       .ToListAsync();
+
+            return Ok(users);
+        }
+
+        // GET: api/Libraries/ByUser/5
+        [Route("api/Libraries/ByUser/{id:int}")]
+        [ResponseType(typeof(Library))]
+        public async Task<IHttpActionResult> GetLibraryByUser(int id)
+        {
+            User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
+            if (user == null)
+            {
+                return NotFound();
+            }
+            // Esplicito di caricare gli oggetti Game!
+            db.Games.Load();
+            db.Genres.Load();
+            db.Platforms.Load();
+            db.GameLanguages.Load();
+            db.Status.Load();
+
+            List<User> users = await db.Users
+                                       .Include(t => t.Libraries)
+                                       .Include(t => t.Libraries.Select(p => p.User))
+                                       .Include(t => t.Libraries.Select(p => p.LibraryComponents))
+                                       .Where(t => t.UserId == id)
+                                       .ToListAsync();
+            return Ok(users);
+        }
+        #endregion
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

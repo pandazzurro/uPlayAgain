@@ -81,7 +81,7 @@ namespace uPlayAgain.Controllers
             }
             int result = await db.Transactions
                                  .Include(t => t.UserReceiving)
-                                 .Include(t => t.Proposal)
+                                 .Include(t => t.Proposals)
                                  .Where(t => t.UserReceiving.UserId == id)
                                  .Where(t => t.TransactionStatus != TransactionStatus.Conclusa)
                                  .CountAsync();
@@ -100,7 +100,7 @@ namespace uPlayAgain.Controllers
             }
             int result = await db.Transactions
                                  .Include(t => t.UserReceiving)
-                                 .Include(t => t.Proposal)
+                                 .Include(t => t.Proposals)
                                  .Where(t => t.UserProponent.UserId == id)
                                  .Where(t => t.TransactionStatus != TransactionStatus.Conclusa)
                                  .CountAsync();

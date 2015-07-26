@@ -32,26 +32,7 @@ namespace uPlayAgain.Controllers
 
             return Ok(transaction);
         }
-
-        // GET: api/Messages/ByUser/5
-        [Route("api/Transactions/ByUser/{id:int}")]
-        [ResponseType(typeof(Transaction))]
-        public async Task<IHttpActionResult> GetTransactionByUser(int id)
-        {
-            User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
-            if (user == null)
-            {
-                return NotFound();
-            }
-            List<Transaction> transactions = await db.Transactions
-                                                     .Include(t => t.Proposal)
-                                                     .Include(t => t.UserProponent)
-                                                     .Include(t => t.UserReceiving)
-                                                     .Where(t => t.UserProponent.UserId == id || t.UserReceiving.UserId == id)
-                                                     .ToListAsync();
-            return Ok(transactions);
-        }
-
+        
         // PUT: api/Transactions/5
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> PutTransaction(int id, Transaction transaction)
