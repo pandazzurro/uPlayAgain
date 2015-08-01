@@ -1,0 +1,79 @@
+<form class="uk-form">
+  <fieldset>
+    <legend>Ricerca</legend>
+    <div class="uk-form-row uk-display-inline-block">
+      <span>&nbsp;</span>
+      <input type="text" placeholder="Titolo" ng-model="search.params.string">
+    </div>
+    <div class="uk-form-row uk-display-inline-block">
+      <span>Genere</span>
+      <div class="uk-button-dropdown" data-uk-dropdown="{mode:'click'}">
+        <button class="uk-button">
+          <span>{{search.params.genre == undefined? search.GENRES_ALL : search.params.genre.name}}</span>
+          <i class="uk-icon-caret-down"></i>
+        </button>
+        <div class="uk-dropdown">
+          <ul class="uk-nav uk-nav-dropdown">
+            <li><a href="" ng-click="search.setGenre(undefined)">{{search.GENRES_ALL}}</a></li>
+            <li class="uk-nav-divider"></li>
+            <li ng-repeat="genre in search.genres.$values">
+              <a href="" ng-click="search.setGenre(genre)">{{genre.name}}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="uk-form-row uk-display-inline-block">
+      <span>Piattaforma</span>
+      <div class="uk-button-dropdown" data-uk-dropdown="{mode:'click'}">
+        <button class="uk-button">
+          <span>{{search.params.platform == undefined? search.PLATFORMS_ALL : search.params.platform.class}}</span>
+          <i class="uk-icon-caret-down"></i>
+        </button>
+        <div class="uk-dropdown">
+          <ul class="uk-nav uk-nav-dropdown">
+            <li><a href="" ng-click="search.setPlatform(undefined)">{{search.PLATFORMS_ALL}}</a></li>
+            <li class="uk-nav-divider"></li>
+            <li ng-repeat="platform in search.platforms.$values">
+              <a href="" ng-click="search.setPlatform(platform)">{{platform.class}}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="uk-form-row uk-display-inline-block">
+      <span>&nbsp;</span>
+      <button class="uk-button uk-button-primary" ng-click="search.startSearch()">Cerca...</button>
+    </div>
+  </fieldset>
+</form>
+<form class="uk-form" ng-show="search.searchPerformed">
+  <fieldset>
+    <legend>Risultati <i>Trovati {{search.results.$values.length}} record</i></legend>
+  </fieldset>
+  <table class="uk-table">
+    <thead>
+      <tr>
+        <th>&nbsp;</th>
+        <th>Titolo</th>
+        <th>Genere</th>
+        <th>Piattaforma</th>
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <td colspan="4"></td>
+      </tr>
+    </tfoot>
+    <tbody>
+      <tr ng-repeat="game in search.results.$values">
+        <td><button class="uk-button" data-uk-tooltip title="Aggiungi alla libreria" ng-click="search.addToLibrary(game)">
+          <i class="fa fa-plus"></i>
+        </button></td>
+        <td>{{game.title}}</td>
+        <td>{{search.getGenreById(game.genreId).name}}</td>
+        <td>{{search.getPlatformById(game.platformId).class}}</td>
+      </tr>
+    </tbody>
+</table>
+</form>

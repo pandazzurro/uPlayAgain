@@ -16,11 +16,11 @@ namespace uPlayAgain.Models
         public virtual User User { get; set; }
 
         //public int LibraryComponentId { get; set; }
-        public virtual IList<LibraryComponent> LibraryComponents { get; set; }
+        public virtual ICollection<LibraryComponent> LibraryComponents { get; set; }
 
         public Library()
         {
-            LibraryComponents = new List<LibraryComponent>();
+            LibraryComponents = new HashSet<LibraryComponent>();
         }
     }
 }

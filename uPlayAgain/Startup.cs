@@ -11,6 +11,7 @@ using System.Web.Mvc;
 using Microsoft.Owin.Security.Cookies;
 using System.Security.Claims;
 using System.Web.Helpers;
+using Newtonsoft.Json;
 
 [assembly: OwinStartup(typeof(uPlayAgain.Startup))]
 namespace uPlayAgain
@@ -32,6 +33,7 @@ namespace uPlayAgain
             GlobalConfiguration.Configuration.Services.Replace(typeof(IBodyModelValidator), new CustomBodyModelValidator());
             //Webapi
             AreaRegistration.RegisterAllAreas();
+
 
             ConfigureOAuth(app);
             

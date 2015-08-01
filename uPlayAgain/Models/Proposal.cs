@@ -16,15 +16,17 @@ namespace uPlayAgain.Models
         public bool Direction { get; set; }
 
         public int TransactionId { get; set; }
-        //[ForeignKey("TransactionId")]
         public virtual Transaction Transaction { get; set; }
                 
-        //public int UserLastChangesId { get; set; }
-        //[ForeignKey("UserLastChangesId")]
         public virtual User UserLastChanges { get; set; }
 
         #region NavigationProperty
         public ICollection<ProposalComponent> ProposalComponents { get; set; }
         #endregion
+
+        public Proposal()
+        {
+            ProposalComponents = new HashSet<ProposalComponent>();
+        }
     }
 }

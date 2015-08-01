@@ -16,19 +16,25 @@ namespace uPlayAgain.Controllers
         // GET: api/Proposals
         public IQueryable<Proposal> GetProposals()
         {
-            return db.Proposals;
+            return db.Proposals
+                     .Include(t => t.ProposalComponents)
+                     .Include(t => t.UserLastChanges);
         }
 
         // GET: api/Proposals/5
         [ResponseType(typeof(Proposal))]
         public async Task<IHttpActionResult> GetProposal(int id)
         {
-            Proposal proposal = await db.Proposals.FindAsync(id);
+            Proposal proposal = await db.Proposals
+                                        .Include(t => t.ProposalComponents)
+                                        .Include(t => t.UserLastChanges)
+                                        .Where(t => t.ProposalId == id)
+                                        .SingleOrDefaultAsync();
             if (proposal == null)
             {
                 return NotFound();
             }
-
+            
             return Ok(proposal);
         }
 

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
@@ -30,5 +31,8 @@ namespace uPlayAgain.Models
         public int GameLanguageId { get; set; }
         [ForeignKey("GameLanguageId")]
         public virtual GameLanguage GameLanguage { get; set; }
+
+        #region NavigationProperty
+        #endregion
     }
 }

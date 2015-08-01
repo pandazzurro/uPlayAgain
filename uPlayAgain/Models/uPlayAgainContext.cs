@@ -69,9 +69,9 @@ namespace uPlayAgain.Models
                 .HasRequired(p => p.UserLastChanges);
 
             modelBuilder.Entity<Proposal>()
-                 .HasMany(c => c.ProposalComponents)
-                 .WithRequired(d => d.Proposal)
-                 .HasForeignKey(d => d.ProposalId);
+                .HasMany(e => e.ProposalComponents)
+                .WithRequired(e => e.Proposal)
+                .WillCascadeOnDelete(false);
 
             modelBuilder
               .Entity<Message>()

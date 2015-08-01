@@ -1,0 +1,9 @@
+API <input type="text" ng-model="testCtrl.api"><br>
+DATA <textarea ng-model="testCtrl.data"></textarea><br>
+<button ng-click="testCtrl.get()">GET</button>
+<button ng-click="testCtrl.post()">POST</button>
+<button ng-click="testCtrl.put()">PUT</button>
+<button ng-click="testCtrl.delete()">DELETE</button>
+<hr>
+{{testCtrl.success ? 'SUCCESS' : 'ERROR'}}<br>
+{{testCtrl.result}}

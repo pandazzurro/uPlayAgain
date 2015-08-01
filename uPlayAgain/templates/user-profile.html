@@ -1,0 +1,118 @@
+﻿<form name="profileForm" class="uk-form" novalidate>
+    <fieldset data-uk-margin>
+        <div class="uk-grid">
+            <div class="uk-width-1-2 uk-container-center">
+                <legend>Registrazione nuovo utente</legend>
+                <div class="uk-grid">
+                    <div class="uk-width-1-2">
+                        <input name="username" type="text" placeholder="Username" ng-model="newuser.params.username" required ng-class="registrationForm.username.$invalid && !registrationForm.username.$pristine ? 'uk-form-danger' : ''">
+                        <p ng-show="registrationForm.username.$invalid && !registrationForm.username.$pristine" class="help-block">Campo obbligatorio.</p>
+                    </div>
+                </div>
+                <div class="uk-grid">
+                    <div class="uk-width-1-2">
+                        <input name="email" type="email" placeholder="Indirizzo email" ng-model="newuser.params.email" required ng-class="registrationForm.username.$invalid && !registrationForm.username.$pristine ? 'uk-form-danger' : ''">
+                        <p ng-show="registrationForm.email.$invalid && !registrationForm.email.$pristine" class="help-block">
+                            Non &egrave; un indirizzo email valido.
+                        </p>
+                    </div>
+                    <div class="uk-width-1-2">
+                        <input name="emailConfirm" type="email" placeholder="Conferma email" ng-model="newuser.params.confirmEmail" required>
+                        <p ng-show="newuser.params.email != newuser.params.confirmEmail" class="help-block">
+                            L'indirizzo email e l'indirizzo di conferma non coincidono.
+                        </p>
+                    </div>
+                </div>
+                <div class="uk-grid">
+                    <div class="uk-width-1-2">
+                        <input name="password" type="password" placeholder="Password" ng-model="newuser.params.password" required ng-minlength="8" ng-class="(registrationForm.username.$invalid && !registrationForm.username.$pristine) || registrationForm.password.$error.minlength ? 'uk-form-danger' : ''">
+                        <p ng-show="registrationForm.password.$error.minlength" class="help-block">
+                            La password deve essere composta da almeno 8 caratteri.
+                        </p>
+                    </div>
+                    <div class="uk-width-1-2">
+                        <input name="passwordConfirm" type="password" placeholder="Conferma password" ng-model="newuser.params.confirmPassword" required ng-minlength="8">
+                        <p ng-show="newuser.params.password != newuser.params.confirmPassword" class="help-block">
+                            La password e la password di conferma non coincidono.
+                        </p>
+                    </div>
+                </div>
+                <div class="uk-grid">
+                    <div class="uk-width-1-2">
+                        <input type="text" placeholder="Localit&agrave" ng-model="register.params.location">
+                    </div>
+                </div>
+                <div class="uk-grid">
+                    <div class="uk-width-1-1">
+                        <div>Seleziona una immagine: <input type="file" id="fileInput" /></div>
+                        <div class="cropArea uk-width-1-1">
+                            <img-crop image="currentImage" area-type="square" result-image="currentCroppedImage" result-image-size="200" result-image-format="image/png"></img-crop>
+                        </div>
+                    </div>
+                </div>
+                <div class="uk-grid">
+                    <div class="uk-width-1-1">
+                        <div class="map_canvas">
+                            <ui-gmap-google-map center="map.center" zoom="map.zoom" draggable="true" options="options">
+                                <ui-gmap-marker coords="marker.coords" options="marker.options" events="marker.events" idkey="marker.id">
+                                </ui-gmap-marker>
+                            </ui-gmap-google-map>
+                        </div>
+                    </div>
+                </div>
+                <div class="uk-grid">
+                    <div class="uk-width-1-1">
+                        <button class="uk-button uk-text-center" ng-click="newuser.toggleAgreement()" style="width: 30px">
+                            <i class="fa" ng-class="newuser.TOSagreed ? 'fa-check' : ''"></i>
+                        </button> Dichiaro di aver preso visione e di accettare le <a href="#tos" data-uk-modal>condizioni d'uso</a> del sito.<br>
+                    </div>
+                </div>
+                <div class="uk-grid">
+                    <div class="uk-width-1-1">
+                        <button class="uk-button" ng-click="newuser.register()" ng-disabled="registrationForm.$invalid">Registrati</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+<div id="tos" class="uk-modal">
+    <div class="uk-modal-dialog">
+        <a class="uk-modal-close uk-close"></a>
+        <div style="height: 500px; overflow-y: scroll">
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+            TOS del sito<br>
+        </div>
+    </div>
+</div>

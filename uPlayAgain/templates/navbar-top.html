@@ -1,0 +1,38 @@
+<!-- Top navbar -->
+<nav class="uk-navbar uk-navbar-attached">
+  <a href="#navbar-side" class="uk-navbar-toggle uk-visible-small" data-uk-offcanvas></a>
+  <ul class="uk-navbar-nav">
+    <a href="#" class="uk-navbar-brand">GXC</a>
+    <li><a href="#/contacts">Chi siamo</a></li>
+  </ul>
+  <div class="uk-navbar-flip uk-hidden-small" ng-controller="UserController as userCtrl">
+    <ul class="uk-navbar-nav" ng-show="userCtrl.isLoggedIn()">
+      <li><a href="#/exchange" class="uk-navbar-nav-subtitle">
+        <i class="fa fa-exchange"></i> Baratto
+        <div>cerca e scambia giochi</div>
+      </a></li>
+      <li><a href="#/library" class="uk-navbar-nav-subtitle">
+        <i class="fa fa-list"></i> Libreria
+        <div>hai registrato {{ userCtrl.getUser().Games }} giochi</div>
+      </a></li>
+      <li><a href="#/mail" class="uk-navbar-nav-subtitle">
+        <i class="fa fa-envelope-o fa-status-{{ userCtrl.getUser().Messages > 0 ? 'warn' : 'ok' }}"></i> Messaggi
+        <div>hai {{ userCtrl.getUser().Messages }} messaggi da leggere</div>
+      </a></li>
+    </ul>
+    <ul class="uk-navbar-nav">
+      <li class="uk-parent" ng-hide="userCtrl.isLoggedIn()" data-uk-dropdown="{mode:'click'}">
+        <a href=""><i class="fa fa-unlock-alt"></i> Accesso <i class="uk-icon-caret-down"></i></a>
+        <form-login id="loginPanel" class="uk-dropdown uk-dropdown-navbar uk-dropdown-width-2"></form-login>
+      </li>
+      <li class="uk-parent" ng-show="userCtrl.isLoggedIn()" data-uk-dropdown="{mode:'click'}">
+        <a href=""><i class="fa fa-user"></i> {{ userCtrl.getUser().userName }} <i class="uk-icon-caret-down"></i></a>
+        <div class="uk-dropdown uk-dropdown-navbar">
+          <a href="#/profile">Il mio profilo</a>
+          <hr>
+          <a href="#/logout" ng-click="userCtrl.logout()">Esci</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>

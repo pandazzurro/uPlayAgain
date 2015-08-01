@@ -1,0 +1,49 @@
+<form class="uk-form">
+<fieldset>
+  <legend>Mailbox</legend>
+</fieldset>
+<div class="uk-grid nomargin">
+  <ul class="uk-tab uk-tab-left uk-width-medium-1-6" data-uk-tab>
+    <li ng-class="mailbox.params.direction==='in' ? 'uk-active' : ''">
+      <a href="#/mail/in/1"><i class="fa fa-sign-in"></i> Ricevuti({{mailbox.messagesCount.in}})</a>
+    </li>
+    <li ng-class="mailbox.params.direction==='out' ? 'uk-active' : ''">
+      <a href="#/mail/out/1"><i class="fa fa-sign-out"></i> Inviati({{mailbox.messagesCount.out}})</a>
+    </li>
+    <li ng-class="mailbox.params.direction==='archive' ? 'uk-active' : ''">
+      <a href="#/mail/archive/1"><i class="fa fa-archive"></i> Archiviati</a>
+    </li>
+  </ul>
+  <div class="uk-width-medium-5-6">
+  <table class="uk-table uk-table-condensed">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Data</th>
+        <th>Titolo</th>
+        <th>Mittente</th>
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <td colspan="4"></td>
+      </tr>
+    </tfoot>
+    <tbody>
+      <tr class="message" ng-repeat="mail in mailbox.messages.$values" ng-mouseover="mailbox.hoverIn(mail)" ng-mouseleave="mailbox.hoverOut(mail)" ng-class="mail.hovered ? 'hover': ''" ng-click="mailbox.open(mail)">
+        <td><i class="fa fa-heart"></i></td>
+        <td>{{mail.Date}}</td>
+        <td>{{mail.Title}}</td>
+        <td>{{mail.Sender}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <ul class="uk-pagination">
+    <li ng-repeat="page in [] | range:5" ng-class="page == mailbox.currentPage ? 'uk-active' : ''">
+      <a ng-hide="page == mailbox.currentPage" href="#/mail/{{mailbox.params.direction}}/{{page}}">{{page}}</a>
+      <span ng-show="page == mailbox.currentPage">{{page}}</span>
+    </li>
+  </ul>
+  </div>
+</div>
+</form>
