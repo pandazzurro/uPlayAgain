@@ -16,7 +16,7 @@
           <ul class="uk-nav uk-nav-dropdown">
             <li><a href="" ng-click="search.setGenre(undefined)">{{search.GENRES_ALL}}</a></li>
             <li class="uk-nav-divider"></li>
-            <li ng-repeat="genre in search.genres.$values">
+            <li ng-repeat="genre in search.genres">
               <a href="" ng-click="search.setGenre(genre)">{{genre.name}}</a>
             </li>
           </ul>
@@ -34,7 +34,7 @@
           <ul class="uk-nav uk-nav-dropdown">
             <li><a href="" ng-click="search.setPlatform(undefined)">{{search.PLATFORMS_ALL}}</a></li>
             <li class="uk-nav-divider"></li>
-            <li ng-repeat="platform in search.platforms.$values">
+            <li ng-repeat="platform in search.platforms">
               <a href="" ng-click="search.setPlatform(platform)">{{platform.class}}</a>
             </li>
           </ul>
@@ -92,7 +92,7 @@
         <td>{{search.getPlatformById(game.Platform).class}}</td>
         <td>dove</td>
         <td>dist</td>
-        <td>user (*****)</td>
+        <td><user-link data-user-id='1'></user-link></td>
       </tr>
     </tbody>
 </table>

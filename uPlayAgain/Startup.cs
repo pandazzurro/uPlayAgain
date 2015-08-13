@@ -33,7 +33,8 @@ namespace uPlayAgain
             GlobalConfiguration.Configuration.Services.Replace(typeof(IBodyModelValidator), new CustomBodyModelValidator());
             //Webapi
             AreaRegistration.RegisterAllAreas();
-
+            
+            HibernatingRhinos.Profiler.Appender.EntityFramework.EntityFrameworkProfiler.Initialize();
 
             ConfigureOAuth(app);
             

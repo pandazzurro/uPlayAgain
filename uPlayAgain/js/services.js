@@ -1,5 +1,5 @@
 (function() {
-  var app = angular.module('gxc.services', ['ngRoute']);
+  var app = angular.module('gxc.services', ['ngRoute', 'ngCookies']);
 
   /**
    * Route service
@@ -55,9 +55,9 @@
 
       gxcFct.library.byUser({ userId: user.userId }).$promise
         .then(function(libSuccess) {
-          for(lib in libSuccess.$values) {
-            user.LibraryId =libSuccess.$values[lib].libraryId;
-            user.Games += libSuccess.$values[lib].libraryComponents.$values.length;
+          user.LibraryId = libSuccess[0].libraries[0].libraryId;
+          for(lc in libSuccess[0].libraries[0].libraryComponents) {
+            user.Games++;
           }
         }, 
         function(error) {
@@ -66,8 +66,8 @@
 
       gxcFct.mail.incoming({ userId: user.userId }).$promise
         .then(function(mailSuccess) {
-          for(mail in mailSuccess.$values) {
-            user.Messages += mailSuccess.$values[mail].length;
+          for(mail in mailSuccess[0].messagesIn) {
+            user.Messages++;
           }
         }, 
         function(error) {

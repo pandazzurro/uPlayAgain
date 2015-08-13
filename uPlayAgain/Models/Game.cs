@@ -34,7 +34,7 @@ namespace uPlayAgain.Models
                 using (var ms = new MemoryStream(Image))
                 {
                     Image img = System.Drawing.Image.FromStream(ms);
-                    int fixedWidth = 50;
+                    int fixedWidth = 100;
                     double widthPercentage = (double)fixedWidth / (double)img.Width;
                     return img.GetThumbnailImage(fixedWidth, (int)(img.Height * widthPercentage), () => false, IntPtr.Zero);
                 }

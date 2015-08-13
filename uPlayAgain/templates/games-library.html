@@ -1,29 +1,81 @@
-<ul class="uk-grid uk-text-center uk-grid-width-1-2 uk-grid-width-medium-1-3 uk-grid-width-large-1-5">
-  <li ng-repeat="game in library.games" style="margin-bottom: 10px">
-    <div class="uk-panel uk-panel-box uk-panel-header" style="height: 120px; background-image: url(data:image/gif;base64,{{game.gameData.image}}); background-position: center bottom; background-repeat: no-repeat">
-      <h3 class="uk-panel-title">{{game.gameData.title}}</h3>
-      <div style="position:absolute; bottom: 10px; right: 5px; width: 100%">
-      <div class="uk-text-right"><i class="fa fa-list"></i>
-      <div class="uk-button-group">
-        <button class="uk-button" data-uk-tooltip title="Modifica" ng-click="library.editGame(game)">
-          <i class="fa fa-pencil"></i>
-        </button>
-        <button class="uk-button uk-button-danger" data-uk-tooltip title="Rimuovi" ng-click="library.removeGame(game)">
-          <i class="fa fa-minus"></i>
-        </button>
+<ul class="uk-grid uk-text-center uk-grid-width-1-1 uk-grid-width-medium-1-2 uk-grid-width-large-1-3">
+  <li ng-repeat="game in library.games" style="margin-bottom:10px">
+    <article class="uk-comment">
+      <header class="uk-comment-header">
+          <img class="uk-comment-avatar" src="data:image/gif;base64,{{game.gameData.image}}" alt="{{game.gameData.title}}" style="height:80px">
+          <h4 class="uk-comment-title">{{game.gameData.title}}</h4>
+          <div class="uk-comment-meta">{{library.getLanguageById(game.gameLanguageId).description}} - {{library.getStatusById(game.statusId).description}}</div>
+      </header>
+      <div class="uk-comment-body">
+        <div class="uk-text-right">
+          <div class="uk-button-group">
+            <button class="uk-button" data-uk-tooltip title="Modifica" ng-click="library.editGame(game)">
+              <i class="fa fa-pencil"></i>
+            </button>
+            <button class="uk-button uk-button-danger" data-uk-tooltip title="Rimuovi" ng-click="library.removeGame(game)">
+              <i class="fa fa-minus"></i>
+            </button>
+          </div>
+        </div>
       </div>
-      </div>
-      </div>
-    </div>
+    </article>
   </li>
   <li>
-    <div class="uk-panel uk-panel-box uk-panel-header" style="height: 120px">
-      <h3 class="uk-panel-title">Aggiungi nuovo</h3>
-      <div style="position:relative; bottom: 0">
-      <button class="uk-button" ng-click="library.addGame()">
-        <i class="fa fa-plus"></i>
-      </button>
-      </div>
-    </div>
+    <article class="uk-comment">
+      <header class="uk-comment-header">
+        <button class="uk-comment-avatar uk-button" ng-click="library.addGame()">
+          <i class="fa fa-plus"></i>
+        </button>
+        <h4 class="uk-comment-title">Aggiungi nuovo</h4>
+        <div class="uk-comment-meta">&nbsp;</div>
+      </header>
+    </article>
   </li>
 </ul>
+
+<!-- This is the modal -->
+<div id="gameEditor" class="uk-modal">
+    <div class="uk-modal-dialog">
+        <a class="uk-modal-close uk-close"></a>
+      <form class="uk-form">
+
+    <fieldset data-uk-margin>
+      <legend>{{library.editingGame.gameData.title}}</legend>
+      <div class="uk-form-row">
+              <span>Lingua</span>
+      <div class="uk-button-dropdown" data-uk-dropdown="{mode:'click'}">
+        <button class="uk-button">
+          <span>{{library.editingGame.gameData.language.description}}</span>
+          <i class="uk-icon-caret-down"></i>
+        </button>
+                  <div class="uk-dropdown">
+          <ul class="uk-nav uk-nav-dropdown">
+            <li ng-repeat="language in library.languages">
+              <a href="" ng-click="library.setLanguage(language)">{{language.description}}</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="uk-form-row">
+              <span>Stato</span>
+      <div class="uk-button-dropdown" data-uk-dropdown="{mode:'click'}">
+        <button class="uk-button">
+          <span>{{library.editingGame.gameData.status.description}}</span>
+          <i class="uk-icon-caret-down"></i>
+        </button>
+          <div class="uk-dropdown">
+          <ul class="uk-nav uk-nav-dropdown">
+            <li ng-repeat="status in library.statuses">
+              <a href="" ng-click="library.setStatus(status)">{{status.description}}</a>
+            </li>
+          </ul>
+      </div>
+        </div>
+      <div class="uk-form-row">
+        <span>Note</span>
+      <textarea ng-model="library.editingGame.gameData.note"></textarea>
+      </div>
+        </fieldset>
+      </form>
+    </div>
+</div>

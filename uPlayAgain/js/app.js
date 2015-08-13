@@ -1,5 +1,6 @@
 (function() {
-  var app = angular.module('gxc', ['gxc.factories', 'gxc.services', 'gxc.directives', 'gxc.templates', 'ngRoute', 'ngResource', 'ngImgCrop', 'uiGmapgoogle-maps']);
+  var COOKIE_ID = '__UPA__LOGIN__COOKIE__';
+  var app = angular.module('gxc', ['gxc.factories', 'gxc.services', 'gxc.directives', 'gxc.templates', 'ngRoute', 'ngResource', 'ngCookies', 'ngImgCrop', 'uiGmapgoogle-maps']);
 
   // http://stackoverflow.com/questions/20506360/angular-repeat-span-n-times
   app.filter('range', function() {
@@ -18,7 +19,7 @@
       .when('/mail', {
         redirectTo: '/mail/in/1'
       })
-      .when('/mail/compose', {
+      .when('/mail/compose/:recipientId', {
         template: '<message-new></message-new>'
       })
       .when('/mail/message/:messageId', {
@@ -27,9 +28,6 @@
       .when('/mail/:direction/:page', {
         template: '<mailbox></mailbox>'
       })
-/*    .when('/library', {
-        redirectTo: '/library/1'
-      })*/
       .when('/library/add', {
         template: '<games-search></games-search>',
       })
@@ -38,6 +36,12 @@
       })
       .when('/exchange', {
         template: '<exchange-search></exchange-search>'
+      })
+      .when('/user/:userId', {
+        template: '<user-profile></user-profile>'
+      })
+      .when('/myprofile', {
+        template: '<user-profile></user-profile>'
       })
       .when('/register', {
         template: '<form-register></form-register>'
@@ -56,28 +60,57 @@
       });
   })
   
-  app.controller('UserController', [ '$scope', 'user-service', function($scope, userSrv) {
+  app.controller('UserController', [ '$scope', '$cookies', 'user-service', function($scope, $cookies, userSrv) {
     $scope.username = undefined;
     $scope.password = undefined;
     
+    var _this = this;
+    
+    this.doLogin = function(username, password) {
+      var expiration = new Date();
+      expiration.setDate(expiration.getDate() + 10);
+
+      var loginData = { xu: username, xp: password, xd: expiration };
+      $cookies.putObject(COOKIE_ID, loginData, { expires: expiration });
+      
+      userSrv.login(username, password);
+    };
+
+    this.loginWithCookie = function() {
+      var loginData = $cookies.getObject(COOKIE_ID);
+      
+      if(loginData !== undefined && loginData.xd > new Date() && !_this.isLoggedIn())
+      {
+        var user = loginData.xu;
+        var pwd = loginData.xp;
+        
+        _this.doLogin(user, pwd);
+      }
+    };
+    
     this.login = function() {
-      userSrv.login($scope.username, $scope.password);
+      _this.doLogin($scope.username, $scope.password);
     };
     
     this.logout = function() {
       userSrv.logout();
+      
+      $scope.username = '';
+      $scope.password = '';
     };
 
     this.isLoggedIn = function() {
       return userSrv.isLoggedIn();
-    }
+    };
 
     this.getUser = function() {
       return userSrv.getUser();
-    }
+    };
     
     this.register = function() {
       window.location = '#/register';
-    }
+    };
+    
+    _this.loginWithCookie();
   }]);
 })();

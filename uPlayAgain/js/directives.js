@@ -145,10 +145,10 @@
         this.getGenreById = function(id) {
           var result = undefined;
 
-          for(i in _this.genres.$values) {
-            if(_this.genres.$values[i].genreId == id)
+          for(i in _this.genres) {
+            if(_this.genres[i].genreId == id)
             {
-              result = _this.genres.$values[i];
+              result = _this.genres[i];
               break;
             }
           }
@@ -159,10 +159,10 @@
         this.getPlatformById = function(id) {
           var result = undefined;
 
-          for(i in _this.platforms.$values) {
-            if(_this.platforms.$values[i].platformId == id)
+          for(i in _this.platforms) {
+            if(_this.platforms[i].platformId == id)
             {
-              result =_this.platforms.$values[i];
+              result =_this.platforms[i];
               break;
             }
           }
@@ -182,7 +182,9 @@
             gameTitle: _this.params.string === undefined? '' : _this.params.string,
             genreId: _this.params.genre === undefined ? '' : _this.params.genre.genreId,
             platformId: _this.params.platform === undefined ? '' : _this.params.platform.platformId,
-            distance: _this.params.distance === undefined? 1000000 : _this.params.distance
+            distance: _this.params.distance === undefined? 1000000 : _this.params.distance,
+            skip: 0,
+            take: 10000
           };
           
           _this.results = gxcFct.game.search(queryParameters, function(success) {
@@ -226,10 +228,10 @@
         this.getGenreById = function(id) {
           var result = undefined;
 
-          for(i in _this.genres.$values) {
-            if(_this.genres.$values[i].genreId == id)
+          for(i in _this.genres) {
+            if(_this.genres[i].genreId == id)
             {
-              result = _this.genres.$values[i];
+              result = _this.genres[i];
               break;
             }
           }
@@ -240,10 +242,10 @@
         this.getPlatformById = function(id) {
           var result = undefined;
 
-          for(i in _this.platforms.$values) {
-            if(_this.platforms.$values[i].platformId == id)
+          for(i in _this.platforms) {
+            if(_this.platforms[i].platformId == id)
             {
-              result =_this. platforms.$values[i];
+              result =_this. platforms[i];
               break;
             }
           }
@@ -295,6 +297,45 @@
         var _this = this;
         _this.games = [];
         
+        _this.statuses = gxcFct.status.query();
+        _this.languages = gxcFct.language.query();
+
+          this.getStatusById = function(id) {
+          var result = undefined;
+
+          for(i in _this.statuses) {
+            if(_this.statuses[i].statusId == id)
+            {
+              result = _this.statuses[i];
+              break;
+            }
+          }
+
+          return result;
+        }
+        
+        this.getLanguageById = function(id) {
+          var result = undefined;
+
+          for(i in _this.languages) {
+            if(_this.languages[i].gameLanguageId == id)
+            {
+              result =_this.languages[i];
+              break;
+            }
+          }
+
+          return result;
+        }
+        
+                this.setStatus = function(status) {
+          _this.editingGame.gameData.status = status;
+        };
+
+        this.setLanguage = function(language) {
+          _this.editingGame.gameData.language = language;
+        };
+        
         var getGames = function() {
           var queryParameters = {
             libraryId: userSrv.getUser().LibraryId,
@@ -302,8 +343,8 @@
           
           gxcFct.library.get(queryParameters).$promise
           .then(function(success) {
-            for(i in success.libraryComponents.$values) {
-              var g = success.libraryComponents.$values[i];
+            for(i in success.libraryComponents) {
+              var g = success.libraryComponents[i];
               var queryParameters = {
                 gameId: g.gameId
               };
@@ -311,7 +352,7 @@
               g.gameData = gxcFct.game.get(queryParameters);
             }
             
-            _this.games = success.libraryComponents.$values;
+            _this.games = success.libraryComponents;
           },
           function(error) {
             UIkit.notify('Si &egrave; verificato un errore nell\'operazione. Si prega di riprovare', { status: 'warning', timeout: 5000 });
@@ -323,11 +364,16 @@
         };
         
         this.editGame = function(game) {
-          window.location = '#/edit';
+          game.gameData.language = _this.getLanguageById(game.gameLanguageId);
+          game.gameData.status = _this.getStatusById(game.statusId);
+          _this.editingGame = game;
+          
+          var modal = UIkit.modal("#gameEditor");
+          modal.show();
         };
         
         this.removeGame = function(game) {
-          UIkit.modal.confirm("Sicuro di voler rimuovere " + game.title + " dalla tua libreria?", function(){
+          UIkit.modal.confirm("Sicuro di voler rimuovere " + game.gameData.title + " dalla tua libreria?", function(){
             var queryParameters = {
               componentId: game.libraryComponentId,
             };
@@ -346,16 +392,52 @@
     };
   }]);
   
-  app.directive('userProfile', [ 'user-service', function(userSrv) {
+  app.directive('userProfile', [ 'factories', function(gxcFct) {
     return {
       restrict: 'E',
-      templateUrl: 'user-profile.html',
-      controller: function() {
+      templateUrl: 'templates/user-profile.html',
+      controller: function($routeParams) {
         var _this = this;
         
+        this.sendMessage = function() {
+          window.location = '#/mail/compose/' + _this.user.userId;
+        };
         
+        var queryParameters = {
+          userId: $routeParams.userId
+        };
+        
+        gxcFct.user.get(queryParameters).$promise
+        .then(function(success) {
+          _this.user = success;
+        });
       },
       controllerAs: 'profile'
+    };
+  }]);
+  
+  app.directive('userLink', [ 'factories', function(gxcFct) {
+    return {
+      restrict: 'E',
+      scope: {
+        userId : '='
+      },
+      template: '<a href=\'#/user/{{ userId }}\'>{{ link.username }} ({{ link.ranking }})</a>',
+      controller: function($scope) {
+        var _this = this;
+        _this.username = '';
+        _this.ranking = 0;
+        
+        var queryParameters = {
+          userId: $scope.userId
+        };
+        
+        gxcFct.user.get(queryParameters).$promise
+        .then(function(success) {
+          _this.username = success.userName;
+        });
+      },
+      controllerAs: 'link'
     };
   }]);
   
