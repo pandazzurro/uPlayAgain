@@ -1,0 +1,123 @@
+﻿@font-face {
+	font-family: 'icomoon';
+	src:url('fonts/icomoon.eot?3by204');
+	src:url('fonts/icomoon.eot?#iefix3by204') format('embedded-opentype'),
+		url('fonts/icomoon.woff?3by204') format('woff'),
+		url('fonts/icomoon.ttf?3by204') format('truetype'),
+		url('fonts/icomoon.svg?3by204#icomoon') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+	font-family: 'icomoon';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-Nintendo3DS:before {
+	content: "\e600";
+}
+
+.icon-NintendoDS:before {
+	content: "\e601";
+}
+
+.icon-PS:before {
+	content: "\e602";
+}
+
+.icon-PS2:before {
+	content: "\e603";
+}
+
+.icon-PS3:before {
+	content: "\e604";
+}
+
+.icon-PS4:before {
+	content: "\e605";
+}
+
+.icon-PSP:before {
+	content: "\e606";
+}
+
+.icon-PSVita .path1:before {
+	content: "\e607";
+	color: rgb(68, 68, 68);
+}
+.icon-PSVita .path2:before {
+	content: "\e608";
+	margin-left: -1em;
+	color: rgb(68, 68, 68);
+}
+.icon-PSVita .path3:before {
+	content: "\e609";
+	margin-left: -1em;
+	color: rgb(68, 68, 68);
+}
+.icon-PSVita .path4:before {
+	content: "\e60a";
+	margin-left: -1em;
+	color: rgb(68, 68, 68);
+}
+.icon-PSVita .path5:before {
+	content: "\e60b";
+	margin-left: -1em;
+	color: rgb(255, 255, 255);
+}
+.icon-PSVita .path6:before {
+	content: "\e60c";
+	margin-left: -1em;
+	color: rgb(68, 68, 68);
+}
+.icon-PSVita .path7:before {
+	content: "\e60d";
+	margin-left: -1em;
+	color: rgb(68, 68, 68);
+}
+.icon-PSVita .path8:before {
+	content: "\e60e";
+	margin-left: -1em;
+	color: rgb(68, 68, 68);
+}
+.icon-PSVita .path9:before {
+	content: "\e60f";
+	margin-left: -1em;
+	color: rgb(68, 68, 68);
+}
+.icon-PSVita .path10:before {
+	content: "\e610";
+	margin-left: -1em;
+	color: rgb(68, 68, 68);
+}
+
+.icon-WII:before {
+	content: "\e611";
+}
+
+.icon-WIIU:before {
+	content: "\e612";
+}
+
+.icon-XBOX:before {
+	content: "\e613";
+}
+
+.icon-XBOX360:before {
+	content: "\e614";
+}
+
+.icon-XBOXONE:before {
+	content: "\e615";
+}
+
