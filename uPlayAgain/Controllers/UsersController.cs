@@ -25,7 +25,7 @@ namespace uPlayAgain.Controllers
         [ResponseType(typeof(User))]
         public async Task<IHttpActionResult> GetUser(int id)
         {
-            User user = await Task.Run(() => db.Users.Find(id));
+            User user = await Task.Run(() => db.Users.FirstOrDefault(u => u.UserId == id));
             if (user == null)
             {
                 return NotFound();
