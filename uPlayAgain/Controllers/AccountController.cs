@@ -34,10 +34,10 @@ namespace uPlayAgain.Controllers
         [Route("Register")]
         public async Task<IHttpActionResult> Register(User userModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return BadRequest(ModelState);
+            //}
 
             IdentityResult result = await _repo.RegisterUser(userModel);
 
