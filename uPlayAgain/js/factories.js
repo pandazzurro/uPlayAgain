@@ -32,7 +32,7 @@
         search: { url: app.webapi + '/api/search', method: 'GET', isArray: false }
       }),
       library: $resource(app.webapi, {} , {
-        byUser: { url: app.webapi + '/api/libraries/byUser/:userId', method: 'GET', isArray: false },
+        byUser: { url: app.webapi + '/api/libraries/byUser/:userId', method: 'GET', isArray: true },
         get: { url: app.webapi + '/api/libraries/:libraryId', method: 'GET', isArray: true },
         add: { url: app.webapi + '/api/librarycomponents', method: 'POST', isArray: false },
         remove: { url: app.webapi + '/api/librarycomponents/:componentId', method: 'DELETE', isArray: false }
