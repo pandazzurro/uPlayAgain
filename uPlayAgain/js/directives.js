@@ -462,12 +462,8 @@
         _this.currentPage = 1;
         
         var getMessages = function(incoming, page) {
-          var queryParameters = {
-            userId: userSrv.getUser().userId,
-          };
-          
           _this.messages = [];
-          gxcFct.mail.byUser(queryParameters).$promise
+            gxcFct.mail.byUser({ userId: userSrv.getUser().userId }).$promise
             .then(function (mailSuccess) {
                 _this.messages = incoming ? mailSuccess[0].messagesIn : mailSuccess[0].messagesOut;
 
@@ -540,7 +536,7 @@
     };
   }]);
   
-  app.directive('messageNew', [ 'factories', function(gxcFct) {
+  app.directive('messageNew', [ 'factories', 'user-service', function(gxcFct, userSrv) {
     return {
       restrict: 'E',
       scope: {
@@ -551,20 +547,25 @@
           var _this = this;
           _this.message = {};
         
-        this.send = function () {
-            var queryParams = {
-                messageText: _this.message.text,
-                messageDate: new Date()
-            };
+          this.send = function () {
+              gxcFct.user.get({ userId: _this.recipientId }).$promise
+                .then(function (userSuccess) {
+                    var queryParams = {
+                        messageText: _this.message.text,
+                        messageDate: new Date(),
+                        userReceiving_Id: userSuccess.id,
+                        userProponent_Id: userSrv.getUser().id
+                    };
 
-            gxcFct.mail.send(queryParams).$promise
-            .then(function (success) {
-                UIkit.notify('Messaggio inviato', { status: 'success', timeout: 5000 });
-                window.location = '#/mail/in/1';
-            },
-            function (error) {
-                UIkit.notify('Si &egrave; verificato un errore nell\'operazione. Si prega di riprovare', { status: 'warning', timeout: 5000 });
-            });
+                    gxcFct.mail.send(queryParams).$promise
+                    .then(function (success) {
+                        UIkit.notify('Messaggio inviato', { status: 'success', timeout: 5000 });
+                        window.location = '#/mail/in/1';
+                    },
+                    function (error) {
+                        UIkit.notify('Si &egrave; verificato un errore nell\'operazione. Si prega di riprovare', { status: 'warning', timeout: 5000 });
+                    });
+                });
         };
         
         _this.recipientId = $routeParams.recipientId;
