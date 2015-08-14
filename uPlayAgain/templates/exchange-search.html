@@ -68,7 +68,7 @@
 </form>
 <form class="uk-form" ng-show="search.searchPerformed">
   <fieldset>
-    <legend>Risultati <i>Trovati {{search.results.$values.length}} record</i></legend>
+    <legend>Risultati <i>Trovati {{search.results.searchGame.length}} record</i></legend>
   </fieldset>
   <table class="uk-table">
     <thead>
@@ -87,7 +87,7 @@
       </tr>
     </tfoot>
     <tbody>
-      <tr ng-repeat="game in search.results.$values">
+      <tr ng-repeat="game in search.results.searchGame">
         <td>{{game.title}}</td>
         <td>{{search.getGenreById(game.Genre).name}}</td>
         <td>{{search.getPlatformById(game.Platform).class}}</td>

@@ -49,7 +49,7 @@
 </form>
 <form class="uk-form" ng-show="search.searchPerformed">
   <fieldset>
-    <legend>Risultati <i>Trovati {{search.results.$values.length}} record</i></legend>
+    <legend>Risultati <i>Trovati {{search.results.length}} record</i></legend>
   </fieldset>
   <table class="uk-table">
     <thead>
@@ -66,7 +66,7 @@
       </tr>
     </tfoot>
     <tbody>
-      <tr ng-repeat="game in search.results.$values">
+      <tr ng-repeat="game in search.results">
         <td><button class="uk-button" data-uk-tooltip title="Aggiungi alla libreria" ng-click="search.addToLibrary(game)">
           <i class="fa fa-plus"></i>
         </button></td>
