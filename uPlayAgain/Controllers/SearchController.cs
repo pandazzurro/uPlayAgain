@@ -48,6 +48,7 @@ namespace uPlayAgain.Controllers
                           GameLanguage = x.LibraryComponent.LibraryComponents.GameLanguage,
                           Genre = x.Game.Genre, 
                           Platform = x.Game.Platform,
+                          Game = x.Game,
                           Distance = x.User.PositionUser.Distance(position)                                             
                       });
 
