@@ -38,7 +38,7 @@ namespace uPlayAgain.Controllers
                           g => g.GameId,
                           (lc, g) => new { LibraryComponent = lc, Game = g, g.Genre, g.Platform, lc.User, lc.Library })
                       .Where(u => u.User.UserId != userId)
-                      .Where(u => u.User.PositionUser.Distance(position) <= distance)
+                      .Where(u => u.User.PositionUser.Distance(position) <= distance * 1000)
                       .Where(g => string.IsNullOrEmpty(gameTitle) || g.Game.Title.Contains(gameTitle) )
                       .Where(gr => string.IsNullOrEmpty(genreId) || string.Equals(gr.Genre.GenreId, genreId))
                       .Where(p => string.IsNullOrEmpty(platformId) || string.Equals(p.Platform.PlatformId, platformId))
@@ -49,7 +49,8 @@ namespace uPlayAgain.Controllers
                           Genre = x.Game.Genre, 
                           Platform = x.Game.Platform,
                           Game = x.Game,
-                          Distance = x.User.PositionUser.Distance(position)                                             
+                          User = x.User,
+                          Distance = (x.User.PositionUser.Distance(position) / 1000)
                       });
 
             SearchGames result = new SearchGames()

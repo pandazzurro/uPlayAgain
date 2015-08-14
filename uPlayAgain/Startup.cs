@@ -34,7 +34,7 @@ namespace uPlayAgain
             //Webapi
             AreaRegistration.RegisterAllAreas();
             
-            //HibernatingRhinos.Profiler.Appender.EntityFramework.EntityFrameworkProfiler.Initialize();
+            HibernatingRhinos.Profiler.Appender.EntityFramework.EntityFrameworkProfiler.Initialize();
 
             ConfigureOAuth(app);
             
