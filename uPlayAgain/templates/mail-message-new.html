@@ -2,38 +2,47 @@
   <div class="uk-panel uk-panel-box uk-panel-box-primary">
     <div class="uk-grid">
       <div class="uk-width-9-10">
-        <h3 class="uk-panel-title">{{mail.message.titolo ? mail.message.titolo : 'Nuovo messaggio'}}</h3>
+        <h3 class="uk-panel-title">{{ mail.message.titolo ? mail.message.titolo : 'Nuovo messaggio' }}</h3>
       </div>
     </div>
+      <div class="uk-grid small-margin" data-uk-grid-match>
+          <h5 class="uk-width-1-6 uk-text-middle uk-text-right">Destinatario</h5>
+          <h5 class="uk-width-5-6"><user-link data-user='{{ mail.recipientId }}'></user-link></h5>
+      </div>
     <div class="uk-grid small-margin" data-uk-grid-match>
-      <h5 class="uk-width-1-6 uk-text-middle">Titolo</h5>
+      <h5 class="uk-width-1-6 uk-text-middle uk-text-right">Titolo</h5>
       <h5 class="uk-width-5-6"><input type="text" placeholder="Titolo" ng-model="mail.message.titolo" class="uk-width-1-1"></h5>
     </div>
   </div>
   &nbsp;
   <div class="uk-panel uk-panel-box">
-    <textarea placeholder="Testo del messaggio" class="uk-width-1-1" rows="10"></textarea>
+    <textarea placeholder="Testo del messaggio" class="uk-width-1-1" rows="10" ng-model="mail.message.text"></textarea>
   </div>
   &nbsp;
-  <div class="uk-grid" data-uk-grid-match>
-    <div class="uk-width-2-5">
-      <fieldset>
-        <legend class="uk-text-right">Dare</legend>
-      </fieldset>
-      <div class="uk-panel uk-panel-box">
-        Fifa 2015 (xbox)
-      </div>
+    <div class="uk-grid" data-uk-grid-match ng-show="mail.exchange">
+        <div class="uk-width-2-5">
+            <fieldset>
+                <legend class="uk-text-right">Dare</legend>
+            </fieldset>
+            <div class="uk-panel uk-panel-box">
+                Fifa 2015 (xbox)
+            </div>
+        </div>
+        <div class="uk-width-1-5 uk-text-center">
+            <i class="fa fa-2x fa-exchange"></i>
+        </div>
+        <div class="uk-width-2-5">
+            <fieldset>
+                <legend>Avere</legend>
+            </fieldset>
+            <div class="uk-panel uk-panel-box">
+                Neverwinter Nights 2 (pc)
+            </div>
+        </div>
     </div>
-    <div class="uk-width-1-5 uk-text-center">
-      <i class="fa fa-2x fa-exchange"></i>
+    <div class="uk-text-center">
+        <button class="uk-button uk-button-primary" ng-click="mail.send()">
+            <i class="fa fa-envelope-o"></i> Invia messaggio
+        </button>
     </div>
-    <div class="uk-width-2-5">
-      <fieldset>
-        <legend>Avere</legend>
-      </fieldset>
-      <div class="uk-panel uk-panel-box">
-        Neverwinter Nights 2 (pc)
-      </div>
-    </div>
-  </div>
 </form>

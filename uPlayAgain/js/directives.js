@@ -458,7 +458,7 @@
         
         _this.params = $routeParams;
         _this.messages = [];
-        _this.messagesCount = {in: 0, out: 0};
+        _this.messagesCount = { in: 0, out: 0 };
         _this.currentPage = 1;
         
         var getMessages = function(incoming, page) {
@@ -467,31 +467,21 @@
           };
           
           _this.messages = [];
-          if(incoming) {
-            _this.messages = gxcFct.mail.incoming(queryParameters);
-          }
-          else {
-            _this.messages = gxcFct.mail.outgoing(queryParameters);
-          }
-          
+          gxcFct.mail.byUser(queryParameters).$promise
+            .then(function (mailSuccess) {
+                _this.messages = incoming ? mailSuccess[0].messagesIn : mailSuccess[0].messagesOut;
+
+                for (msg in _this.messages) {
+                    _this.messages[msg].userId = incoming ? _this.messages[msg].userProponent.userId : _this.messages[msg].userReceiving.userId;
+                }
+
+                _this.messagesCount.in = mailSuccess[0].messagesIn.length;
+                _this.messagesCount.out = mailSuccess[0].messagesOut.length;
+            }); // mail.byUser     
+
           _this.currentPage = page;
         };
         
-        var getMessagesCount = function() {
-          var queryParameters = {
-            userId: userSrv.getUser().userId,
-          };
-          
-          gxcFct.mail.incoming(queryParameters).$promise
-            .then(function(success) {
-              _this.messagesCount.in = success.$values.length;
-            });
-          gxcFct.mail.outgoing(queryParameters).$promise
-            .then(function(success) {
-              _this.messagesCount.out = success.$values.length;
-            });
-        };
-
         this.hoverIn = function(mail) {
           mail.hovered = true;
         }
@@ -501,10 +491,9 @@
         }
         
         this.open = function(mail) {
-          window.location = '#/mail/message/' + mail.MessageId;
+          window.location = '#/mail/message/' + mail.messageId;
         }
-        
-        getMessagesCount();
+
         getMessages(_this.params.direction === 'in', _this.params.page);
       },
       controllerAs: 'mailbox'
@@ -516,7 +505,8 @@
       restrict: 'E',
       templateUrl: 'templates/mail-message.html',
       controller: function($routeParams) {
-        var _this = this;
+          var _this = this;
+          _this.message = {};
         
         this.reply = function() {
           
@@ -540,6 +530,11 @@
         
         //_this.message = gxcFct.mail.get(
         _this.msgId = $routeParams;
+
+        gxcFct.mail.get({ messageId: $routeParams.messageId }).$promise
+          .then(function (success) {
+              _this.message = success;
+          });
       },
       controllerAs: 'mail'
     };
@@ -548,32 +543,31 @@
   app.directive('messageNew', [ 'factories', function(gxcFct) {
     return {
       restrict: 'E',
+      scope: {
+        exchange: '@exchange'
+      },
       templateUrl: 'templates/mail-message-new.html',
-      controller: function($routeParams) {
-        var _this = this;
+      controller: function($scope, $routeParams) {
+          var _this = this;
+          _this.message = {};
         
-        this.reply = function() {
-          
+        this.send = function () {
+            var queryParams = {
+                messageText: _this.message.text,
+                messageDate: new Date()
+            };
+
+            gxcFct.mail.send(queryParams).$promise
+            .then(function (success) {
+                UIkit.notify('Messaggio inviato', { status: 'success', timeout: 5000 });
+                window.location = '#/mail/in/1';
+            },
+            function (error) {
+                UIkit.notify('Si &egrave; verificato un errore nell\'operazione. Si prega di riprovare', { status: 'warning', timeout: 5000 });
+            });
         };
         
-        this.toggleImportant = function() {
-          
-        };
-        
-        this.archive = function() {
-          
-        };
-        
-        this.notify = function() {
-          
-        };
-        
-        this.send = function() {
-          window.location = '#/mail/in/1';
-        };
-        
-        //_this.message = gxcFct.mail.get(
-        _this.msgId = $routeParams;
+        _this.recipientId = $routeParams.recipientId;
       },
       controllerAs: 'mail'
     };

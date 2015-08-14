@@ -20,7 +20,10 @@
         redirectTo: '/mail/in/1'
       })
       .when('/mail/compose/:recipientId', {
-        template: '<message-new></message-new>'
+        template: '<message-new data-exchange=\'0\'></message-new>'
+      })
+      .when('/mail/exchange/:gameId', {
+        template: '<message-new data-exchange=\'{{ gameId }}\'></message-new>'
       })
       .when('/mail/message/:messageId', {
         template: '<message></message>'

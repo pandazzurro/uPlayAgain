@@ -5,10 +5,10 @@
 <div class="uk-grid nomargin">
   <ul class="uk-tab uk-tab-left uk-width-medium-1-6" data-uk-tab>
     <li ng-class="mailbox.params.direction==='in' ? 'uk-active' : ''">
-      <a href="#/mail/in/1"><i class="fa fa-sign-in"></i> Ricevuti({{mailbox.messagesCount.in}})</a>
+      <a href="#/mail/in/1"><i class="fa fa-sign-in"></i> Ricevuti({{ mailbox.messagesCount.in }})</a>
     </li>
     <li ng-class="mailbox.params.direction==='out' ? 'uk-active' : ''">
-      <a href="#/mail/out/1"><i class="fa fa-sign-out"></i> Inviati({{mailbox.messagesCount.out}})</a>
+      <a href="#/mail/out/1"><i class="fa fa-sign-out"></i> Inviati({{ mailbox.messagesCount.out }})</a>
     </li>
     <li ng-class="mailbox.params.direction==='archive' ? 'uk-active' : ''">
       <a href="#/mail/archive/1"><i class="fa fa-archive"></i> Archiviati</a>
@@ -21,7 +21,7 @@
         <th></th>
         <th>Data</th>
         <th>Titolo</th>
-        <th>Mittente</th>
+        <th>{{ mailbox.params.direction == 'in' ? 'Mittente' : 'Destinatario' }}</th>
       </tr>
     </thead>
     <tfoot>
@@ -30,20 +30,20 @@
       </tr>
     </tfoot>
     <tbody>
-      <tr class="message" ng-repeat="mail in mailbox.messages.$values" ng-mouseover="mailbox.hoverIn(mail)" ng-mouseleave="mailbox.hoverOut(mail)" ng-class="mail.hovered ? 'hover': ''" ng-click="mailbox.open(mail)">
+      <tr class="message" ng-repeat="mail in mailbox.messages" ng-mouseover="mailbox.hoverIn(mail)" ng-mouseleave="mailbox.hoverOut(mail)" ng-class="mail.hovered ? 'hover': ''" ng-click="mailbox.open(mail)">
         <td><i class="fa fa-heart"></i></td>
-        <td>{{mail.Date}}</td>
-        <td>{{mail.Title}}</td>
-        <td>{{mail.Sender}}</td>
+        <td>{{ mail.messageDate }}</td>
+        <td>{{ mail.messageText }}</td>
+        <td><user-link data-user='{{ mail.userId }}'></user-link></td>
       </tr>
     </tbody>
   </table>
-  <ul class="uk-pagination">
+  <!--ul class="uk-pagination">
     <li ng-repeat="page in [] | range:5" ng-class="page == mailbox.currentPage ? 'uk-active' : ''">
       <a ng-hide="page == mailbox.currentPage" href="#/mail/{{mailbox.params.direction}}/{{page}}">{{page}}</a>
       <span ng-show="page == mailbox.currentPage">{{page}}</span>
     </li>
-  </ul>
+  </ul -->
   </div>
 </div>
 </form>

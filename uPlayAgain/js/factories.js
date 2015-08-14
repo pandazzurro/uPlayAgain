@@ -10,9 +10,9 @@
   app.factory('factories', ['$resource', function($resource) {
     return {
       mail: $resource(app.webapi, {}, {
-        incoming: { url: app.webapi + '/api/messages/byUser/:userId', method: 'GET', isArray: true },
-        outgoing: { url: app.webapi + '/api/messages/outgoing/:userId', method: 'GET', isArray: true },
-        get: { url: app.webapi + '/api/messages', method: 'GET', data: {} }
+          byUser: { url: app.webapi + '/api/messages/byUser/:userId', method: 'GET', isArray: true },
+          get: { url: app.webapi + '/api/messages/:messageId', method: 'GET', isArray: false },
+          send: { url: app.webapi + '/api/messages', method: 'POST', isArray: false },
       }),
       genre: $resource(app.webapi + '/api/genres', {}, {
         query: { method: 'GET', isArray: true }

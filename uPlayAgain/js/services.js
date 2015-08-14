@@ -64,11 +64,9 @@
           UIkit.notify('Si &egrave; verificato un errore nel recupero dei dati utente.', { status: 'warning', timeout: 5000 });
         }); // library.byUser     
 
-      gxcFct.mail.incoming({ userId: user.userId }).$promise
+      gxcFct.mail.byUser({ userId: user.userId }).$promise
         .then(function(mailSuccess) {
-          for(mail in mailSuccess[0].messagesIn) {
-            user.Messages++;
-          }
+          user.Messages = mailSuccess[0].messagesIn.length;
         }, 
         function(error) {
           UIkit.notify('Si &egrave; verificato un errore nel recupero dei dati utente.', { status: 'warning', timeout: 5000 });
