@@ -187,7 +187,7 @@
             take: 10000
           };
           
-          _this.results = gxcFct.game.search(queryParameters, function(success) {
+          _this.results = gxcFct.game.search(queryParameters, function (success) {
             _this.searchPerformed = true;
           });
         }
