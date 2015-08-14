@@ -1,7 +1,7 @@
 (function() {
   var app = angular.module('gxc.factories', ['ngResource']);
 
-  app.webapi = "/uPlayAgain";
+  app.webapi = "";
   
   /**
    * Mail factory
@@ -33,7 +33,7 @@
       }),
       library: $resource(app.webapi, {} , {
         byUser: { url: app.webapi + '/api/libraries/byUser/:userId', method: 'GET', isArray: true },
-        get: { url: app.webapi + '/api/libraries/:libraryId', method: 'GET', isArray: true },
+        get: { url: app.webapi + '/api/libraries/:libraryId', method: 'GET', isArray: false },
         add: { url: app.webapi + '/api/librarycomponents', method: 'POST', isArray: false },
         remove: { url: app.webapi + '/api/librarycomponents/:componentId', method: 'DELETE', isArray: false }
       }),
