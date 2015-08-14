@@ -145,7 +145,7 @@ namespace uPlayAgain.Controllers
         // GET: api/Messages/ByUser/5
         [Route("api/Messages/ByUser/{id:int}")]
         [ResponseType(typeof(Message))]
-        public async Task<IHttpActionResult> GetMessageIncoming(int id)
+        public async Task<IHttpActionResult> GetMessage(int id)
         {
             User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
             if (user == null)
