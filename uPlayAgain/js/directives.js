@@ -174,6 +174,14 @@
           return gamesSrv.getDistances();
         };
         
+        this.makeUserLink = function (userId) {
+            return "<user-link data-user-id='" + userId + "'></user-link>";
+        };
+
+        this.round = function (value) {
+            return Math.round(value * 100) / 100;
+        };
+
         this.startSearch = function() {
           _this.results = [];
           
@@ -420,7 +428,7 @@
     return {
       restrict: 'E',
       scope: {
-        userId : '='
+        userId : '@user'
       },
       template: '<a href=\'#/user/{{ userId }}\'>{{ link.username }} ({{ link.ranking }})</a>',
       controller: function($scope) {

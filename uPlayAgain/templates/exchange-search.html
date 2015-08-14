@@ -76,14 +76,13 @@
         <th>Titolo</th>
         <th>Genere</th>
         <th>Piattaforma</th>
-        <th>Luogo</th>
         <th>Distanza</th>
         <th>Utente</th>
       </tr>
     </thead>
     <tfoot>
       <tr>
-        <td colspan="6"></td>
+        <td colspan="5"></td>
       </tr>
     </tfoot>
     <tbody>
@@ -91,9 +90,8 @@
         <td>{{ game.game.title }}</td>
         <td>{{ search.getGenreById(game.game.genre.genreId).name }}</td>
         <td>{{ search.getPlatformById(game.game.platform.platformId).class }}</td>
-        <td>dove</td>
-        <td>{{ game.distance }} km</td>
-        <td><user-link data-user-id='1'></user-link></td>
+        <td>{{ search.round(game.distance) }} km</td>
+        <td><user-link data-user='{{ game.user.userId }}'></user-link></td>
       </tr>
     </tbody>
 </table>
