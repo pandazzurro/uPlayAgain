@@ -19,6 +19,7 @@ namespace uPlayAgain.Controllers
     public class AccountController : ApiController
     {
         private AuthRepository _repo = null;
+        private uPlayAgainContext db = new uPlayAgainContext();
         private IAuthenticationManager Authentication
         {
             get { return Request.GetOwinContext().Authentication; }
@@ -46,6 +47,13 @@ namespace uPlayAgain.Controllers
             if (errorResult != null)
             {
                 return errorResult;
+            }
+            else
+            {
+                // Aggiungo una libreria all'utente
+                User newUser = db.Users.Where(t => t.UserName == userModel.UserName && t.Email == userModel.Email).FirstOrDefault();
+                db.Libraries.Add(new Library() { User = newUser });
+                await db.SaveChangesAsync();
             }
 
             return Ok();
