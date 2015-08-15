@@ -21,10 +21,11 @@ namespace uPlayAgain.Models
         public string Description { get; set; }
         [JsonProperty(Required = Required.AllowNull)]
         public int? ImportId { get; set; }
+        public DateTimeOffset RegistrationDate { get; set; }
 
         [JsonIgnore]
         public byte[] Image { get; set; }
-
+        
         [JsonProperty(PropertyName = "Image", DefaultValueHandling = DefaultValueHandling.Include)]
         [JsonConverter(typeof(BitmapConverter))]
         public Image Thumb

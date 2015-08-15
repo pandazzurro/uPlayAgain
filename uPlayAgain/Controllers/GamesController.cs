@@ -19,7 +19,17 @@ namespace uPlayAgain.Controllers
         {
             return db.Games;
         }
-        
+
+        [Route("api/Game/Last/{number:int}")]
+        [ResponseType(typeof(Game))]
+        public IQueryable<Game> GetLastGame(int number)
+        {
+            return db.Games
+                     .OrderByDescending(t => t.RegistrationDate)
+                     .Include(t => t.Platform)
+                     .Include(t => t.Genre);
+        }
+
         // GET: api/Games/5
         [ResponseType(typeof(Game))]
         public async Task<IHttpActionResult> GetGame(int id)
