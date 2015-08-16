@@ -22,12 +22,7 @@
         $scope.options = {
             streetViewControl: false,
             scaleControl: true,
-            panControl: true,
-            zoomControl: true,
-            ZoomControlOptions: {
-                position: 'LEFT_CENTER',
-                style: 'SMALL'
-            }
+            panControl: true
         };
        
         /*search box*/
