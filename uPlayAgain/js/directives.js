@@ -12,23 +12,60 @@
         
      
         // gestore delle mappe
-        $scope.map = { center: { latitude: 45.4300, longitude: 10.9880 }, zoom: 8 };
-        $scope.options = { scrollwheel: false };
+        $scope.map = {
+            center: {
+                latitude: 45.4300,
+                longitude: 10.9880
+            },
+            zoom: 12
+        };
+        $scope.options = {
+            streetViewControl: false,
+            scaleControl: true,
+            panControl: true,
+            zoomControl: true,
+            ZoomControlOptions: {
+                position: 'LEFT_CENTER',
+                style: 'SMALL'
+            }
+        };
+       
+        /*search box*/
+        var events = {
+            places_changed: function (searchBox) {
+                var places = searchBox.getPlaces();
+                var location = places[0].geometry.location;
+                $scope.map.center = {
+                    latitude: location.k,
+                    longitude: location.D
+                };
+                $scope.map.zoom = 18;
+                $scope.marker.coords = {
+                    latitude: location.k,
+                    longitude: location.D
+                };
+            }
+        }
+        $scope.searchbox = { template: 'searchbox.tpl.html', events: events };
+        /*search box*/
+
         $scope.marker = {
             id: 0,
             coords: {
                 latitude: 45.4300,
                 longitude: 10.9880
             },
-            options: { draggable: true },
+            options: {
+                draggable: true                
+            },
             events: {
                 dragend: function (marker, eventName, args) {
                     var lat = marker.getPosition().lat();
                     var lon = marker.getPosition().lng();
                     $scope.marker.options = {
                         draggable: true,
-                        labelContent: "lat: " + $scope.marker.coords.latitude + ' ' + 'lon: ' + $scope.marker.coords.longitude,
-                        labelAnchor: "100 0",
+                        labelContent: "Imposta la tua posizione",
+                        labelAnchor: "60 0",
                         labelClass: "marker-labels"
                     };
                 }

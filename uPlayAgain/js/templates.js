@@ -14,6 +14,13 @@
       templateUrl: 'templates/navbar-side.html'
     };
   });
+
+  app.directive('navbarFooter', function () {
+      return {
+          restrict: 'E',
+          templateUrl: 'templates/navbar-footer.html'
+      };
+  });
   
   app.directive('formLogin', function() {
     return {
