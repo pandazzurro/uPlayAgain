@@ -50,7 +50,10 @@
         template: '<form-register></form-register>'
       })
       .when('/', {
-        templateUrl: 'templates/home.html'
+          templateUrl: 'templates/home.html'
+      })
+      .when('/regolamento', {
+          template: '<regolamento></regolamento>'
       })
       .otherwise({
         redirectTo: '/'
@@ -62,7 +65,8 @@
       uiGmapGoogleMapApiProvider.configure({
           //    key: 'your api key',
           v: '3.17',
-          libraries: 'weather,geometry,visualization'
+          libraries: 'weather,geometry,visualization,places',
+          language: 'it'
       });
   });
 
