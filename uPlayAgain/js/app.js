@@ -49,6 +49,9 @@
       .when('/register', {
         template: '<form-register></form-register>'
       })
+      .when('/regolamento', {
+          template: '<regolamento></regolamento>'
+      })
       .otherwise({
         redirectTo: '/'
       });

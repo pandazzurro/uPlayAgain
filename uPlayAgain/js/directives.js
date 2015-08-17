@@ -621,4 +621,17 @@
             controllerAs: 'mail'
         };
     }]);
+
+    app.directive('regolamento', ['factories', function (gxcFct) {
+        return {
+            restrict: 'E',
+            templateUrl: 'templates/regolamento.html',
+            controller: function ($routeParams) {
+                var _this = this;
+                _this.message = {};
+            },
+            controllerAs: 'regolamento'
+        };
+    }]);
+
 })();
