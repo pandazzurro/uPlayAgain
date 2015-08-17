@@ -1,5 +1,5 @@
 <!-- Side navbar -->
-<div id="navbar-side" class="uk-offcanvas" ng-controller="UserController as userCtrl">
+<div id="navbar-side" class="uk-offcanvas">
   <div class="uk-offcanvas-bar">
     <ul class="uk-nav uk-nav-offcanvas" data-uk-nav ng-hide="userCtrl.isLoggedIn()">
       <li style="margin-bottom: 5px">
@@ -17,18 +17,18 @@
         Il mio profilo
       </a></li>
       <li class="uk-nav-divider"></li>
-      <li><a href="" class="uk-navbar-nav-subtitle">
-        Baratto
-        <div>cerca e scambia giochi</div>
-      </a></li>
-      <li><a href="" class="uk-navbar-nav-subtitle">
-        Libreria
-        <div>hai registrato {{ userCtrl.getUser().games }} giochi</div>
-      </a></li>
-      <li><a href="" class="uk-navbar-nav-subtitle">
-        Messaggi
-        <div>hai {{ userCtrl.getUser().messages }} messaggi da leggere</div>
-      </a></li>
+      <li><a href="#/exchange" class="uk-navbar-nav-subtitle">
+    Baratto
+    <div>cerca e scambia giochi</div>
+</a></li>
+      <li><a href="#/library" class="uk-navbar-nav-subtitle">
+    Libreria
+    <div>hai registrato {{ userCtrl.getUser().Games }} giochi</div>
+</a></li>
+      <li><a href="#/mail" class="uk-navbar-nav-subtitle">
+    Messaggi
+    <div>hai {{ userCtrl.getUser().Messages }} messaggi da leggere</div>
+</a></li>
     </ul>
   </div>
 </div>

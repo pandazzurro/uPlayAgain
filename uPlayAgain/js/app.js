@@ -49,6 +49,9 @@
       .when('/register', {
         template: '<form-register></form-register>'
       })
+      .when('/', {
+        templateUrl: 'templates/home.html'
+      })
       .otherwise({
         redirectTo: '/'
       });
@@ -61,8 +64,21 @@
           v: '3.17',
           libraries: 'weather,geometry,visualization'
       });
-  })
-  
+  });
+
+/* 
+redirect su home se non si è loggati 
+http://stackoverflow.com/questions/11541695/redirecting-to-a-certain-route-based-on-condition
+*/
+  app.run([ '$rootScope', '$location', 'user-service', function($rootScope, $location, userSrv) {
+      // register listener to watch route changes
+      $rootScope.$on("$routeChangeStart", function (event, next, current) {
+          if (next.$$route.originalPath != "/register" && !userSrv.isLoggedIn()) {
+              $location.path("/");
+          }
+      });
+  }]);
+
   app.controller('UserController', [ '$scope', '$cookies', 'user-service', function($scope, $cookies, userSrv) {
     $scope.username = undefined;
     $scope.password = undefined;

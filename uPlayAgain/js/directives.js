@@ -374,12 +374,24 @@
         this.editGame = function(game) {
           game.gameData.language = _this.getLanguageById(game.gameLanguageId);
           game.gameData.status = _this.getStatusById(game.statusId);
+          game.gameData.note = game.note;
           _this.editingGame = game;
           
           var modal = UIkit.modal("#gameEditor");
           modal.show();
         };
         
+        this.getRemainingChars = function () {
+            var result = 200;
+
+            if (_this.editingGame !== undefined && _this.editingGame.gameData.note !== undefined)
+            {
+                result = 200 - _this.editingGame.gameData.note.length;
+            }
+
+            return result;
+        };
+
         this.removeGame = function(game) {
           UIkit.modal.confirm("Sicuro di voler rimuovere " + game.gameData.title + " dalla tua libreria?", function(){
             var queryParameters = {

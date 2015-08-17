@@ -1,20 +1,20 @@
 <!-- Login form -->
 <div class="uk-form">
-<legend>Entra con il tuo account GXC</legend>
+<legend>Entra con il tuo account uPlayAgain</legend>
   <div class="uk-form-row uk-text-center">
     <div class="uk-form-controls">
-      <input type="text" class="uk-form-small" name="username" placeholder="Username"/>
+      <input type="text" class="uk-form-small" name="username" placeholder="Username" ng-model="username"/>
     </div>
   </div>
   <div class="uk-form-row uk-text-center">
     <div class="uk-form-controls">
-      <input type="password" class="uk-form-small" name="password" placeholder="Password" />
+      <input type="password" class="uk-form-small" name="password" placeholder="Password" ng-model="password"/>
     </div>
   </div>
   <div class="uk-form-row uk-text-center">
     <div class="uk-button-group">
-      <button class="uk-button uk-button-primary" ng-click="userCtrl.login('pilo')">Entra</button>
-      <button class="uk-button">Registrati</button>
+      <button class="uk-button uk-button-primary" ng-click="userCtrl.login()">Entra</button>
+      <button class="uk-button" ng-click="userCtrl.register()">Registrati</button>
     </div>
   </div>
   <legend class="dropdown-header">Entra con un altro account</legend>
