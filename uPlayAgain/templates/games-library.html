@@ -73,7 +73,8 @@
         </div>
       <div class="uk-form-row">
         <span>Note</span>
-      <textarea ng-model="library.editingGame.gameData.note"></textarea>
+      <textarea ng-model="library.editingGame.gameData.note" ng-trim="false" maxlength="500"></textarea>
+      <small>{{500 - library.editingGame.gameData.note.length}} caratteri rimanenti</small>
       </div>
         </fieldset>
       </form>
