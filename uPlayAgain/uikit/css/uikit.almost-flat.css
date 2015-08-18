@@ -2753,6 +2753,8 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
   margin: 0;
   padding-left: 20px;
   list-style: none;
+  list-style-type:none;
+  list-style-position:inside;
 }
 /* Modifier: `uk-list-line`
  ========================================================================== */

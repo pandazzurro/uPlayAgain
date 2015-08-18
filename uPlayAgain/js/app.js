@@ -49,11 +49,23 @@
       .when('/register', {
         template: '<form-register></form-register>'
       })
-      .when('/', {
-          templateUrl: 'templates/home.html'
-      })
       .when('/regolamento', {
-          template: '<regolamento></regolamento>'
+        templateUrl: 'templates/regolamento.html'
+      })
+      .when('/come-funziona', {
+        templateUrl: 'templates/come-funziona-doc.html'
+      })
+      .when('/feedback', {
+        templateUrl: 'templates/feedback-doc.html'
+      })
+      .when('/spedizioni', {
+        templateUrl: 'templates/spedizioni-doc.html'
+      })
+      .when('/contattaci', {
+          templateUrl: 'templates/contattaci.html'
+      })
+      .when('/', {
+        templateUrl: 'templates/home.html'
       })
       .otherwise({
         redirectTo: '/'
@@ -77,7 +89,13 @@ http://stackoverflow.com/questions/11541695/redirecting-to-a-certain-route-based
   app.run([ '$rootScope', '$location', 'user-service', function($rootScope, $location, userSrv) {
       // register listener to watch route changes
       $rootScope.$on("$routeChangeStart", function (event, next, current) {
-          if (next.$$route.originalPath != "/register" && !userSrv.isLoggedIn()) {
+          if (next.$$route.originalPath != "/register" &&
+              next.$$route.originalPath != "/regolamento" &&
+              next.$$route.originalPath != "/spedizioni" &&
+              next.$$route.originalPath != "/feedback" &&
+              next.$$route.originalPath != "/come-funziona" &&
+              next.$$route.originalPath != "/contattaci" &&
+              !userSrv.isLoggedIn()) {
               $location.path("/");
           }
       });

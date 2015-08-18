@@ -21,6 +21,13 @@
           templateUrl: 'templates/navbar-footer.html'
       };
   });
+
+  app.directive('navbarAds', function () {
+      return {
+          restrict: 'E',
+          templateUrl: 'templates/navbar-ads.html'
+      };
+  });
   
   app.directive('formLogin', function() {
     return {
