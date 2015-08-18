@@ -20,6 +20,8 @@ namespace uPlayAgain.Models
 
         public string Note { get; set; }
 
+        public bool IsExchangeable { get; set; }
+
         public int LibraryId { get; set; }    
         [JsonIgnore]
         [XmlIgnore]
