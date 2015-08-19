@@ -200,12 +200,14 @@
   <ItemGroup>
     <Content Include="App_Data\XmlDocument.xml" />
     <Content Include="Areas\HelpPage\HelpPage.css" />
+    <Content Include="css\images\logo.png" />
     <Content Include="css\maps.css" />
     <Content Include="css\ng-img-crop.css" />
     <Content Include="css\platforms.css" />
     <Content Include="css\style.css" />
     <Content Include="css\fonts\icomoon.svg" />
     <Content Include="ExternalLib\HibernatingRhinos.Profiler.Appender.dll" />
+    <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="index.html" />
     <Content Include="js\app.js" />
@@ -227,15 +229,21 @@
     <Content Include="partials\games.html" />
     <Content Include="partials\mailbox.html" />
     <Content Include="partials\message.html" />
+    <Content Include="templates\come-funziona-doc.html" />
+    <Content Include="templates\contattaci.html" />
     <Content Include="templates\exchange-search.html" />
+    <Content Include="templates\feedback-doc.html" />
     <Content Include="templates\form-login-side.html" />
     <Content Include="templates\form-login.html" />
     <Content Include="templates\form-register.html" />
     <Content Include="templates\games-library.html" />
     <Content Include="templates\games-search.html" />
+    <Content Include="templates\home.html" />
     <Content Include="templates\mail-mailbox.html" />
     <Content Include="templates\mail-message-new.html" />
     <Content Include="templates\mail-message.html" />
+    <Content Include="templates\navbar-ads.html" />
+    <Content Include="templates\navbar-footer.html" />
     <Content Include="templates\navbar-side.html" />
     <Content Include="templates\navbar-top.html" />
     <Content Include="templates\product-description.html" />
@@ -243,6 +251,8 @@
     <Content Include="templates\product-reviews.html" />
     <Content Include="templates\product-specs.html" />
     <Content Include="templates\product-tabs.html" />
+    <Content Include="templates\regolamento.html" />
+    <Content Include="templates\spedizioni-doc.html" />
     <Content Include="templates\test.html" />
     <Content Include="templates\user-profile.html" />
     <Content Include="uikit\css\components\accordion.almost-flat.css" />
@@ -573,6 +583,7 @@
     <Content Include="css\fonts\icomoon.eot" />
     <Content Include="css\fonts\icomoon.ttf" />
     <Content Include="css\fonts\icomoon.woff" />
+    <None Include="Properties\PublishProfiles\Aruba.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
