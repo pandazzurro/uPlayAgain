@@ -98,6 +98,8 @@ http://stackoverflow.com/questions/11541695/redirecting-to-a-certain-route-based
               !userSrv.isLoggedIn()) {
               $location.path("/");
           }
+
+          $('html, body').animate({ scrollTop: 0 }, 'fast');
       });
   }]);
 
