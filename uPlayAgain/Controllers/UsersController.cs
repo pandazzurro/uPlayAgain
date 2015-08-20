@@ -34,6 +34,20 @@ namespace uPlayAgain.Controllers
             return Ok(user);
         }
 
+        // GET: api/Users/5
+        [Route("api/Users/Identity/{id}")]
+        [ResponseType(typeof(User))]
+        public async Task<IHttpActionResult> GetUserIdentity(string id)
+        {
+            User user = await Task.Run(() => db.Users.Find(id));
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
+        }
+
         // PUT: api/Users/5
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> PutUser(int id, User user)
