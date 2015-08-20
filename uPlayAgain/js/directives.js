@@ -368,9 +368,9 @@
                     _this.editingGame.gameData.language = language;
                 };
 
-                var getGames = function () {
+                var getGames = function (libraryId) {
                     var queryParameters = {
-                        libraryId: userSrv.getUser().LibraryId,
+                        libraryId: libraryId,
                     };
 
                     gxcFct.library.get(queryParameters).$promise
@@ -382,6 +382,7 @@
                             };
 
                             g.gameData = gxcFct.game.get(queryParameters);
+                            g.gameData.canEdit = success.userId == userSrv.getUser().id;
                         }
 
                         _this.games = success.libraryComponents;
@@ -405,6 +406,10 @@
                     modal.show();
                 };
 
+                this.toggleTrade = function () {
+                    _this.editingGame.gameData.isExchangeable = !_this.editingGame.gameData.isExchangeable;
+                };
+
                 this.getRemainingChars = function () {
                     var result = 200;
 
@@ -424,13 +429,24 @@
 
                         gxcFct.library.remove(queryParameters).$promise
                         .then(function (success) {
-                            getGames();
+                            getGames(userSrv.getUser().LibraryId);
                             userSrv.updateUserData();
                         });
                     });
                 };
 
-                getGames();
+                this.saveChanges = function () {
+                    var queryParameters = {
+
+                    }
+
+                    gxcFct.library.update(queryParameters).$promise
+                    .then(function (success) {
+                        getGames(userSrv.getUser().LibraryId);
+                    });
+                }
+
+                getGames(userSrv.getUser().LibraryId);
             },
             controllerAs: 'library'
         };

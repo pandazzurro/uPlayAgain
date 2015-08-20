@@ -35,7 +35,8 @@
         byUser: { url: app.webapi + '/api/libraries/byUser/:userId', method: 'GET', isArray: true },
         get: { url: app.webapi + '/api/libraries/:libraryId', method: 'GET', isArray: false },
         add: { url: app.webapi + '/api/librarycomponents', method: 'POST', isArray: false },
-        remove: { url: app.webapi + '/api/librarycomponents/:componentId', method: 'DELETE', isArray: false }
+        remove: { url: app.webapi + '/api/librarycomponents/:componentId', method: 'DELETE', isArray: false },
+        update: { url: app.webapi + '/api/librarycomponents/:componentId', method: 'PUT', isArray: false },
       }),
       user: $resource(app.webapi, {}, {
         get : { url: app.webapi + '/api/users/:userId', method: 'GET', isArray: false },
