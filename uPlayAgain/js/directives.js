@@ -413,7 +413,7 @@
                 this.getRemainingChars = function () {
                     var result = 200;
 
-                    if (_this.editingGame !== undefined && _this.editingGame.gameData.note !== undefined)
+                    if (_this.editingGame !== undefined && _this.editingGame.gameData.note !== undefined && _this.editingGame.gameData.note != null)
                     {
                         result = 200 - _this.editingGame.gameData.note.length;
                     }
@@ -435,10 +435,17 @@
                     });
                 };
 
-                this.saveChanges = function () {
+                this.saveChanges = function (gameEdit) {
                     var queryParameters = {
-
-                    }
+                        componentId: gameEdit.libraryComponentId,
+                        LibraryComponentId: gameEdit.libraryComponentId,
+                        GameId: gameEdit.gameData.gameId,
+                        Note: gameEdit.gameData.note,
+                        IsExchangeable: gameEdit.gameData.isExchangeable,
+                        LibraryId: gameEdit.libraryId,
+                        StatusId: gameEdit.statusId,
+                        GameLanguageId: gameEdit.gameData.language.gameLanguageId
+                    };
 
                     gxcFct.library.update(queryParameters).$promise
                     .then(function (success) {

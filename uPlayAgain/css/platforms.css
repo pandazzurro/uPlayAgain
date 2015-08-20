@@ -22,6 +22,9 @@
 	/* Better Font Rendering =========== */
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+
+    /*Allineamento a sinistra in linea col testo*/
+    margin-left: -55px;
 }
 
 .icon-Nintendo3DS:before {

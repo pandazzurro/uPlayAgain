@@ -28,7 +28,7 @@
       <span>Piattaforma</span>
       <div class="uk-button-dropdown" data-uk-dropdown="{mode:'click'}">
         <button class="uk-button">
-          <span class="{{search.params.platform.class}}">{{search.params.platform == undefined? search.PLATFORMS_ALL : search.params.platform.name}}</span>
+          <span class="{{search.params.platform.class}}"> {{search.params.platform == undefined? search.PLATFORMS_ALL : search.params.platform.name}}</span>
           <i class="uk-icon-caret-down"></i>
         </button>
         <div class="uk-dropdown">
@@ -36,7 +36,7 @@
             <li><a href="" ng-click="search.setPlatform(undefined)">{{search.PLATFORMS_ALL}}</a></li>
             <li class="uk-nav-divider"></li>
             <li ng-repeat="platform in search.platforms">
-                <span class="{{platform.class}}"></span><a href="" ng-click="search.setPlatform(platform)">{{platform.name}}</a>
+                <a href="" ng-click="search.setPlatform(platform)"><span class="{{platform.class}}"></span>{{platform.name}}</a>
             </li>
           </ul>
         </div>
@@ -89,7 +89,7 @@
       <tr ng-repeat="game in search.results.searchGame">
         <td>{{ game.game.title }}</td>
         <td>{{ search.getGenreById(game.game.genre.genreId).name }}</td>
-        <td>{{ search.getPlatformById(game.game.platform.platformId).class }}</td>
+        <td><span class="{{ search.getPlatformById(game.game.platform.platformId).class }}"></span> {{ search.getPlatformById(game.game.platform.platformId).name }}</td>
         <td>{{ search.round(game.distance) }} km</td>
         <td><user-link data-user='{{ game.user.userId }}'></user-link></td>
       </tr>
