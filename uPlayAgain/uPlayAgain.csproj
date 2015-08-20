@@ -201,6 +201,7 @@
     <Content Include="App_Data\XmlDocument.xml" />
     <Content Include="Areas\HelpPage\HelpPage.css" />
     <Content Include="css\images\logo.png" />
+    <Content Include="css\images\logo.svg" />
     <Content Include="css\maps.css" />
     <Content Include="css\ng-img-crop.css" />
     <Content Include="css\platforms.css" />
