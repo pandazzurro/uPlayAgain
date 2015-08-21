@@ -137,18 +137,15 @@ message-new .uk-grid.small-margin {
 
 .footer {
   margin-top: 10px;
-  /*background-color: #f5f5f5;*/  
 }
 .logo-small{
-    height:100px !important;
-    width:auto;
-    background-image:url(../css/images/logo.svg);
-    background-repeat:no-repeat;
+    background:url(../css/images/logo.svg);
+    width: 100%; 
+    height: auto !important;
 }
 
 .logo-big{
-    height:10% !important;
-    width:auto;
-    background-image:url(../css/images/logo.svg);
-    background-repeat:no-repeat;
+    width: 100%; 
+    height: auto !important;
+    background:url(../css/images/logo.svg);    
 }
