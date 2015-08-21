@@ -15,6 +15,9 @@ namespace uPlayAgain.Models
         public DateTimeOffset DateEnd { get; set; }
         public bool Direction { get; set; }
 
+        public string ProposalText { get; set; }
+        public string ProposalObject { get; set; }
+      
         public int TransactionId { get; set; }
         public virtual Transaction Transaction { get; set; }
                 
