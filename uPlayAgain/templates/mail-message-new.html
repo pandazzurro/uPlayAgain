@@ -18,25 +18,46 @@
   <div class="uk-panel uk-panel-box">
     <textarea placeholder="Testo del messaggio" class="uk-width-1-1" rows="10" ng-model="mail.message.text"></textarea>
   </div>
-  &nbsp;
+    <div class="uk-text-center">
+        <button class="uk-button uk-button-primary" ng-click="mail.exchange = !mail.exchange">
+            <i class="fa fa-exchange"></i> Proponi scambio
+        </button>
+    </div>
     <div class="uk-grid" data-uk-grid-match ng-show="mail.exchange">
-        <div class="uk-width-2-5">
+        <div class="uk-width-2-4">
             <fieldset>
                 <legend class="uk-text-right">Dare</legend>
             </fieldset>
-            <div class="uk-panel uk-panel-box">
-                Fifa 2015 (xbox)
+            <div class="uk-button-dropdown" data-uk-dropdown="{mode:'click'}">
+                <button class="uk-button">
+                    <span>Aggiungi oggetto</span>
+                    <i class="uk-icon-caret-down"></i>
+                </button>
+                <div class="uk-dropdown">
+                    <ul class="uk-nav uk-nav-dropdown">
+                        <li ng-repeat="item in mail.myLibrary">
+                            <a href="" ng-click="library.setStatus(status)">asd</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
-        <div class="uk-width-1-5 uk-text-center">
-            <i class="fa fa-2x fa-exchange"></i>
-        </div>
-        <div class="uk-width-2-5">
+        <div class="uk-width-2-4">
             <fieldset>
                 <legend>Avere</legend>
             </fieldset>
-            <div class="uk-panel uk-panel-box">
-                Neverwinter Nights 2 (pc)
+            <div class="uk-button-dropdown" data-uk-dropdown="{mode:'click'}">
+                <button class="uk-button">
+                    <span>Aggiungi oggetto</span>
+                    <i class="uk-icon-caret-down"></i>
+                </button>
+                <div class="uk-dropdown">
+                    <ul class="uk-nav uk-nav-dropdown">
+                        <li ng-repeat="item in mail.theirLibrary">
+                            <a href="" ng-click="library.setStatus(status)">asd</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

@@ -584,7 +584,7 @@
         }
     }]);
 
-    app.directive('message', ['factories', function (gxcFct) {
+    app.directive('message', ['factories', 'user-service', function (gxcFct, userSrv) {
         return {
             restrict: 'E',
             templateUrl: 'templates/mail-message.html',
@@ -618,13 +618,19 @@
                 gxcFct.mail.get({ messageId: $routeParams.messageId }).$promise
                   .then(function (success) {
                       _this.message = success;
+                      _this.message.sender = gxcFct.user.byId({ userId: success.userProponent_Id });
+                      gxcFct.user.byId({ userId: success.userReceiving_Id }).$promise
+                      .then(function (receiverSuccess) {
+                          _this.message.receiver = receiverSuccess;
+                          _this.message.isIncoming = receiverSuccess.id == userSrv.getUser().id;
+                      });
                   });
             },
             controllerAs: 'mail'
         };
     }]);
 
-    app.directive('messageNew', ['factories', function (gxcFct) {
+    app.directive('messageNew', ['factories', 'user-service', function (gxcFct, userSrv) {
         return {
             restrict: 'E',
             scope: {
@@ -652,6 +658,12 @@
                 };
 
                 _this.recipientId = $routeParams.recipientId;
+                _this.myLibrary = gxcFct.library.get({ libraryId: userSrv.getUser().Library });
+                gxcFct.library.byUser({ userId: _this.recipientId }).$promise
+                .then(function(success){
+                    _this.theirLibrary = gxcFct.library.get({ libraryId: success[0].libraries[0].libraryId });
+                });
+                
             },
             controllerAs: 'mail'
         };
