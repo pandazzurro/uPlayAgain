@@ -26,7 +26,7 @@
     </div>
   </div>
   <div class="uk-grid small-margin">
-    <h5 class="uk-width-1-2">Inviato da </h5>
+    <h5 class="uk-width-1-2">Inviato {{mail.message.isIncoming ? 'da ' + mail.message.sender.userName : 'a ' + mail.message.receiver.userName}} </h5>
     <h5 class="uk-width-1-2 uk-text-right">{{ mail.message.messageDate | date: 'dd-MM-yyyy HH:mm'}}</h5>
   </div>
 </div>
