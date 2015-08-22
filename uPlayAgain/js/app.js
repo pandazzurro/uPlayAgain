@@ -49,6 +49,9 @@
       .when('/register', {
         template: '<form-register></form-register>'
       })
+      .when('/edit-register', {
+        template: '<form-edit-register></form-edit-register>'
+      })
       .when('/regolamento', {
         templateUrl: 'templates/regolamento.html'
       })

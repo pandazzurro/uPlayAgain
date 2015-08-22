@@ -236,6 +236,7 @@
     <Content Include="templates\feedback-doc.html" />
     <Content Include="templates\form-login-side.html" />
     <Content Include="templates\form-login.html" />
+    <Content Include="templates\form-edit-register.html" />
     <Content Include="templates\form-register.html" />
     <Content Include="templates\games-library.html" />
     <Content Include="templates\games-search.html" />

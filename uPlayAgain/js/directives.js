@@ -137,6 +137,146 @@
         };
     }]);
 
+    app.directive('formEditRegister', ['factories', function (gxcFct) {
+        return {
+            restrict: 'E',
+            templateUrl: 'templates/form-edit-register.html',
+            controller: function ($routeParams, $scope, uiGmapGoogleMapApi) {
+                var _this = this;
+                _this.params = {};
+                _this.TOSagreed = false;
+                $scope.currentUser = undefined;
+
+                // Recupero i dati dell'utente
+                var queryParameters = {
+                    userId: 1
+                };
+                gxcFct.user.get(queryParameters,
+                function (success) {
+                    $scope.currentUser = success;
+                    $scope.currentImage = $scope.currentUser.image;
+                    
+                    var coords = $scope.currentUser.positionUser.geography.wellKnownText.replace('POINT (', '').replace(')', '').split(" ");
+
+                    $scope.map = {
+                        center: {
+                            latitude: coords[0],
+                            longitude: coords[1]
+                        },
+                        zoom: 18
+                    };
+
+                    $scope.marker = {
+                        id: 0,
+                        coords: {
+                            latitude: coords[0],
+                            longitude: coords[1]
+                        },
+                        options: {
+                            draggable: true
+                        },
+                        events: {
+                            dragend: function (marker, eventName, args) {
+                                var lat = marker.getPosition().lat();
+                                var lon = marker.getPosition().lng();
+                                $scope.marker.options = {
+                                    draggable: true,
+                                    labelContent: "Imposta la tua posizione",
+                                    labelAnchor: "60 0",
+                                    labelClass: "marker-labels"
+                                };
+                            }
+                        }
+                    };
+                },
+                function (error) {
+                    UIkit.notify('Si &egrave; verificato un errore nel recupero delle informazioni. Ci dispiace per l\'inconveniente e ti chiediamo di riprovare più tardi.', { status: 'error', timeout: 5000 });
+                });
+                
+                // gestore delle mappe
+                $scope.map = undefined;
+                $scope.options = {
+                    streetViewControl: false,
+                    scaleControl: true,
+                    panControl: true
+                };
+
+                /*search box*/
+                var events = {
+                    places_changed: function (searchBox) {
+                        var places = searchBox.getPlaces();
+                        var location = places[0].geometry.location;
+                        $scope.map.center = {
+                            latitude: location.k,
+                            longitude: location.D
+                        };
+                        $scope.map.zoom = 18;
+                        $scope.marker.coords = {
+                            latitude: location.k,
+                            longitude: location.D
+                        };
+                    }
+                }
+                $scope.searchbox = { template: 'searchbox.tpl.html', events: events };
+                /*search box*/
+
+                $scope.coordinateSelected = undefined;
+                $scope.$watchCollection("marker.coords", function (newVal, oldVal) {
+                    if (_.isEqual(newVal, oldVal))
+                        return;
+                    $scope.coordinateSelected = {
+                        Geography: {
+                            CoordinateSystemId: 4326,
+                            WellKnownText: "POINT (" + $scope.marker.coords.latitude + " " + $scope.marker.coords.longitude + ")"
+                        }
+                    };
+                });
+
+                // gestore delle immagini caricate.
+                $scope.currentImage = '';
+                $scope.currentCroppedImage = '';
+                var handleFileSelect = function (evt) {
+                    var file = evt.currentTarget.files[0];
+                    var reader = new FileReader();
+                    reader.onload = function (evt) {
+                        $scope.$apply(function ($scope) {
+                            $scope.currentImage = evt.target.result;
+                            $('img-crop>canvas').css({ 'margin-top': 0, 'margin-left': 0 });
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                };
+                angular.element(document.querySelector('#fileInput')).on('change', handleFileSelect);
+
+                this.checkUsername = function () {
+                    //verifica se esiste già un utente con questo nome
+                };
+
+                this.findLocation = function () {
+                    //geolocator
+                };
+
+                this.toggleAgreement = function () {
+                    _this.TOSagreed = !_this.TOSagreed;
+                };
+
+                this.register = function () {
+                    $scope.currentUser.image = $scope.currentCroppedImage;
+
+                    gxcFct.user.update({userId: $scope.currentUser.userId}, $scope.currentUser,
+                    function (success) {
+                        UIkit.notify('Utente aggiornato. Ora puoi accedere alle funzionalit&agrave; del sito', { status: 'success', timeout: 5000 });
+                        window.location = '#/';
+                    },
+                    function (error) {
+                        UIkit.notify('Si &egrave; verificato un errore durante la registrazione. Ci dispiace per l\'inconveniente e ti chiediamo di riprovare più tardi.', { status: 'error', timeout: 5000 });
+                    });
+                };
+            },
+            controllerAs: 'newuser'
+        };
+    }]);
+
     app.directive('exchangeSearch', ['factories', 'user-service', 'games-service', function (gxcFct, userSrv, gamesSrv) {
         return {
             restrict: 'E',
@@ -437,7 +577,6 @@
 
                 this.saveChanges = function (gameEdit) {
                     var queryParameters = {
-                        componentId: gameEdit.libraryComponentId,
                         LibraryComponentId: gameEdit.libraryComponentId,
                         GameId: gameEdit.gameData.gameId,
                         Note: gameEdit.gameData.note,
@@ -447,9 +586,10 @@
                         GameLanguageId: gameEdit.gameData.language.gameLanguageId
                     };
 
-                    gxcFct.library.update(queryParameters).$promise
+                    gxcFct.library.update({ componentId: gameEdit.libraryComponentId }, queryParameters).$promise
                     .then(function (success) {
                         getGames(userSrv.getUser().LibraryId);
+
                     });
                 }
 

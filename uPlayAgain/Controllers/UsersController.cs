@@ -52,10 +52,10 @@ namespace uPlayAgain.Controllers
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> PutUser(int id, User user)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return BadRequest(ModelState);
+            //}
 
             if (id != user.UserId)
             {
