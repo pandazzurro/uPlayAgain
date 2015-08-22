@@ -589,7 +589,8 @@
                     gxcFct.library.update({ componentId: gameEdit.libraryComponentId }, queryParameters).$promise
                     .then(function (success) {
                         getGames(userSrv.getUser().LibraryId);
-
+                        var modal = UIkit.modal("#gameEditor");
+                        modal.hide();
                     });
                 }
 
