@@ -311,7 +311,7 @@ namespace uPlayAgain.Controllers
                                         new JProperty("expires_in", tokenExpiration.TotalSeconds.ToString()),
                                         new JProperty(".issued", ticket.Properties.IssuedUtc.ToString()),
                                         new JProperty(".expires", ticket.Properties.ExpiresUtc.ToString())
-        );
+            );
 
             return tokenResponse;
         }

@@ -7,6 +7,7 @@
             <div class="uk-width-1-2">
               <input name="username" type="text" placeholder="Username" ng-model="newuser.params.username" required ng-class="registrationForm.username.$invalid && !registrationForm.username.$pristine ? 'uk-form-danger' : ''">
               <p ng-show="registrationForm.username.$invalid && !registrationForm.username.$pristine" class="help-block">Campo obbligatorio.</p>
+              <p ng-show="idUsernameAlreadyExists" class="help-block">Username gi&aacute; presente.</p>
             </div>
           </div>
           <div class="uk-grid">

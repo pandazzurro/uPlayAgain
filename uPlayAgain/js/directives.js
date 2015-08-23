@@ -9,7 +9,7 @@
                 var _this = this;
                 _this.params = {};
                 _this.TOSagreed = false;
-
+                _this.idUsernameAlreadyExists = undefined;
 
                 // gestore delle mappe
                 $scope.map = {
@@ -97,44 +97,50 @@
                 this.checkUsername = function () {
                     //verifica se esiste già un utente con questo nome
                     gxcFct.user.checkUsername({ username: _this.params.username },
-                        function (success) { if (!success) UIkit.notify('Username già presente.', { status: 'error', timeout: 5000 }); },
-                        function (error) { UIkit.notify('Username già presente.', { status: 'error', timeout: 5000 }); }
+                        function (success) {
+                            if (!success) _this.idUsernameAlreadyExists = true;
+                            else _this.idUsernameAlreadyExists = false;
+                        },
+                        function (error) { _this.idUsernameAlreadyExists = true; }
                         );
                 };
-
-                this.findLocation = function () {
-                    //geolocator
-                };
-
+                
                 this.toggleAgreement = function () {
                     _this.TOSagreed = !_this.TOSagreed;
                 };
 
                 this.register = function () {
+                    if ($scope.coordinateSelected == undefined) {
+                        UIkit.notify('Devi selezionare una posizione valida.', { status: 'warning', timeout: 5000 });
+                        return;
+                    }
+                    if (_this.isUsernameAlreadyExists) {
+                        UIkit.notify('Username già presente.', { status: 'error', timeout: 5000 });
+                        return;
+                    }
                     if (!_this.TOSagreed) {
                         UIkit.notify('Devi accettare le condizioni d\'uso del sito per poterti registrare.', { status: 'warning', timeout: 5000 });
+                        return;
                     }
-                    else {
-                        var queryParameters = {
-                            userName: _this.params.username,
-                            password: _this.params.password,
-                            confirmPassword: _this.params.confirmPassword,
-                            positionUser: _this.params.location,
-                            email: _this.params.email,
-                            image: $scope.currentCroppedImage,
-                            // TODO: controllare che non sia la coordinata di default!
-                            positionUser: $scope.coordinateSelected
-                        }
-                        gxcFct.user.register(queryParameters,
-                        function (success) {
-                            UIkit.notify('Utente registrato. Ora puoi accedere alle funzionalit&agrave; del sito', { status: 'success', timeout: 5000 });
-                            window.location = '#/';
-                        },
-                        function (error) {
-                            UIkit.notify('Si &egrave; verificato un errore durante la registrazione. Ci dispiace per l\'inconveniente e ti chiediamo di riprovare più tardi.', { status: 'error', timeout: 5000 });
-                        }
-                        );
+                    
+                    var queryParameters = {
+                        userName: _this.params.username,
+                        password: _this.params.password,
+                        confirmPassword: _this.params.confirmPassword,
+                        positionUser: _this.params.location,
+                        email: _this.params.email,
+                        image: $scope.currentCroppedImage.replace(/^data:image\/(png|jpg);base64,/, ""),
+                        positionUser: $scope.coordinateSelected
                     }
+                    gxcFct.user.register(queryParameters,
+                    function (success) {
+                        UIkit.notify('Utente registrato. Ora puoi accedere alle funzionalit&agrave; del sito', { status: 'success', timeout: 5000 });
+                        window.location = '#/';
+                    },
+                    function (error) {
+                        UIkit.notify('Si &egrave; verificato un errore durante la registrazione. Ci dispiace per l\'inconveniente e ti chiediamo di riprovare più tardi.', { status: 'error', timeout: 5000 });
+                    }
+                    );
                 };
             },
             controllerAs: 'newuser'

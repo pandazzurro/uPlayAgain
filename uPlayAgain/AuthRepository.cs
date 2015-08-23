@@ -25,7 +25,6 @@ namespace uPlayAgain
         public async Task<IdentityResult> RegisterUser(User user)
         {
             var result = await _userManager.CreateAsync(user, user.Password);
-
             return result;
         }
 
