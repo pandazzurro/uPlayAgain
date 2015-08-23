@@ -96,6 +96,10 @@
 
                 this.checkUsername = function () {
                     //verifica se esiste già un utente con questo nome
+                    gxcFct.user.checkUsername({ username: _this.params.username },
+                        function (success) { if (!success) UIkit.notify('Username già presente.', { status: 'error', timeout: 5000 }); },
+                        function (error) { UIkit.notify('Username già presente.', { status: 'error', timeout: 5000 }); }
+                        );
                 };
 
                 this.findLocation = function () {
@@ -154,7 +158,7 @@
                 gxcFct.user.get(queryParameters,
                 function (success) {
                     $scope.currentUser = success;
-                    $scope.currentImage = $scope.currentUser.image;
+                    $scope.currentImage = "data:image/png;base64," + $scope.currentUser.image;
                     
                     var coords = $scope.currentUser.positionUser.geography.wellKnownText.replace('POINT (', '').replace(')', '').split(" ");
 
@@ -250,10 +254,10 @@
 
                 this.checkUsername = function () {
                     //verifica se esiste già un utente con questo nome
-                };
-
-                this.findLocation = function () {
-                    //geolocator
+                    gxcFct.user.checkUsername({ username: $scope.currentUser.userName },
+                        function (success) { if(!success) UIkit.notify('Username già presente.', { status: 'error', timeout: 5000 });},
+                        function (error) { UIkit.notify('Username già presente.', { status: 'error', timeout: 5000 }); }
+                        );
                 };
 
                 this.toggleAgreement = function () {
@@ -261,9 +265,19 @@
                 };
 
                 this.register = function () {
-                    $scope.currentUser.image = $scope.currentCroppedImage;
-
-                    gxcFct.user.update({userId: $scope.currentUser.userId}, $scope.currentUser,
+                    var userToSave = {
+                        image: $scope.currentCroppedImage.replace(/^data:image\/(png|jpg);base64,/, ""),
+                        id: $scope.currentUser.id,
+                        userId: $scope.currentUser.userId,
+                        positionUser: $scope.coordinateSelected,
+                        provider: $scope.currentUser.provider,
+                        userName: $scope.currentUser.userName,
+                        password: $scope.currentUser.password,
+                        confirmPassword: $scope.currentUser.confirmPassword,
+                        email: $scope.currentUser.email
+                    }
+                    
+                    gxcFct.user.update({ userId: $scope.currentUser.userId }, userToSave,
                     function (success) {
                         UIkit.notify('Utente aggiornato. Ora puoi accedere alle funzionalit&agrave; del sito', { status: 'success', timeout: 5000 });
                         window.location = '#/';

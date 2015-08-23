@@ -52,18 +52,22 @@ namespace uPlayAgain.Controllers
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> PutUser(int id, User user)
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    return BadRequest(ModelState);
-            //}
-
             if (id != user.UserId)
             {
                 return BadRequest();
             }
-
-            db.Entry(user).State = EntityState.Modified;
-
+            else
+            {
+                User userToSave = await db.Users.Where(p => p.UserId == id).FirstOrDefaultAsync();
+                userToSave.Image = user.Image;
+                userToSave.Email = user.Email;
+                userToSave.Password = user.Password;
+                userToSave.PositionUser = user.PositionUser;
+                userToSave.Provider = user.Provider;
+                userToSave.UserName = user.UserName;
+                db.Entry(userToSave).State = EntityState.Modified;
+            }
+            
             try
             {
                 await db.SaveChangesAsync();
@@ -123,6 +127,18 @@ namespace uPlayAgain.Controllers
 
             return Ok(user);
         }
+
+        #region CheckUser
+        [Route("api/Users/Exists/{username}")]
+        [ResponseType(typeof(Transaction))]
+        public async Task<IHttpActionResult> CheckByUsername(string username)
+        {
+            bool exist = await db.Users.Where(t => string.Compare(t.UserName,username, true) == 0).AnyAsync();
+            if (!exist)
+                return NotFound();
+            return Ok();
+        }
+        #endregion
 
         #region ExtractByUser
         // GET: api/Messages/ByUser/5
