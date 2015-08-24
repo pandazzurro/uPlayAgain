@@ -46,6 +46,23 @@
         register: { url: app.webapi + '/api/account/register', method: 'POST', isArray: true },
         update: { url: app.webapi + '/api/users/:userId', method: 'PUT', isArray: false },
         remove: { url: app.webapi + '/api/users/:userId', method: 'DELETE', isArray: false }
-      })
+      }),
+      transaction: $resource(app.webapi, {}, {
+          get: { url: app.webapi + '/api/transactions/:tranId', method: 'GET', isArray: false },
+          add: { url: app.webapi + '/api/transactions', method: 'POST', isArray: false },
+          update: { url: app.webapi + '/api/transactions/:tranId', method: 'PUT', isArray: false }
+      }),
+      proposal: $resource(app.webapi, {}, {
+          get: { url: app.webapi + '/api/proposals/:propId', method: 'GET', isArray: false },
+          add: { url: app.webapi + '/api/proposals', method: 'POST', isArray: false },
+          update: { url: app.webapi + '/api/proposals/:propId', method: 'PUT', isArray: false },
+          remove: { url: app.webapi + '/api/proposalComponents/:propCompId', method: 'DELETE', isArray: false }
+      }),
+      proposalComponents: $resource(app.webapi, {}, {
+          get: { url: app.webapi + '/api/proposalComponents/:propCompId', method: 'GET', isArray: false },
+          add: { url: app.webapi + '/api/proposalComponents', method: 'POST', isArray: false },
+          update: { url: app.webapi + '/api/proposalComponents/:propCompId', method: 'PUT', isArray: false },
+          remove: { url: app.webapi + '/api/proposalComponents/:propCompId', method: 'DELETE', isArray: false }
+      }),
   }}]);
 })();

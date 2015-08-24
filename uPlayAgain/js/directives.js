@@ -159,7 +159,7 @@
 
                 // Recupero i dati dell'utente
                 var queryParameters = {
-                    userId: 1
+                    userId: userSrv.getUser().userId
                 };
                 gxcFct.user.get(queryParameters,
                 function (success) {
@@ -843,6 +843,68 @@
                 
             },
             controllerAs: 'mail'
+        };
+    }]);
+
+    app.directive('transaction', ['factories', 'user-service', 'games-service', function (gxcFct, userSrv, gameSrv) {
+        return {
+            restrict: 'E',
+            scope: {                
+            },
+            templateUrl: 'templates/testTransaction.html',
+            controller: function ($scope, $routeParams) {
+                var _this = this;
+                _this.transactionStatus = ['Aperta', 'InAttesa', 'Conclusa'];
+                _this.userReceiving_Id = 'b692ce4a-f114-473d-a754-1e30173fb4cd'; //alessandro.pilati
+                _this.userProponent_Id = 'b692ce4a-f114-473d-a754-1e30173fb4cb'; //andrea.tosato
+
+                _this.currentProposalComponents = [];
+
+                _this.currentProposal = {
+                    dateStart: new Date(),
+                    dateEnd: undefined,
+                    direction: true, //la transazione iniziale ha sempre il verso PROPONENTE -> RICEVENTE
+                    proposalText: 'Ciao sono il testo della proposta',
+                    proposalObject: 'Ciao sono l\'oggetto della proposta',
+                    userLastChanges_Id: _this.userProponent_Id, // utente Proponente
+                    proposalComponents: undefined
+                }
+
+                this.LoadData = function () {
+                    // Carico dei componenti nella proposta di scambio
+                    gxcFct.library.get({ libraryId: userSrv.getUser().LibraryId }).$promise
+                    .then(function (librarySuccess) {
+                        for (i in librarySuccess.libraryComponents) {
+                            var g = librarySuccess.libraryComponents[i];
+                            _this.currentProposalComponents.push({
+                                libraryComponents: g
+                            });
+                        }
+
+                        // Aggiunta dei componenti alla proposta di scambio
+                        _this.currentProposal.proposalComponents = _this.currentProposalComponents;
+                    });
+
+                }
+
+                this.createInitialProposal = function () {
+                    var queryParams = {
+                        userProponent: _this.userReceiving,
+                        userReceiving: _this.userProponent,
+                        transactionStatus: _this.transactionStatus[0],
+                        feedbacks: undefined,
+                        proposals: _this.currentProposal
+                    };
+
+                    gxcFct.transaction.add(queryParams).$promise
+                    .then(function (success) {                        
+                    },
+                    function (error) {                        
+                    });
+                };
+                
+            },
+            controllerAs: 'transaction'
         };
     }]);
 
