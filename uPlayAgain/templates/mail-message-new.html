@@ -28,15 +28,21 @@
             <fieldset>
                 <legend class="uk-text-right">Dare</legend>
             </fieldset>
+            <div ng-repeat="item in mail.message.myItems">
+                <button class="uk-button uk-button-danger" ng-click="mail.removeItem(item, true)"><i class="fa fa-minus"></i></button> {{ item.gameData.title }}
+            </div>
             <div class="uk-button-dropdown" data-uk-dropdown="{mode:'click'}">
                 <button class="uk-button">
                     <span>Aggiungi oggetto</span>
                     <i class="uk-icon-caret-down"></i>
                 </button>
-                <div class="uk-dropdown">
+                <div class="uk-dropdown uk-dropdown-scrollable">
                     <ul class="uk-nav uk-nav-dropdown">
-                        <li ng-repeat="item in mail.myLibrary">
-                            <a href="" ng-click="library.setStatus(status)">asd</a>
+                        <li ng-repeat="item in mail.myLibrary" ng-hide="mail.isItemAssigned(item, true)">
+                            <a href="" ng-click="mail.addItem(item, true)">
+                                {{ item.gameData.title }}<br />
+                                <small>{{ item.gameData.language.description }} - {{ item.gameData.status.description }}</small>
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -46,15 +52,21 @@
             <fieldset>
                 <legend>Avere</legend>
             </fieldset>
+            <div ng-repeat="item in mail.message.hisItems">
+                <button class="uk-button uk-button-danger" ng-click="mail.removeItem(item, false)"><i class="fa fa-minus"></i></button> {{ item.gameData.title }}
+            </div>
             <div class="uk-button-dropdown" data-uk-dropdown="{mode:'click'}">
                 <button class="uk-button">
                     <span>Aggiungi oggetto</span>
                     <i class="uk-icon-caret-down"></i>
                 </button>
-                <div class="uk-dropdown">
+                <div class="uk-dropdown uk-dropdown-scrollable">
                     <ul class="uk-nav uk-nav-dropdown">
-                        <li ng-repeat="item in mail.theirLibrary">
-                            <a href="" ng-click="library.setStatus(status)">asd</a>
+                        <li ng-repeat="item in mail.hisLibrary" ng-hide="mail.isItemAssigned(item, false)">
+                            <a href="" ng-click="mail.addItem(item, false)">
+                                {{ item.gameData.title }}<br />
+                                <small>{{ item.gameData.language.description }} - {{ item.gameData.status.description }}</small>
+                            </a>
                         </li>
                     </ul>
                 </div>

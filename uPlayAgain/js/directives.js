@@ -483,42 +483,17 @@
         };
     }]);
 
-    app.directive('gamesLibrary', ['factories', 'user-service', function (gxcFct, userSrv) {
+    app.directive('gamesLibrary', ['factories', 'user-service', 'games-service', function (gxcFct, userSrv, gameSrv) {
         return {
             restrict: 'E',
             templateUrl: 'templates/games-library.html',
             controller: function () {
                 var _this = this;
                 _this.games = [];
+                _this.gameSrv = gameSrv;
 
                 _this.statuses = gxcFct.status.query();
                 _this.languages = gxcFct.language.query();
-
-                this.getStatusById = function (id) {
-                    var result = undefined;
-
-                    for (i in _this.statuses) {
-                        if (_this.statuses[i].statusId == id) {
-                            result = _this.statuses[i];
-                            break;
-                        }
-                    }
-
-                    return result;
-                }
-
-                this.getLanguageById = function (id) {
-                    var result = undefined;
-
-                    for (i in _this.languages) {
-                        if (_this.languages[i].gameLanguageId == id) {
-                            result = _this.languages[i];
-                            break;
-                        }
-                    }
-
-                    return result;
-                }
 
                 this.setStatus = function (status) {
                     _this.editingGame.gameData.status = status;
@@ -529,20 +504,15 @@
                 };
 
                 var getGames = function (libraryId) {
-                    var queryParameters = {
-                        libraryId: libraryId,
-                    };
-
-                    gxcFct.library.get(queryParameters).$promise
+                    gxcFct.library.get({ libraryId: libraryId }).$promise
                     .then(function (success) {
+                        _this.libraryOwner = success.userId;
+
                         for (i in success.libraryComponents) {
                             var g = success.libraryComponents[i];
-                            var queryParameters = {
-                                gameId: g.gameId
-                            };
 
-                            g.gameData = gxcFct.game.get(queryParameters);
-                            g.gameData.canEdit = success.userId == userSrv.getUser().id;
+                            g.canEdit = _this.libraryOwner == userSrv.getUser().id;
+                            gameSrv.fillGameData(g);
                         }
 
                         _this.games = success.libraryComponents;
@@ -557,9 +527,6 @@
                 };
 
                 this.editGame = function (game) {
-                    game.gameData.language = _this.getLanguageById(game.gameLanguageId);
-                    game.gameData.status = _this.getStatusById(game.statusId);
-                    game.gameData.note = game.note;
                     _this.editingGame = game;
 
                     var modal = UIkit.modal("#gameEditor");
@@ -791,7 +758,7 @@
         };
     }]);
 
-    app.directive('messageNew', ['factories', 'user-service', function (gxcFct, userSrv) {
+    app.directive('messageNew', ['factories', 'user-service', 'games-service', function (gxcFct, userSrv, gameSrv) {
         return {
             restrict: 'E',
             scope: {
@@ -800,7 +767,7 @@
             templateUrl: 'templates/mail-message-new.html',
             controller: function ($scope, $routeParams) {
                 var _this = this;
-                _this.message = {};
+                _this.message = { myItems: [], hisItems: [] };
 
                 this.send = function () {
                     var queryParams = {
@@ -818,11 +785,60 @@
                     });
                 };
 
+                this.addItem = function (item, isMine) {
+                    if (isMine)
+                        _this.message.myItems.push(item);
+                    else
+                        _this.message.hisItems.push(item);
+                };
+
+                this.isItemAssigned = function (item, isMine) {
+                    var result = false;
+
+                    if (isMine)
+                        result = _this.message.myItems.indexOf(item) >= 0;
+                    else
+                        result = _this.message.hisItems.indexOf(item) >= 0;
+
+                    return result;
+                };
+
+                this.removeItem = function (item, isMine) {
+                    if (isMine) {
+                        var i = _this.message.myItems.indexOf(item);
+                        _this.message.myItems.splice(i, 1);
+                    }
+                    else {
+                        var i = _this.message.hisItems.indexOf(item);
+                        _this.message.hisItems.splice(i, 1);
+                    }
+                };
+
                 _this.recipientId = $routeParams.recipientId;
-                _this.myLibrary = gxcFct.library.get({ libraryId: userSrv.getUser().Library });
+
+                gxcFct.library.get({ libraryId: userSrv.getUser().LibraryId }).$promise
+                .then(function (librarySuccess) {
+
+                    for (i in librarySuccess.libraryComponents) {
+                        var g = librarySuccess.libraryComponents[i];
+                        gameSrv.fillGameData(g);
+                    }
+
+                    _this.myLibrary = librarySuccess.libraryComponents;
+                });
+
                 gxcFct.library.byUser({ userId: _this.recipientId }).$promise
-                .then(function(success){
-                    _this.theirLibrary = gxcFct.library.get({ libraryId: success[0].libraries[0].libraryId });
+                .then(function(userSuccess) {
+                    gxcFct.library.get({ libraryId: userSuccess[0].libraries[0].libraryId }).$promise
+                    .then(function (librarySuccess) {
+
+                        for (i in librarySuccess.libraryComponents) {
+                            var g = librarySuccess.libraryComponents[i];
+                            gameSrv.fillGameData(g);
+                        }
+
+                        _this.hisLibrary = librarySuccess.libraryComponents;
+                    });
                 });
                 
             },

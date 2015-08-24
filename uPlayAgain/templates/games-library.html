@@ -4,7 +4,7 @@
             <header class="uk-comment-header">
                 <img class="uk-comment-avatar" src="data:image/gif;base64,{{game.gameData.image}}" alt="{{game.gameData.title}}" style="height:80px">
                 <h4 class="uk-comment-title">{{game.gameData.title}}</h4>
-                <div class="uk-comment-meta">{{library.getLanguageById(game.gameLanguageId).description}} - {{library.getStatusById(game.statusId).description}}</div>
+                <div class="uk-comment-meta">{{game.gameData.language.description}} - {{game.gameData.status.description}}</div>
                 <div class="uk-text-right uk-text-bottom">
                     <div class="uk-button-group" ng-show="{{game.gameData.canEdit}}">
                         <button class="uk-button" data-uk-tooltip title="Modifica" ng-click="library.editGame(game)">
@@ -48,7 +48,7 @@
                                 </button>
                                 <div class="uk-dropdown">
                                     <ul class="uk-nav uk-nav-dropdown">
-                                        <li ng-repeat="language in library.languages">
+                                        <li ng-repeat="language in library.gameSrv.languages">
                                             <a href="" ng-click="library.setLanguage(language)">{{language.description}}</a>
                                         </li>
                                     </ul>
@@ -70,7 +70,7 @@
                                 </button>
                                 <div class="uk-dropdown">
                                     <ul class="uk-nav uk-nav-dropdown">
-                                        <li ng-repeat="status in library.statuses">
+                                        <li ng-repeat="status in library.gameSrv.statuses">
                                             <a href="" ng-click="library.setStatus(status)">{{status.description}}</a>
                                         </li>
                                     </ul>

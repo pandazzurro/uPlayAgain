@@ -90,35 +90,35 @@
    * Games service
    **/
   app.service('games-service', [ 'factories', function(gxcFct) {
-    //var genres = gxcFct.genre.query();
-    //var platforms = gxcFct.platform.query();
-    //var distances = [5, 10, 20, 50, 100];
+    this.genres = gxcFct.genre.query();
+    this.platforms = gxcFct.platform.query();
+    this.languages = gxcFct.language.query();
+    this.statuses = gxcFct.status.query();
+    this.distances = [5, 10, 20, 50, 100];
     
+    var _this = this;
+
     this.getGenreById = function(id) {
       var result = undefined;
       
-      for(i in genres) {
-        if(genres[i].IdGenre == id)
+      for (i in _this.genres) {
+        if (_this.genres[i].IdGenre == id)
         {
-          result = genres[i];
+          result = _this.genres[i];
           break;
         }
       }
       
       return result;
     }
-    
-    this.getGenres = function() {
-      return genres;
-    }
 
     this.getPlatformById = function(id) {
       var result = undefined;
       
-      for(i in platforms) {
-        if(platforms[i].IdPlatform == id)
+      for(i in _this.platforms) {
+          if (_this.platforms[i].IdPlatform == id)
         {
-          result = platforms[i];
+              result = _this.platforms[i];
           break;
         }
       }
@@ -126,46 +126,45 @@
       return result;
     }
           
-    this.getPlatforms = function() {
-      return platforms;
+    this.getStatusById = function (id) {
+        var result = undefined;
+
+        for (i in _this.statuses) {
+            if (_this.statuses[i].statusId == id) {
+                result = _this.statuses[i];
+                break;
+            }
+        }
+
+        return result;
     }
-    
-    this.getDistances = function() {
-      return distances;
+
+    this.getLanguageById = function (id) {
+        var result = undefined;
+
+        for (i in _this.languages) {
+            if (_this.languages[i].gameLanguageId == id) {
+                result = _this.languages[i];
+                break;
+            }
+        }
+
+        return result;
     }
-    
-    //this.searchGames = function(title, genre, platform, maxDistance) {
+
+    this.fillGameData = function (game) {
+        gxcFct.game.get({ gameId: game.gameId }).$promise
+        .then(function (gameSuccess) {
+            game.gameData = gameSuccess;
+            game.gameData.status = _this.getStatusById(game.statusId);
+            game.gameData.language = _this.getLanguageById(game.gameLanguageId);
+            game.gameData.note = game.note;
+        });
+    };
+
     this.searchGames = function(params) {
-      return gxcFct.game.query(params).$promise; /*{},
-        function(data) {
-          var results = [];
-        
-          for(i in data) {
-            var game = data[i];
-
-            if(title !== undefined && title.length > 0 && game.Title.toLowerCase().indexOf(title.toLowerCase()) >= 0)
-            {
-              results.push(game);
-              continue;
-            }
-            if(genre !== undefined && game.Genre == genre.IdGenre)
-            {
-              results.push(game);
-              continue;
-            }
-            if(platform !== undefined && game.Platform == platform.IdPlatform)
-            {
-              results.push(game);
-              continue;
-            }
-      });*/
+      return gxcFct.game.query(params).$promise;
     }
-  }]);
-
-  /**
-   * Library service
-   **/
-  app.service('library-service', [ 'factories', function(gxcFct) {
   }]);
 
 })();
