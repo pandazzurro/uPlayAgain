@@ -107,6 +107,31 @@ namespace uPlayAgain.Controllers
             return Ok(result);
         }
 
+        // GET: api/Counter/GamesByUser/5
+        [Route("api/Counter/FeedbackByUser/{id:int}")]
+        [ResponseType(typeof(int))]
+        public async Task<IHttpActionResult> GetRatingByUser(int id)
+        {
+            User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            int rateCount = await db.Feedbacks
+                                  .Include(t => t.User)
+                                  .Where(t => t.User.UserId == id)
+                                  .CountAsync();
+
+            int rateSum = await db.Feedbacks
+                                  .Include(t => t.User)
+                                  .Where(t => t.User.UserId == id)
+                                  .SumAsync(t => t.Rate);
+
+            int result = 100 * (rateSum / rateCount);
+            return Ok(result);
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
