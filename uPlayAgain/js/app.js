@@ -68,7 +68,7 @@
           templateUrl: 'templates/contattaci.html'
       })
       .when('/test-transaction', {
-          templateUrl: '<test-transaction></test-transaction>'
+          template: '<test-transaction></test-transaction>'
       })
       .when('/', {
         templateUrl: 'templates/home.html'
