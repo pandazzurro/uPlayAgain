@@ -846,12 +846,12 @@
         };
     }]);
 
-    app.directive('transaction', ['factories', 'user-service', 'games-service', function (gxcFct, userSrv, gameSrv) {
+    app.directive('testTransaction', ['factories', 'user-service', 'games-service', function (gxcFct, userSrv, gameSrv) {
         return {
             restrict: 'E',
-            scope: {                
-            },
-            templateUrl: 'templates/testTransaction.html',
+            //scope: {                
+            //},
+            templateUrl: 'templates/test-transaction.html',
             controller: function ($scope, $routeParams) {
                 var _this = this;
                 _this.transactionStatus = ['Aperta', 'InAttesa', 'Conclusa'];
@@ -870,7 +870,7 @@
                     proposalComponents: undefined
                 }
 
-                this.LoadData = function () {
+                $scope.LoadData = function () {
                     // Carico dei componenti nella proposta di scambio
                     gxcFct.library.get({ libraryId: userSrv.getUser().LibraryId }).$promise
                     .then(function (librarySuccess) {
@@ -887,7 +887,7 @@
 
                 }
 
-                this.createInitialProposal = function () {
+                $scope.createInitialProposal = function () {
                     var queryParams = {
                         userProponent: _this.userReceiving,
                         userReceiving: _this.userProponent,

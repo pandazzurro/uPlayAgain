@@ -67,8 +67,8 @@
       .when('/contattaci', {
           templateUrl: 'templates/contattaci.html'
       })
-      .when('/test', {
-          templateUrl: 'templates/testTransaction.html'
+      .when('/test-transaction', {
+          templateUrl: '<test-transaction></test-transaction>'
       })
       .when('/', {
         templateUrl: 'templates/home.html'
@@ -101,7 +101,7 @@ http://stackoverflow.com/questions/11541695/redirecting-to-a-certain-route-based
               next.$$route.originalPath != "/feedback" &&
               next.$$route.originalPath != "/come-funziona" &&
               next.$$route.originalPath != "/contattaci" &&
-              next.$$route.originalPath != "/test" &&
+              next.$$route.originalPath != "/test-transaction" &&
               !userSrv.isLoggedIn()) {
               $location.path("/");
           }
