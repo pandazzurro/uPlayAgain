@@ -76,9 +76,11 @@ namespace uPlayAgain.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+            
             db.Transactions.Add(transaction);
+            db.LibraryComponents.Load();
             await db.SaveChangesAsync();
+            
 
             return CreatedAtRoute("DefaultApi", new { id = transaction.TransactionId }, transaction);
         }

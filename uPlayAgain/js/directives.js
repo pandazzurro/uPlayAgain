@@ -852,7 +852,7 @@
             //scope: {                
             //},
             templateUrl: 'templates/test-transaction.html',
-            controller: function ($scope, $routeParams) {
+            controller: function ($routeParams, $scope) {
                 var _this = this;
                 _this.transactionStatus = ['Aperta', 'InAttesa', 'Conclusa'];
                 _this.userReceiving_Id = 'b692ce4a-f114-473d-a754-1e30173fb4cd'; //alessandro.pilati
@@ -860,15 +860,18 @@
 
                 _this.currentProposalComponents = [];
 
-                _this.currentProposal = {
-                    dateStart: new Date(),
-                    dateEnd: undefined,
+                var currentDate = new Date();
+                var futureDate = new Date(); //Aggiungere 1 anno
+
+                _this.currentProposal = [{
+                    dateStart: currentDate.toISOString(),
+                    dateEnd: futureDate.toISOString(),
                     direction: true, //la transazione iniziale ha sempre il verso PROPONENTE -> RICEVENTE
                     proposalText: 'Ciao sono il testo della proposta',
                     proposalObject: 'Ciao sono l\'oggetto della proposta',
                     userLastChanges_Id: _this.userProponent_Id, // utente Proponente
-                    proposalComponents: undefined
-                }
+                    proposalComponents: []
+                }];
 
                 $scope.LoadData = function () {
                     // Carico dei componenti nella proposta di scambio
@@ -877,20 +880,21 @@
                         for (i in librarySuccess.libraryComponents) {
                             var g = librarySuccess.libraryComponents[i];
                             _this.currentProposalComponents.push({
-                                libraryComponents: g
+                                //libraryComponents: g,
+                                libraryComponentId: g.libraryComponentId
                             });
                         }
 
                         // Aggiunta dei componenti alla proposta di scambio
-                        _this.currentProposal.proposalComponents = _this.currentProposalComponents;
+                        _this.currentProposal[0].proposalComponents = _this.currentProposalComponents;
                     });
 
                 }
 
                 $scope.createInitialProposal = function () {
                     var queryParams = {
-                        userProponent: _this.userReceiving,
-                        userReceiving: _this.userProponent,
+                        userProponent_Id: _this.userReceiving_Id,
+                        userReceiving_Id: _this.userProponent_Id,
                         transactionStatus: _this.transactionStatus[0],
                         feedbacks: undefined,
                         proposals: _this.currentProposal
@@ -904,7 +908,7 @@
                 };
                 
             },
-            controllerAs: 'transaction'
+            controllerAs: 'testTransaction'
         };
     }]);
 

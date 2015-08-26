@@ -49,9 +49,9 @@ namespace uPlayAgain.Models
                .HasForeignKey(d => d.UserId);
 
             modelBuilder.Entity<User>()
-                 .HasMany(c => c.MessagesOut)
-                 .WithRequired(d => d.UserProponent)
-                 .HasForeignKey(d => d.UserProponent_Id);
+               .HasMany(c => c.MessagesOut)
+               .WithRequired(d => d.UserProponent)
+               .HasForeignKey(d => d.UserProponent_Id);
 
             modelBuilder.Entity<User>()
                 .HasMany(c => c.MessagesIn)
@@ -63,11 +63,7 @@ namespace uPlayAgain.Models
                 .HasMany(c => c.Proposals)
                 .WithRequired(d => d.Transaction)
                 .HasForeignKey(d => d.TransactionId);
-
-            modelBuilder
-                .Entity<Proposal>()
-                .HasRequired(p => p.UserLastChanges);
-
+            
             modelBuilder.Entity<Proposal>()
                 .HasMany(e => e.ProposalComponents)
                 .WithRequired(e => e.Proposal)

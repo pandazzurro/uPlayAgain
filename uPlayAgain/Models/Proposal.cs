@@ -12,7 +12,7 @@ namespace uPlayAgain.Models
         public int ProposalId { get; set; }
         
         public DateTimeOffset DateStart { get; set; }
-        public DateTimeOffset DateEnd { get; set; }
+        public DateTimeOffset? DateEnd { get; set; }
         public bool Direction { get; set; }
 
         public string ProposalText { get; set; }
@@ -20,7 +20,9 @@ namespace uPlayAgain.Models
       
         public int TransactionId { get; set; }
         public virtual Transaction Transaction { get; set; }
-                
+        
+        public string UserLastChanges_Id { get; set; }
+        [ForeignKey("UserLastChanges_Id")]
         public virtual User UserLastChanges { get; set; }
 
         #region NavigationProperty
