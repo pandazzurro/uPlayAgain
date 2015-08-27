@@ -856,9 +856,9 @@
                 var _this = this;
                 _this.transactionStatus = ['Aperta', 'InAttesa', 'Conclusa'];
                 _this.userReceiving_Id = 'b692ce4a-f114-473d-a754-1e30173fb4cd'; //alessandro.pilati
-                _this.userProponent_Id = 'b692ce4a-f114-473d-a754-1e30173fb4cb'; //andrea.tosato
-
-                _this.currentProposalComponents = [];
+                _this.selectedLibraryGames = []; // Array di giochi presenti nella libreria dell'utente che riceve la proposta.
+                _this.proposalText = 'Ciao sono il testo della proposta';
+                _this.proposalObject = 'Ciao sono l\'oggetto della proposta';
 
                 var currentDate = new Date();
                 var futureDate = new Date(); //Aggiungere 1 anno
@@ -867,45 +867,79 @@
                     dateStart: currentDate.toISOString(),
                     dateEnd: futureDate.toISOString(),
                     direction: true, //la transazione iniziale ha sempre il verso PROPONENTE -> RICEVENTE
-                    proposalText: 'Ciao sono il testo della proposta',
-                    proposalObject: 'Ciao sono l\'oggetto della proposta',
-                    userLastChanges_Id: _this.userProponent_Id, // utente Proponente
+                    proposalText: _this.proposalText,
+                    proposalObject: _this.proposalObject,
+                    transactionId: null, // La transazione all'inizio non è ancora stata creata
+                    userLastChanges_Id: userSrv.getUser().id, // utente Proponente
                     proposalComponents: []
                 }];
 
                 $scope.LoadData = function () {
-                    // Carico dei componenti nella proposta di scambio
+                    // Carico dei componenti nella proposta di scambio. 
+                    // I giochi verranno selezionati dall'utente Proponente. 
+                    // I giochi selezionati saranno presenti nella libreria dell'utente ricevente.
+
+                    // TODO: sistemare la libreria di lettura!
                     gxcFct.library.get({ libraryId: userSrv.getUser().LibraryId }).$promise
                     .then(function (librarySuccess) {
                         for (i in librarySuccess.libraryComponents) {
                             var g = librarySuccess.libraryComponents[i];
-                            _this.currentProposalComponents.push({
-                                //libraryComponents: g,
-                                libraryComponentId: g.libraryComponentId
-                            });
+                            _this.selectedLibraryGames.push({libraryComponentId: g.libraryComponentId});
                         }
 
                         // Aggiunta dei componenti alla proposta di scambio
-                        _this.currentProposal[0].proposalComponents = _this.currentProposalComponents;
+                        _this.currentProposal[0].proposalComponents = _this.selectedLibraryGames;
                     });
 
                 }
 
                 $scope.createInitialProposal = function () {
                     var queryParams = {
-                        userProponent_Id: _this.userReceiving_Id,
-                        userReceiving_Id: _this.userProponent_Id,
+                        userProponent_Id: userSrv.getUser().id,
+                        userReceiving_Id: _this.userReceiving_Id,
                         transactionStatus: _this.transactionStatus[0],
                         feedbacks: undefined,
                         proposals: _this.currentProposal
                     };
 
                     gxcFct.transaction.add(queryParams).$promise
-                    .then(function (success) {                        
+                    .then(function (success) {
+                        UIkit.notify('Transazione creata', { status: 'success', timeout: 5000 });
                     },
-                    function (error) {                        
+                    function (error) {
+                        UIkit.notify('Errore creazione transazione', { status: 'success', timeout: 5000 });
                     });
                 };
+
+                $scope.LoadTransactionByUser = function () {
+                    var queryParameters = {
+                        userId: userSrv.getUser().userId,
+                    };
+                    gxcFct.transaction.byUser(queryParameters).$promise
+                      .then(function (transSuccess) {
+                          _this.tranProponent = transSuccess[0].transactionsProponent;
+                          _this.tranReceiving = transSuccess[0].transactionsReceiving;
+                      }); // transaction.byUser    
+                }
+
+                $scope.AddProposal = function () {
+                    var newProposal = _this.currentProposal[0];
+                    // Prelevo una transazione a caso da quelle ricevute
+                    newProposal.transactionId = _this.tranReceiving[0].transactionId;
+                    // metto un pò di dati casuali
+                    newProposal.proposalComponents = [_this.currentProposal[0].proposalComponents[1]];
+                    newProposal.proposalText = 'Rilancio';
+                    newProposal.proposalObject = 'Oggetto del rilancio';
+                    newProposal.userLastChanges_Id = userSrv.getUser().id;
+
+                    gxcFct.proposal.add(newProposal).$promise
+                    .then(function (success) {
+                        UIkit.notify('Proposta creata', { status: 'success', timeout: 5000 });
+                    },
+                    function (error) {
+                        UIkit.notify('Errore creazione Proposta', { status: 'success', timeout: 5000 });
+                    });
+                }
                 
             },
             controllerAs: 'testTransaction'

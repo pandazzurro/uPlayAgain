@@ -48,6 +48,7 @@
         remove: { url: app.webapi + '/api/users/:userId', method: 'DELETE', isArray: false }
       }),
       transaction: $resource(app.webapi, {}, {
+          byUser: { url: app.webapi + '/api/transactions/byUser/:userId', method: 'GET', isArray: true },
           get: { url: app.webapi + '/api/transactions/:tranId', method: 'GET', isArray: false },
           add: { url: app.webapi + '/api/transactions', method: 'POST', isArray: false },
           update: { url: app.webapi + '/api/transactions/:tranId', method: 'PUT', isArray: false }
