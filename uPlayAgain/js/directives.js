@@ -864,6 +864,7 @@
                 var currentDate = new Date();
                 var futureDate = new Date(); //Aggiungere 1 anno
 
+                // Oggetto contenente una proposta
                 _this.currentProposal = [{
                     dateStart: currentDate.toISOString(),
                     dateEnd: futureDate.toISOString(),
@@ -877,10 +878,13 @@
                     proposalComponents: []
                 }];
 
+                /*
+                Carica dei dati di esempio. In questo caso aggiungo alla proposta tutti i giochi della mia libreria.
+                */
                 $scope.LoadData = function () {
                     // Carico dei componenti nella proposta di scambio. 
                     // I giochi verranno selezionati dall'utente Proponente. 
-                    // I giochi selezionati saranno presenti nella libreria dell'utente ricevente.
+                    // I giochi selezionati saranno presenti nella libreria dell'utente ricevente e nella libreria dell'utente proponente.
 
                     // TODO: sistemare la libreria di lettura!
                     gxcFct.library.get({ libraryId: userSrv.getUser().LibraryId }).$promise
@@ -914,6 +918,15 @@
                     });
                 };
 
+                /*
+                Carica tutte le transazioni per un utente.
+                Da studiare:
+                1) Quando considerare una transazione conclusa? Usiamo le date o il campo TransactionStatus?
+                2) Servono ancora le date della transazione? Oppure le usiamo per stabilire la durata temporale (DataStar -> Inizio transazione; DataEnd -> Transazione conclusa/annullata)
+                2b) Servono ancora le date della proposte? Oppure le usiamo per stabilire la durata temporale (DataStar -> Inizio proposta; DataEnd -> Proposta conclusa/annullata)
+                3) Una volta che la transazione è conclusa si potrà generare il feedback.
+                4) Una volta che la transazione è annullata NON si potrà generare nessun feedback.
+                */
                 $scope.LoadTransactionByUser = function () {
                     var queryParameters = {
                         userId: userSrv.getUser().userId,
@@ -925,6 +938,11 @@
                       }); // transaction.byUser    
                 }
 
+                /*
+                Aggiungo una nuova proposta alla transazione già creata in precedenza.
+                Questa funzione serve per:
+                1) Aggiungere una nuova proposta alla transazione attuale
+                */
                 $scope.AddProposal = function () {
                     var newProposal = _this.currentProposal[0];
                     // Prelevo una transazione a caso da quelle ricevute
@@ -945,6 +963,36 @@
                     function (error) {
                         UIkit.notify('Errore creazione Proposta', { status: 'success', timeout: 5000 });
                     });
+                }
+
+
+                /*
+                Aggiornamento della proposta
+                */
+                $scope.UpdateProposal = function () {
+
+                    var randomProposalId = _this.tranReceiving[0].proposals[0].proposalId;
+
+                    gxcFct.proposal.get({ propId: randomProposalId }).$promise
+                   .then(function (success) {
+                       var oldProposal = success;
+                       oldProposal.proposalObject = 'ProposataAggiornata';
+
+                       gxcFct.proposal.update({ propId: randomProposalId }, oldProposal,
+                        function (success) {
+                            UIkit.notify('Utente aggiornato. Ora puoi accedere alle funzionalit&agrave; del sito', { status: 'success', timeout: 5000 });
+                            window.location = '#/';
+                        },
+                        function (error) {
+                            UIkit.notify('Si &egrave; verificato un errore durante la registrazione. Ci dispiace per l\'inconveniente e ti chiediamo di riprovare più tardi.', { status: 'error', timeout: 5000 });
+                        });
+                   },
+                   function (error) {
+                       UIkit.notify('Si &egrave; verificato un errore nell\'operazione. Si prega di riprovare', { status: 'warning', timeout: 5000 });
+                   });
+
+                    
+                    
                 }
                 
             },

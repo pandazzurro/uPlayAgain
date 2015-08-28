@@ -14,8 +14,7 @@ namespace uPlayAgain.Models
         public DbSet<Library> Libraries { get; set; }
         public DbSet<LibraryComponent> LibraryComponents { get; set; }
         public DbSet<Proposal> Proposals { get; set; }
-        public DbSet<ProposalComponent> ProposalComponents { get; set; }
-        public DbSet<ProposalStatus> ProposalStaus { get; set; }
+        public DbSet<ProposalComponent> ProposalComponents { get; set; }        
         public DbSet<Status> Status { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Message> Messages { get; set; }
