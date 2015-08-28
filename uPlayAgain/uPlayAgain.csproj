@@ -507,7 +507,6 @@
     <Compile Include="Controllers\PlatformsController.cs" />
     <Compile Include="Controllers\ProposalComponentsController.cs" />
     <Compile Include="Controllers\ProposalsController.cs" />
-    <Compile Include="Controllers\ProposalStatusController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\StatusController.cs" />
     <Compile Include="Controllers\TransactionsController.cs" />

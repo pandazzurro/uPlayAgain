@@ -17,10 +17,12 @@ namespace uPlayAgain.Models
 
         public string ProposalText { get; set; }
         public string ProposalObject { get; set; }
-      
+        public ProposalStatus UserProponent_ProposalStatus { get; set; }
+        public ProposalStatus UserReceiving_ProposalStatus { get; set; }
+
         public int TransactionId { get; set; }
         public virtual Transaction Transaction { get; set; }
-        
+
         public string UserLastChanges_Id { get; set; }
         [ForeignKey("UserLastChanges_Id")]
         public virtual User UserLastChanges { get; set; }

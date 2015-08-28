@@ -855,6 +855,7 @@
             controller: function ($routeParams, $scope) {
                 var _this = this;
                 _this.transactionStatus = ['Aperta', 'InAttesa', 'Conclusa'];
+                _this.proposalStatus = ['DaApprovare','Accettata','Rifiutata'];
                 _this.userReceiving_Id = 'b692ce4a-f114-473d-a754-1e30173fb4cd'; //alessandro.pilati
                 _this.selectedLibraryGames = []; // Array di giochi presenti nella libreria dell'utente che riceve la proposta.
                 _this.proposalText = 'Ciao sono il testo della proposta';
@@ -871,6 +872,8 @@
                     proposalObject: _this.proposalObject,
                     transactionId: null, // La transazione all'inizio non è ancora stata creata
                     userLastChanges_Id: userSrv.getUser().id, // utente Proponente
+                    userProponent_ProposalStatus: _this.proposalStatus[1], // Stato della proposta corrente per l'utente proponente. Se la propone ovviamente significa che l'accetta
+                    userReceiving_ProposalStatus: _this.proposalStatus[0], // Stato della proposta corrente per l'utente ricevente
                     proposalComponents: []
                 }];
 
@@ -931,6 +934,9 @@
                     newProposal.proposalText = 'Rilancio';
                     newProposal.proposalObject = 'Oggetto del rilancio';
                     newProposal.userLastChanges_Id = userSrv.getUser().id;
+                    newProposal.direction = false; // Rilancio del ricevente
+                    newProposal.userProponent_ProposalStatus = _this.proposalStatus[0], // Stato della proposta corrente per l'utente proponente.
+                    newProposal.userReceiving_ProposalStatus = _this.proposalStatus[1], // Stato della proposta corrente per l'utente ricevente. Se la propone ovviamente significa che l'accetta
 
                     gxcFct.proposal.add(newProposal).$promise
                     .then(function (success) {

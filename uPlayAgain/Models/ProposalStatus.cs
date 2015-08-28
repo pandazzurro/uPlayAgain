@@ -3,11 +3,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace uPlayAgain.Models
 {
-    public class ProposalStatus
+    public enum ProposalStatus : int
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ProposalStatusId { get; set; }
-        public string Description { get; set; }
-    }
+        DaApprovare,
+        Accettata,
+        Rifiutata
+    }    
 }
