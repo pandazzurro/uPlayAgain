@@ -23,6 +23,7 @@ namespace uPlayAgain.Models
         public int TransactionId { get; set; }
         public virtual Transaction Transaction { get; set; }
 
+        [Required]
         public string UserLastChanges_Id { get; set; }
         [ForeignKey("UserLastChanges_Id")]
         public virtual User UserLastChanges { get; set; }

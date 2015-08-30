@@ -221,6 +221,36 @@ namespace uPlayAgain.Controllers
                                        .ToListAsync();
             return Ok(users);
         }
+
+        [Route("api/Feedbacks/ByUser/{id:int}")]
+        [ResponseType(typeof(Library))]
+        public async Task<IHttpActionResult> GetFeedbacksByUser(int id)
+        {
+            User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
+            if (user == null)
+            {
+                return NotFound();
+            }
+            
+            // Esplicito di caricare gli oggetti presenti nelle transazioni
+            db.Games.Load();
+            db.Genres.Load();
+            db.Platforms.Load();
+            db.GameLanguages.Load();
+            db.Status.Load();
+            db.Proposals.Load();
+            db.ProposalComponents.Load();
+            db.Libraries.Load();
+            db.LibraryComponents.Load();
+
+            List<User> users = await db.Users
+                                       .Include(t => t.Feedbacks)
+                                       .Include(t => t.Feedbacks.Select(p => p.User))
+                                       .Include(t => t.Feedbacks.Select(p => p.Transaction))
+                                       .Where(t => t.UserId == id)
+                                       .ToListAsync();
+            return Ok(users);
+        }
         #endregion
 
         protected override void Dispose(bool disposing)

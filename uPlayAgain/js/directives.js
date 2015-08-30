@@ -871,8 +871,8 @@
                     direction: true, //la transazione iniziale ha sempre il verso PROPONENTE -> RICEVENTE
                     proposalText: _this.proposalText,
                     proposalObject: _this.proposalObject,
-                    transactionId: null, // La transazione all'inizio non è ancora stata creata
-                    userLastChanges_Id: userSrv.getUser().id, // utente Proponente
+                    transactionId: undefined, // La transazione all'inizio non è ancora stata creata
+                    userLastChanges_Id: 'b692ce4a-f114-473d-a754-1e30173fb4cb', //userSrv.getUser().id, // utente Proponente
                     userProponent_ProposalStatus: _this.proposalStatus[1], // Stato della proposta corrente per l'utente proponente. Se la propone ovviamente significa che l'accetta
                     userReceiving_ProposalStatus: _this.proposalStatus[0], // Stato della proposta corrente per l'utente ricevente
                     proposalComponents: []
@@ -994,7 +994,74 @@
                     
                     
                 }
+
+
+
+
+
+
+
+
+
+
+
+
+                /*Sezione feedback*/
+                _this.Feedback = {
+                    transactionId: undefined,
+                    userId: undefined,
+                    rate: undefined
+                };
+                // In caso di transazione positiva assegnare un +1, in caso di transazione negativa un -3
+                _this.RateVote = [1,-3];
+
+                $scope.AddFeedback = function () {
+                    // Prelevo una transazione a caso da quelle ricevute
+                    _this.Feedback.transactionId = _this.tranReceiving[0].transactionId;
+                    // Prelevo l'utente corrente o l'utente destinatario della transazione
+                    _this.Feedback.userId = _this.tranReceiving[0].userReceiving_Id;
+                    _this.Feedback.rate = _this.RateVote[0];
+
+                    gxcFct.feedback.add(_this.Feedback).$promise
+                    .then(function (success) {
+                        UIkit.notify('Feedback creato', { status: 'success', timeout: 5000 });
+                    },
+                    function (error) {
+                        UIkit.notify('Errore creazione Feedback', { status: 'success', timeout: 5000 });
+                    });
+
+                }
+
+                $scope.GetRate = function () {
+                    // Ritorno il rate dell'utente corrente
+                    var queryParameters = {
+                        userId: userSrv.getUser().id,
+                    };
+
+                    gxcFct.feedback.rate(queryParameters).$promise
+                    .then(function (success) {
+                        UIkit.notify('Feedback rate: ' + success.rate + "% su " + success.counter + "feedback ricevuto", { status: 'success', timeout: 5000 });
+                    },
+                    function (error) {
+                        UIkit.notify('Errore rate Feedback', { status: 'success', timeout: 5000 });
+                    });
+                }
                 
+                // Ritorna tutti gli ID delle transazioni senza feedback per l'utente
+                $scope.GetPendingTransactionFeedback = function () {
+                    // Ritorno il rate dell'utente corrente
+                    var queryParameters = {
+                        userId: 'b692ce4a-f114-473d-a754-1e30173fb4cb'//userSrv.getUser().id,
+                    };
+
+                    gxcFct.feedback.pending(queryParameters).$promise
+                    .then(function (success) {
+                        UIkit.notify('Feedback pending: ' + success, { status: 'success', timeout: 5000 });
+                    },
+                    function (error) {
+                        UIkit.notify('Errore pending Feedback', { status: 'success', timeout: 5000 });
+                    });
+                }
             },
             controllerAs: 'testTransaction'
         };

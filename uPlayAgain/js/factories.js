@@ -65,5 +65,13 @@
           update: { url: app.webapi + '/api/proposalComponents/:propCompId', method: 'PUT', isArray: false },
           remove: { url: app.webapi + '/api/proposalComponents/:propCompId', method: 'DELETE', isArray: false }
       }),
+      feedback: $resource(app.webapi, {}, {
+          byUser: { url: app.webapi + '/api/feedbacks/byUser/:userId', method: 'GET', isArray: true },
+          get: { url: app.webapi + '/api/feedbacks/:tranId', method: 'GET', isArray: false }, // mi faccio ritornare il feedback di una specifica transazione
+          add: { url: app.webapi + '/api/feedbacks', method: 'POST', isArray: false },
+          rate: { url: app.webapi + '/api/feedbacks/rate/:userId', method: 'GET', isArray: false },
+          pending: { url: app.webapi + '/api/feedbacks/pending/:userId', method: 'GET', isArray: true },
+          update: { url: app.webapi + '/api/feedbacks/:tranId', method: 'PUT', isArray: false }
+      }),
   }}]);
 })();

@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
@@ -23,13 +24,50 @@ namespace uPlayAgain.Controllers
         [ResponseType(typeof(Feedback))]
         public async Task<IHttpActionResult> GetFeedback(int id)
         {
-            Feedback feedback = await db.Feedbacks.FindAsync(id);
+            Feedback feedback = await db.Feedbacks.Where(p => p.TransactionId == id).FirstOrDefaultAsync();
             if (feedback == null)
             {
                 return NotFound();
             }
 
             return Ok(feedback);
+        }
+
+        // GET: api/Feedbacks/5
+        [Route("api/Feedbacks/Rate/{userId}")]        
+        [ResponseType(typeof(FeedbackRate))]
+        public async Task<IHttpActionResult> GetFeedbacksRate(string userId)
+        {
+            IList<Feedback> feedbacks = await db.Feedbacks.Where(p => p.UserId == userId).ToListAsync();
+            if (feedbacks == null)
+            {
+                return NotFound();
+            }
+
+            int feedbackCounter = feedbacks.Sum(p => p.Rate);
+            double feedbackRate = 100 * (double)(feedbackCounter / feedbacks.Count);
+            if(feedbackRate < 0) { feedbackRate = 0; }
+
+            FeedbackRate fr = new FeedbackRate()
+            {
+                Rate = feedbackRate,
+                Counter = feedbackCounter
+            };
+
+            return Ok(fr);
+        }
+
+        // GET: api/Feedbacks/5
+        [Route("api/Feedbacks/Pending/{userId}")]
+        [ResponseType(typeof(int))]
+        public IQueryable<int> GetTransactionFeedbacksPendings(string userId)
+        {
+            return db.Transactions
+                     // Cerco tutte le transazioni dove sono Proponente o Ricevente e NON ho nessun feedback associato
+                     .Where(p => (p.UserProponent_Id == userId || p.UserReceiving_Id == userId) 
+                         &&    (!p.Feedbacks.Where(x => x.UserId == userId).Any() || !p.Feedbacks.Any())
+                         )
+                     .Select( p => p.TransactionId);
         }
 
         // PUT: api/Feedbacks/5
@@ -46,22 +84,31 @@ namespace uPlayAgain.Controllers
                 return BadRequest();
             }
 
-            db.Entry(feedback).State = EntityState.Modified;
+            // Prima di inserire un feedback controllo se l'utente presente nel feedback è oggetto di transazione
+            Transaction tran = await db.Transactions.Where(p => p.TransactionId == feedback.TransactionId).FirstOrDefaultAsync();
+            if (tran.UserProponent_Id == feedback.UserId || tran.UserReceiving_Id == feedback.UserId)
+            {
+                db.Entry(feedback).State = EntityState.Modified;
 
-            try
-            {
-                await db.SaveChangesAsync();
+                try
+                {
+                    await db.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!FeedbackExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
             }
-            catch (DbUpdateConcurrencyException)
+            else
             {
-                if (!FeedbackExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                BadRequest("Non è possibile assegnare un feedback ad un utente che non ha partecipato alla transazione");
             }
 
             return StatusCode(HttpStatusCode.NoContent);
@@ -76,8 +123,17 @@ namespace uPlayAgain.Controllers
                 return BadRequest(ModelState);
             }
 
-            db.Feedbacks.Add(feedback);
-            await db.SaveChangesAsync();
+            // Prima di inserire un feedback controllo se l'utente presente nel feedback è oggetto di transazione
+            Transaction tran = await db.Transactions.Where(p => p.TransactionId == feedback.TransactionId).FirstOrDefaultAsync();
+            if( tran.UserProponent_Id == feedback.UserId || tran.UserReceiving_Id == feedback.UserId)
+            {
+                db.Feedbacks.Add(feedback);
+                await db.SaveChangesAsync();
+            }
+            else
+            {
+                BadRequest("Non è possibile assegnare un feedback ad un utente che non ha partecipato alla transazione");
+            }
 
             return CreatedAtRoute("DefaultApi", new { id = feedback.FeedbackId }, feedback);
         }
