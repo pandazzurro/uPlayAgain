@@ -1,0 +1,24 @@
+﻿<form class="uk-form">
+    <table class="uk-table">
+        <thead>
+            <tr>
+                <th>Titolo</th>
+                <th>Genere</th>
+                <th>Piattaforma</th>
+                <th>Distanza</th>
+                <th>Utente</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <td colspan="5"></td>
+            </tr>
+        </tfoot>
+        <tbody>
+            <tr ng-repeat="item in currentTransactionToVote">
+                <td><user-link data-user='{{ item.userProponent_Id }}'></user-link></td>
+                <td><user-link data-user='{{ item.userReceiving_Id }}'></user-link></td>
+            </tr>
+        </tbody>
+    </table>
+</form>

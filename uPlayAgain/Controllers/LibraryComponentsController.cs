@@ -24,7 +24,7 @@ namespace uPlayAgain.Controllers
         public async Task<IHttpActionResult> GetLibraryComponent(int id)
         {
             LibraryComponent libraryComponent = await db.LibraryComponents.FindAsync(id);
-            if (libraryComponent == null)
+            if (libraryComponent == null || libraryComponent.IsDeleted)
             {
                 return NotFound();
             }

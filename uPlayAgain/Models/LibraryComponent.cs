@@ -22,6 +22,8 @@ namespace uPlayAgain.Models
 
         public bool IsExchangeable { get; set; }
 
+        public bool IsDeleted { get; set; }
+
         public int LibraryId { get; set; }    
         [JsonIgnore]
         [XmlIgnore]

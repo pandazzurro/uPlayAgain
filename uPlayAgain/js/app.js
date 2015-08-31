@@ -52,6 +52,9 @@
       .when('/edit-register', {
         template: '<form-edit-register></form-edit-register>'
       })
+      .when('/feedback-vote', {
+        template: '<feedback-vote></feedback-vote>'
+      })
       .when('/regolamento', {
         templateUrl: 'templates/regolamento.html'
       })

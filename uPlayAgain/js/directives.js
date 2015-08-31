@@ -1125,7 +1125,66 @@
             controllerAs: 'testTransaction'
         };
     }]);
+    
+    app.directive('feedback-vote', ['factories', 'user-service', 'games-service', function (gxcFct, userSrv, gameSrv) {
+        return {
+            restrict: 'E',
+            templateUrl: 'templates/feedback-vote.html',
+            controller: function ($routeParams, $scope) {
+                var _this = this;
+                _this.currentUserId = userSrv.getUser().id;
+                _this.currentTransactionToVote = [];                
+                                
+                _this.GetPendingTransactionFeedback = function () {
+                    gxcFct.feedback.pending({ userId: userSrv.getUser().id }).$promise
+                    .then(function (success) {
+                        success.forEach(function (tran) {
+                            gxcFct.transaction.get({ tranId: tran }).$promise
+                            .then(function (successTran) {
+                                // TODO -> Caricare il feedback dell'utente presente nelle transazioni.
+                                _this.currentTransactionToVote.push(successTran);
+                            },
+                            function (error) {
+                                UIkit.notify('Errore lettura transazioni da votare', { status: 'success', timeout: 5000 });
+                            });
+                        });
+                    },
+                    function (error) {
+                        UIkit.notify('Errore lettura feedback da votare', { status: 'success', timeout: 5000 });
+                    });
+                }
+                // Carico le transazioni da assegnare con un feedback all'avvio
+                _this.GetPendingTransactionFeedback();
+                
+                _this.AddFeedback = function (transactionId, vote) {
+                    // In caso di transazione positiva assegnare un +1, in caso di transazione negativa un -3
 
+                    var tranFilter = array.filter(function (tranFilter) {
+                        if (tranFilter.transactionId === transactionId) return tranFilter;
+                    })[0];
+
+                    var userToFeedback = undefined;
+                    if (tranFilter.userProponent_Id != userSrv.getUser().id && tranFilter.userReceiving_Id == userSrv.getUser().id) userToFeedback = tranFilter.userProponent_Id;
+                    if (tranFilter.userProponent_Id == userSrv.getUser().id && tranFilter.userReceiving_Id != userSrv.getUser().id) userToFeedback = tranFilter.userReceiving_Id;
+
+                    _this.Feedback = {
+                        transactionId: transactionId,
+                        userId: userToFeedback,
+                        rate: vote
+                    };                    
+
+                    gxcFct.feedback.add(_this.Feedback).$promise
+                    .then(function (success) {
+                        UIkit.notify('Hai votato con successo!', { status: 'success', timeout: 5000 });
+                    },
+                    function (error) {
+                        UIkit.notify('Errore creazione Feedback', { status: 'success', timeout: 5000 });
+                    });
+                }                
+            },
+            controllerAs: 'feedback-vote'
+        };
+    }]);
     app.directive('regolamento', ['factories', function (gxcFct) {
         return {
             restrict: 'E',

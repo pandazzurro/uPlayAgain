@@ -241,6 +241,7 @@
     <Content Include="templates\games-library.html" />
     <Content Include="templates\games-search.html" />
     <Content Include="templates\home.html" />
+    <Content Include="templates\feedback-vote.html" />
     <Content Include="templates\mail-mailbox.html" />
     <Content Include="templates\mail-message-new.html" />
     <Content Include="templates\mail-message.html" />
