@@ -768,21 +768,79 @@
             controller: function ($scope, $routeParams) {
                 var _this = this;
                 _this.message = { myItems: [], hisItems: [] };
+                _this.recipientData = undefined;
 
-                this.send = function () {
+                var addProposal = function () {
                     var queryParams = {
-                        messageText: _this.message.text,
-                        messageDate: new Date()
+                        proposalText: _this.message.text,
+                        proposalObject: _this.message.titolo,
+                        proposalDate: new Date().toISOString(),
+                        direction: (_this.currentProposal === undefined ? true : !_this.currentProposal.direction),
+                        transactionId: _this.currentTransaction.id,
+                        userLastChanges_Id: userSrv.getUser().id
                     };
 
-                    gxcFct.mail.send(queryParams).$promise
+                    gxcFct.proposal.add(queryParams).$promise
                     .then(function (success) {
-                        UIkit.notify('Messaggio inviato', { status: 'success', timeout: 5000 });
-                        window.location = '#/mail/in/1';
-                    },
-                    function (error) {
-                        UIkit.notify('Si &egrave; verificato un errore nell\'operazione. Si prega di riprovare', { status: 'warning', timeout: 5000 });
+                        var proposal = success;
+
+                        for (i in _this.message.myItems) {
+                            var queryParams = {
+                                libraryComponentId: _this.message.myItems[i].id,
+                                proposalId: success.id
+                            }
+                            gxcFct.proposalComponents.add(queryParams);
+                        }
+                        for (i in _this.message.hisItems) {
+                            var queryParams = {
+                                libraryComponentId: _this.message.hisItems[i].id,
+                                proposalId: success.id
+                            }
+                            gxcFct.proposalComponents.add(queryParams);
+                        }
+
+                        var queryParams = {
+
+                        }
                     });
+                }
+
+                this.send = function () {
+                    if (_this.exchange)
+                    {
+                        if (_this.currentTransaction === undefined) {
+                            var queryParams = {
+                                userProponent_Id: userSrv.getUser().id,
+                                userReceiving_Id: _this.recipientData.id
+                            }
+
+                            gxcFct.transaction.add(queryParams).$promise
+                            .then(function (success) {
+                                _this.currentTransaction = success;
+                                addProposal();
+                            });
+                        }
+                        else
+                        {
+                            addProposal();
+                        }
+                    }
+                    else {
+                        var queryParams = {
+                            messageText: _this.message.text,
+                            messageObject: _this.message.titolo,
+                            messageDate: new Date().toISOString()
+                        };
+                        
+                        gxcFct.mail.send(queryParams).$promise
+                        .then(function (success) {
+                            UIkit.notify('Messaggio inviato', { status: 'success', timeout: 5000 });
+                            window.location = '#/mail/in/1';
+                        },
+                        function (error) {
+                            UIkit.notify('Si &egrave; verificato un errore nell\'operazione. Si prega di riprovare', { status: 'warning', timeout: 5000 });
+                        });
+                    }
                 };
 
                 this.addItem = function (item, isMine) {
@@ -828,7 +886,8 @@
                 });
 
                 gxcFct.library.byUser({ userId: _this.recipientId }).$promise
-                .then(function(userSuccess) {
+                .then(function (userSuccess) {
+                    _this.recipientData = userSuccess[0];
                     gxcFct.library.get({ libraryId: userSuccess[0].libraries[0].libraryId }).$promise
                     .then(function (librarySuccess) {
 
