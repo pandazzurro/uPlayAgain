@@ -36,6 +36,10 @@ namespace uPlayAgain.Controllers
             }
             await db.Libraries.LoadAsync();
             await db.LibraryComponents.LoadAsync();
+            await db.GameLanguages.LoadAsync();
+            await db.Games.LoadAsync();
+            await db.Genres.LoadAsync();
+            await db.Platforms.LoadAsync();
 
             return Ok(proposal);
         }

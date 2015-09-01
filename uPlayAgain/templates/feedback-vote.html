@@ -17,29 +17,60 @@
         <tbody>
             <tr ng-repeat="item in currentTransactionToVote">
                 <td>
-                    <div class="uk-accordion" data-uk-accordion>
-                        <h3 class="uk-accordion-title">
-                            <user-link data-user='{{ item.userProponent_Id }}'></user-link>
-                            <user-link data-user='{{ item.userReceiving_Id }}'></user-link>
-                        </h3>
-                    <div class="uk-accordion-content">
-                        <table>
-                            <tbody>
-                                <tr ng-repeat="itemProposal in item.proposals">
-                                    <td>{{itemProposal.ProposalObject}}</td>
-                                    <td>{{itemProposal.ProposalText}}</td>
-                                    <td>
-                                        <table>
-                                            <tbody>
-                                                <tr ng-repeat="proposalComponent in itemProposal">
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <td><user-link data-user='{{ item.userProponent_Id }}'></user-link></td>
+                                <td><user-link data-user='{{ item.userReceiving_Id }}'></user-link></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="2">
+                                    <div class="uk-accordion" data-uk-accordion>
+                                        <h3 class="uk-accordion-title">Proposta</h3>
+                                        <div class="uk-accordion-content">
+                                            <table>
+                                                <!--Unica riga di intestazione con i dati della proposta-->
+                                                <thead>
+                                                    <tr ng-repeat="itemProposal in item.proposals">
+                                                        <td>{{itemProposal.ProposalObject}}</td>
+                                                        <td>{{itemProposal.ProposalText}}</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <!-- Fare le schede dei giochi -->
+                                                    <tr ng-repeat="itemComponent in item.proposals[0].proposalComponents">
+                                                        <td>{{itemComponent.libraryComponents.note}}</td>
+                                                        <td>{{itemComponent.libraryComponents.games.genre.name}}</td>
+                                                        <td>
+                                                            <article class="uk-comment">
+                                                                <header class="uk-comment-header">
+                                                                    <img class="uk-comment-avatar" src="data:image/gif;base64,{{itemComponent.libraryComponents.games.image}}" alt="{{itemComponent.libraryComponents.games.title}}" style="height:80px">
+                                                                    <h4 class="uk-comment-title">{{itemComponent.libraryComponents.game.gameData.title}}</h4>
+                                                                    <div class="uk-comment-meta">{{itemComponent.libraryComponents.language.description}} - {{itemComponent.libraryComponents.status.description}}</div>
+                                                                    <!--<div class="uk-text-right uk-text-bottom">
+                                                                        <div class="uk-button-group" ng-show="{{game.gameData.canEdit}}">
+                                                                            <button class="uk-button" data-uk-tooltip title="Modifica" ng-click="library.editGame(game)">
+                                                                                <i class="fa fa-pencil"></i>
+                                                                            </button>
+                                                                            <button class="uk-button uk-button-danger" data-uk-tooltip title="Rimuovi" ng-click="library.removeGame(game)">
+                                                                                <i class="fa fa-minus"></i>
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>-->
+                                                                </header>
+                                                            </article>
+                                                        </td>                                                  
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>                    
                 </div>
                 </td>
             </tr>
