@@ -31,13 +31,13 @@
                         var places = searchBox.getPlaces();
                         var location = places[0].geometry.location;
                         $scope.map.center = {
-                            latitude: location.k,
-                            longitude: location.D
+                            latitude: location.lat(),
+                            longitude: location.lng()
                         };
                         $scope.map.zoom = 18;
                         $scope.marker.coords = {
-                            latitude: location.k,
-                            longitude: location.D
+                            latitude: location.lat(),
+                            longitude: location.lng()
                         };
                     }
                 }

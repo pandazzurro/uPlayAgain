@@ -7,11 +7,9 @@ using uPlayAgain.Providers;
 using Microsoft.Owin.Security.Google;
 using Microsoft.Owin.Security.Facebook;
 using System.Web.Http.Validation;
-using System.Web.Mvc;
 using Microsoft.Owin.Security.Cookies;
 using System.Security.Claims;
 using System.Web.Helpers;
-using Newtonsoft.Json;
 
 [assembly: OwinStartup(typeof(uPlayAgain.Startup))]
 namespace uPlayAgain
@@ -31,8 +29,8 @@ namespace uPlayAgain
             config.Services.Clear(typeof(System.Web.Http.Validation.ModelValidatorProvider));
             // Configura il model validator corretto
             GlobalConfiguration.Configuration.Services.Replace(typeof(IBodyModelValidator), new CustomBodyModelValidator());
-            //Webapi
-            AreaRegistration.RegisterAllAreas();
+            ////Webapi
+            //AreaRegistration.RegisterAllAreas();
             
             HibernatingRhinos.Profiler.Appender.EntityFramework.EntityFrameworkProfiler.Initialize();
 
