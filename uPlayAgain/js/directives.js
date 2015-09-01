@@ -1126,7 +1126,7 @@
         };
     }]);
     
-    app.directive('feedback-vote', ['factories', 'user-service', 'games-service', function (gxcFct, userSrv, gameSrv) {
+    app.directive('feedback-vote', ['factories', 'user-service', function (gxcFct, userSrv) {
         return {
             restrict: 'E',
             templateUrl: 'templates/feedback-vote.html',
@@ -1141,6 +1141,14 @@
                         success.forEach(function (tran) {
                             gxcFct.transaction.get({ tranId: tran }).$promise
                             .then(function (successTran) {
+                                // Carico solo la proposta conclusa e i rispettivi componenti.
+                                for (i = successTran.proposals.length - 1; i >= 0; i--) {
+                                    // rimuovo le proposte non accettate da entrambi gli utenti
+                                    if (successTran.proposals[i].userReceiving_ProposalStatus != 1 && successTran.proposals[i].userProponent_ProposalStatus != 1) {
+                                        array.splice(i, 1);
+                                    }
+                                }
+
                                 // TODO -> Caricare il feedback dell'utente presente nelle transazioni.
                                 _this.currentTransactionToVote.push(successTran);
                             },

@@ -26,7 +26,7 @@ namespace uPlayAgain.Controllers
         public async Task<IHttpActionResult> GetProposal(int id)
         {
             Proposal proposal = await db.Proposals
-                                        .Include(t => t.ProposalComponents)
+                                        .Include(t => t.ProposalComponents)                                        
                                         .Include(t => t.UserLastChanges)
                                         .Where(t => t.ProposalId == id)
                                         .SingleOrDefaultAsync();
@@ -34,7 +34,9 @@ namespace uPlayAgain.Controllers
             {
                 return NotFound();
             }
-            
+            await db.Libraries.LoadAsync();
+            await db.LibraryComponents.LoadAsync();
+
             return Ok(proposal);
         }
 

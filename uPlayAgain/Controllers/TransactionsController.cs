@@ -24,12 +24,16 @@ namespace uPlayAgain.Controllers
         [ResponseType(typeof(Transaction))]
         public async Task<IHttpActionResult> GetTransaction(int id)
         {
-            Transaction transaction = await db.Transactions.FindAsync(id);
+            Transaction transaction = await db.Transactions
+                                              .Include(p => p.Proposals)
+                                              // Non carico i componenti della proposta. I componenti li posso ricavare da una ulteriore chiamata, filtrando per la proposta desiderata.
+                                              .Include(p => p.Feedbacks)
+                                              .Where(p => p.TransactionId == id)
+                                              .SingleOrDefaultAsync();
             if (transaction == null)
             {
                 return NotFound();
             }
-
             return Ok(transaction);
         }
         
