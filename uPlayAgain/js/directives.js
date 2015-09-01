@@ -798,10 +798,6 @@
                             }
                             gxcFct.proposalComponents.add(queryParams);
                         }
-
-                        var queryParams = {
-
-                        }
                     });
                 }
 
@@ -829,7 +825,9 @@
                         var queryParams = {
                             messageText: _this.message.text,
                             messageObject: _this.message.titolo,
-                            messageDate: new Date().toISOString()
+                            messageDate: new Date().toISOString(),
+                            userProponent_Id: userSrv.getUser().id,
+                            userReceiving_Id: _this.recipientData.id
                         };
                         
                         gxcFct.mail.send(queryParams).$promise
