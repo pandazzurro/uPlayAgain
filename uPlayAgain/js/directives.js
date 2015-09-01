@@ -1147,6 +1147,16 @@
                                     if (successTran.proposals[i].userReceiving_ProposalStatus != 1 && successTran.proposals[i].userProponent_ProposalStatus != 1) {
                                         array.splice(i, 1);
                                     }
+                                    //Aggiungo i componenti alla proposta
+                                    else {
+                                        gxcFct.proposal.get({ propId: successTran.proposals[i].proposalId }).$promise
+                                        .then(function (successComponents) {
+                                            successTran.proposals[i].proposalComponents = successComponents;
+                                        },
+                                        function (error) {
+                                            UIkit.notify('Errore lettura componenti della proposata', { status: 'success', timeout: 5000 });
+                                        });                                         
+                                    }
                                 }
 
                                 // TODO -> Caricare il feedback dell'utente presente nelle transazioni.

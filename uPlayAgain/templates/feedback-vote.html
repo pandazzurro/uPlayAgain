@@ -16,8 +16,32 @@
         </tfoot>
         <tbody>
             <tr ng-repeat="item in currentTransactionToVote">
-                <td><user-link data-user='{{ item.userProponent_Id }}'></user-link></td>
-                <td><user-link data-user='{{ item.userReceiving_Id }}'></user-link></td>
+                <td>
+                    <div class="uk-accordion" data-uk-accordion>
+                        <h3 class="uk-accordion-title">
+                            <user-link data-user='{{ item.userProponent_Id }}'></user-link>
+                            <user-link data-user='{{ item.userReceiving_Id }}'></user-link>
+                        </h3>
+                    <div class="uk-accordion-content">
+                        <table>
+                            <tbody>
+                                <tr ng-repeat="itemProposal in item.proposals">
+                                    <td>{{itemProposal.ProposalObject}}</td>
+                                    <td>{{itemProposal.ProposalText}}</td>
+                                    <td>
+                                        <table>
+                                            <tbody>
+                                                <tr ng-repeat="proposalComponent in itemProposal">
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                </td>
             </tr>
         </tbody>
     </table>
