@@ -1128,7 +1128,7 @@
         };
     }]);
     
-    app.directive('feedback-vote', ['factories', 'user-service', function (gxcFct, userSrv) {
+    app.directive('feedbackVote', ['factories', 'user-service', function (gxcFct, userSrv) {
         return {
             restrict: 'E',
             templateUrl: 'templates/feedback-vote.html',
