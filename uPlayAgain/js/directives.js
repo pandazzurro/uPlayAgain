@@ -1132,7 +1132,7 @@
         return {
             restrict: 'E',
             templateUrl: 'templates/feedback-vote.html',
-            controller: function ($routeParams, $scope) {
+            controller: function ($routeParams) {
                 var _this = this;
                 _this.currentUserId = userSrv.getUser().id;
                 _this.currentTransactionToVote = [];                
@@ -1151,9 +1151,17 @@
                                     }
                                     //Aggiungo i componenti alla proposta
                                     else {
+                                        // 
+                                        _this.currentTransactionToVote.push(successTran);
                                         gxcFct.proposal.get({ propId: successTran.proposals[i].proposalId }).$promise
                                         .then(function (successComponents) {
-                                            successTran.proposals[i].proposalComponents = successComponents;
+                                            // Aggancio la proposta con le componenti alla transazione
+                                            for (var i = 0; i < _this.currentTransactionToVote.length; i++) {                                                
+                                                if (_this.currentTransactionToVote[i].proposals[0].proposalId === successComponents.proposalId) {
+                                                    _this.currentTransactionToVote[i].proposals[0] = successComponents;
+                                                    break;
+                                                }
+                                            }
                                         },
                                         function (error) {
                                             UIkit.notify('Errore lettura componenti della proposata', { status: 'success', timeout: 5000 });
@@ -1161,8 +1169,7 @@
                                     }
                                 }
 
-                                // TODO -> Caricare il feedback dell'utente presente nelle transazioni.
-                                _this.currentTransactionToVote.push(successTran);
+                                // TODO -> Caricare il feedback dell'utente presente nelle transazioni.                                
                             },
                             function (error) {
                                 UIkit.notify('Errore lettura transazioni da votare', { status: 'success', timeout: 5000 });
@@ -1173,6 +1180,7 @@
                         UIkit.notify('Errore lettura feedback da votare', { status: 'success', timeout: 5000 });
                     });
                 }
+                
                 // Carico le transazioni da assegnare con un feedback all'avvio
                 _this.GetPendingTransactionFeedback();
                 
@@ -1202,7 +1210,7 @@
                     });
                 }                
             },
-            controllerAs: 'feedback-vote'
+            controllerAs: 'feedbackVote'
         };
     }]);
     app.directive('regolamento', ['factories', function (gxcFct) {
