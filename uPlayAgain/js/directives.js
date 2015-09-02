@@ -451,9 +451,9 @@
                     _this.results = [];
 
                     var queryParameters = {
-                        name: _this.params.string,
-                        genre: _this.params.genre === undefined ? undefined : _this.params.genre.genreId,
-                        platform: _this.params.platform === undefined ? undefined : _this.params.platform.platformId
+                        gameTitle: _this.params.string,
+                        genreId: _this.params.genre === undefined ? undefined : _this.params.genre.genreId,
+                        platformId: _this.params.platform === undefined ? undefined : _this.params.platform.platformId
                     };
 
                     _this.results = gxcFct.game.query(queryParameters, function (success) {

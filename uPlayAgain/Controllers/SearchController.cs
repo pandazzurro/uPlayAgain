@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Spatial;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Description;
 using uPlayAgain.Dto;
 using uPlayAgain.Models;
 
@@ -19,10 +21,10 @@ namespace uPlayAgain.Controllers
             if (!skip.HasValue) skip = 0;
 
             // Posizione utente corrente
-            DbGeography position = db.Users
-                                     .Where(u => u.UserId == userId)
-                                     .Select(u => u.PositionUser)
-                                     .FirstOrDefault();
+            DbGeography position = await db.Users
+                                           .Where(u => u.UserId == userId)
+                                           .Select(u => u.PositionUser)
+                                           .FirstOrDefaultAsync();
 
             var q = db.Libraries
                       .Join(db.Users,
@@ -55,15 +57,35 @@ namespace uPlayAgain.Controllers
 
             SearchGames result = new SearchGames()
             {
-                SearchGame = q.OrderBy(u => u.Distance)
-                              .Take(take.Value)
-                              .Skip(skip.Value)
-                              .ToList(),
-                Count = q.Count()
+                SearchGame = await q.OrderBy(u => u.Distance)
+                                    .Take(take.Value)
+                                    .Skip(skip.Value)
+                                    .ToListAsync(),
+                Count = await q.CountAsync()
             };
 
             return Ok(result);
         }
+
+        // TODO --> fare ricerca per il gioco semplice ma con i parametri
+        [HttpGet]
+        [Route("api/Games/Search/")]
+        [Route("api/Games/Search/{gameTitle?}/")]
+        [Route("api/Games/Search/{gameTitle?}/{platformId?}")]
+        [Route("api/Games/Search/{gameTitle?}/{platformId?}/{genreId?}")]
+        [ResponseType(typeof(Game))]
+        public async Task<IHttpActionResult> SearchGame(string gameTitle = "", string platformId = "", string genreId = "")
+        {
+            ICollection<Game> result = await db.Games
+                                               .Include(p => p.Platform)
+                                               .Include(p => p.Genre)
+                                               .Where(g => string.IsNullOrEmpty(gameTitle) || g.Title.Contains(gameTitle))
+                                               .Where(gr => string.IsNullOrEmpty(genreId) || string.Equals(gr.Genre.GenreId, genreId))
+                                               .Where(p => string.IsNullOrEmpty(platformId) || string.Equals(p.Platform.PlatformId, platformId))
+                                               .ToListAsync();
+            return Ok(result);
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

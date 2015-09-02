@@ -27,7 +27,7 @@
         query: { method: 'GET', isArray: true }
       }),
       game: $resource(app.webapi, {}, {
-        query: { url: app.webapi + '/api/games/', method: 'GET', isArray: true },
+        query: { url: app.webapi + '/api/games/search', method: 'GET', isArray: true },
         get : { url: app.webapi + '/api/games/:gameId', method: 'GET', isArray: false },
         search: { url: app.webapi + '/api/search', method: 'GET', isArray: false }
       }),
