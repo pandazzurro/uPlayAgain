@@ -87,12 +87,26 @@
     </tfoot>
     <tbody>
       <tr ng-repeat="game in search.results.searchGame">
-        <td>{{ game.game.title }}</td>
+        <td><a href="#details" ng-click="search.showDetails(game)" data-uk-modal>{{ game.game.title }}</a></td>
         <td>{{ search.getGenreById(game.game.genre.genreId).name }}</td>
         <td><span class="{{ search.getPlatformById(game.game.platform.platformId).class }}"></span> {{ search.getPlatformById(game.game.platform.platformId).name }}</td>
         <td>{{ search.round(game.distance) }} km</td>
-        <td><user-link data-user='{{ game.user.userId }}'></user-link></td>
+        <td><user-link data-user="{{ game.user.userId }}"></user-link></td>
       </tr>
     </tbody>
 </table>
 </form>
+
+<div id="details" class="uk-modal">
+    <div class="uk-modal-dialog">
+        <a class="uk-modal-close uk-close"></a>
+        {{search.details.game.title}} <span class="{{ search.getPlatformById(search.details.game.platform.platformId).class }}"></span> {{ search.getPlatformById(search.details.game.platform.platformId).name }}
+        Gioco di {{ search.detailsUser.userName }}
+        Distanza {{ search.round(search.details.distance) }} km
+        Lingua {{search.details.gameLanguage.description}}
+        Stato {{search.details.status.description}}
+        <button class="uk-button" ng-click="search.sendProposal(search.details.game)">
+            <i class="fa fa-envelope-o"></i> Invia messaggio
+        </button>
+    </div>
+</div>

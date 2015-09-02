@@ -362,10 +362,6 @@
                     return gamesSrv.getDistances();
                 };
 
-                this.makeUserLink = function (userId) {
-                    return "<user-link data-user-id='" + userId + "'></user-link>";
-                };
-
                 this.round = function (value) {
                     return Math.round(value * 100) / 100;
                 };
@@ -386,7 +382,15 @@
                     _this.results = gxcFct.game.search(queryParameters, function (success) {
                         _this.searchPerformed = true;
                     });
-                }
+                };
+
+                this.showDetails = function (game) {
+                    _this.details = game;
+                    gxcFct.user.get({ userId: game.user.userId }).$promise
+                    .then(function (success) {
+                        _this.detailsUser = success;
+                    });
+                };
             },
             controllerAs: 'search'
         };
