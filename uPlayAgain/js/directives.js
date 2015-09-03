@@ -1136,7 +1136,7 @@
                 var _this = this;
                 _this.currentUserId = userSrv.getUser().id;
                 _this.currentTransactionToVote = [];                
-                                
+
                 _this.GetPendingTransactionFeedback = function () {
                     gxcFct.feedback.pending({ userId: userSrv.getUser().id }).$promise
                     .then(function (success) {
@@ -1186,28 +1186,36 @@
                 
                 _this.AddFeedback = function (transactionId, vote) {
                     // In caso di transazione positiva assegnare un +1, in caso di transazione negativa un -3
+                    var tranFilter = undefined;
+                    for (i = 0; i < _this.currentTransactionToVote.length; i++) {
+                        if (_this.currentTransactionToVote[i].transactionId === transactionId) {
+                            // Reperisco l'utente corretto al quale rilasciare il feedback.
+                            var userToFeedback = undefined;
+                            if (_this.currentTransactionToVote[i].userProponent_Id != userSrv.getUser().id && _this.currentTransactionToVote[i].userReceiving_Id == userSrv.getUser().id)
+                                userToFeedback = _this.currentTransactionToVote[i].userProponent_Id;
+                            if (_this.currentTransactionToVote[i].userProponent_Id == userSrv.getUser().id && _this.currentTransactionToVote[i].userReceiving_Id != userSrv.getUser().id)
+                                userToFeedback = _this.currentTransactionToVote[i].userReceiving_Id;
 
-                    var tranFilter = array.filter(function (tranFilter) {
-                        if (tranFilter.transactionId === transactionId) return tranFilter;
-                    })[0];
+                            _this.Feedback = {
+                                transactionId: transactionId,
+                                userId: userToFeedback,
+                                rate: vote
+                            };
 
-                    var userToFeedback = undefined;
-                    if (tranFilter.userProponent_Id != userSrv.getUser().id && tranFilter.userReceiving_Id == userSrv.getUser().id) userToFeedback = tranFilter.userProponent_Id;
-                    if (tranFilter.userProponent_Id == userSrv.getUser().id && tranFilter.userReceiving_Id != userSrv.getUser().id) userToFeedback = tranFilter.userReceiving_Id;
-
-                    _this.Feedback = {
-                        transactionId: transactionId,
-                        userId: userToFeedback,
-                        rate: vote
-                    };                    
-
-                    gxcFct.feedback.add(_this.Feedback).$promise
-                    .then(function (success) {
-                        UIkit.notify('Hai votato con successo!', { status: 'success', timeout: 5000 });
-                    },
-                    function (error) {
-                        UIkit.notify('Errore creazione Feedback', { status: 'success', timeout: 5000 });
-                    });
+                            gxcFct.feedback.add(_this.Feedback).$promise
+                            .then(function (success) {
+                                // Rimuovo la transazione che ha avuto il feedback
+                                _this.currentTransactionToVote[i].splice(i, 1);
+                                UIkit.notify('Hai votato con successo. Grazie!', { status: 'success', timeout: 5000 });
+                            },
+                            function (error) {
+                                UIkit.notify('Errore creazione Feedback', { status: 'success', timeout: 5000 });
+                            });
+                            break;
+                        }                            
+                    }
+                    
+                    
                 }                
             },
             controllerAs: 'feedbackVote'
