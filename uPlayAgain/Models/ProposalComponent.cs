@@ -16,5 +16,11 @@ namespace uPlayAgain.Models
         public int ProposalId { get; set; }
         [ForeignKey("ProposalId")]
         public Proposal Proposal { get; set; }
+
+
+        [Required]
+        public string UserOwnerId { get; set; }
+        [ForeignKey("UserOwnerId")]
+        public virtual User UserOwner { get; set; }
     }
 }
