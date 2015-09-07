@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -9,18 +10,28 @@ namespace uPlayAgain.Controllers
     public class GameImportController : ApiController
     {
         private uPlayAgainContext db = new uPlayAgainContext();
+        private NLog.Logger _log = NLog.LogManager.GetLogger("uPlayAgain");
 
         // GET: api/GameImporter/5
         public async Task<IHttpActionResult> Get(int id)
         {
-            Game game = await db.Games.Where(t => t.ImportId == id).FirstAsync();
+            _log.Debug("GameImporter - Get - id: {0}", id);
+            IList<Game> games = await db.Games.Where(t => t.ImportId == id).ToListAsync();
+            _log.Debug("GameImporter - presenti già {0} IdImport", games.Count);
 
-            if (game == null)
+            if (games.Count > 1)
             {
-                return NotFound();
+                _log.Debug("GameImporter - BadRequest");
+                return BadRequest();
             }
 
-            return Ok(game);
+            if (!games.Any())
+            {
+                _log.Debug("GameImporter - NotFound");
+                return NotFound();
+            }
+            _log.Debug("GameImporter - Ok");
+            return Ok(games);
         }
         
     }
