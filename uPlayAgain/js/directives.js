@@ -774,35 +774,53 @@
                 _this.message = { myItems: [], hisItems: [] };
                 _this.recipientData = undefined;
 
+                var start = new Date();
+                var end = new Date();
+                end.setDate(end.getDate() + 30);
+
                 var addProposal = function () {
                     var queryParams = {
+                        dateStart: start.toISOString(),
+                        dateEnd: end.toISOString(),
                         proposalText: _this.message.text,
                         proposalObject: _this.message.titolo,
                         proposalDate: new Date().toISOString(),
                         direction: (_this.currentProposal === undefined ? true : !_this.currentProposal.direction),
-                        transactionId: _this.currentTransaction.id,
-                        userLastChanges_Id: userSrv.getUser().id
+                        transactionId: _this.currentTransaction.transactionId,
+                        userLastChanges_Id: userSrv.getUser().id,
+                        proposalComponents: []
                     };
 
+                    for (i in _this.message.myItems) {
+                        queryParams.proposalComponents.push({ libraryComponentId: _this.message.myItems[i].gameId });
+                    }
+                    for (i in _this.message.hisItems) {
+                        queryParams.proposalComponents.push({ libraryComponentId: _this.message.hisItems[i].gameId });
+                    }
+
+                    gxcFct.proposal.add(queryParams);
+
+                    /*
                     gxcFct.proposal.add(queryParams).$promise
                     .then(function (success) {
                         var proposal = success;
 
                         for (i in _this.message.myItems) {
                             var queryParams = {
-                                libraryComponentId: _this.message.myItems[i].id,
-                                proposalId: success.id
+                                libraryComponentId: _this.message.myItems[i].gameId,
+                                proposalId: success.proposalId
                             }
                             gxcFct.proposalComponents.add(queryParams);
                         }
                         for (i in _this.message.hisItems) {
                             var queryParams = {
-                                libraryComponentId: _this.message.hisItems[i].id,
-                                proposalId: success.id
+                                libraryComponentId: _this.message.hisItems[i].gameId,
+                                proposalId: success.proposalId
                             }
                             gxcFct.proposalComponents.add(queryParams);
                         }
                     });
+                    */
                 }
 
                 this.send = function () {
