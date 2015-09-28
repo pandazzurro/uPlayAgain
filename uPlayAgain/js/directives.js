@@ -615,14 +615,14 @@
                 };
                 
                 this.sendMessage = function () {
-                    window.location = '#/mail/compose/' + _this.user.userId;
+                    window.location = '#/mail/compose/' + _this.user.id;
                 };
 
                 var queryParameters = {
                     userId: $routeParams.userId
                 };
 
-                gxcFct.user.get(queryParameters).$promise
+                gxcFct.user.byId(queryParameters).$promise
                 .then(function (success) {
                     _this.user = success;
                     var coords = _this.user.positionUser.geography.wellKnownText.replace('POINT (', '').replace(')', '').split(" ");                    
@@ -656,7 +656,7 @@
                     userId: $scope.userId
                 };
 
-                gxcFct.user.get(queryParameters).$promise
+                gxcFct.user.byId(queryParameters).$promise
                 .then(function (success) {
                     _this.username = success.userName;
                 });

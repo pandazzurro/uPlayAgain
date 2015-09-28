@@ -91,7 +91,7 @@
         <td>{{ search.getGenreById(game.game.genre.genreId).name }}</td>
         <td><span class="{{ search.getPlatformById(game.game.platform.platformId).class }}"></span> {{ search.getPlatformById(game.game.platform.platformId).name }}</td>
         <td>{{ search.round(game.distance) }} km</td>
-        <td><user-link data-user="{{ game.user.userId }}"></user-link></td>
+        <td><user-link data-user="{{ game.user.id }}"></user-link></td>
       </tr>
     </tbody>
 </table>
