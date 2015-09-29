@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
@@ -12,6 +13,7 @@ namespace uPlayAgain.Controllers
     public class ProposalsController : ApiController
     {
         private uPlayAgainContext db = new uPlayAgainContext();
+        private NLog.Logger _log = NLog.LogManager.GetLogger("uPlayAgain");
 
         // GET: api/Proposals
         public IQueryable<Proposal> GetProposals()
@@ -89,7 +91,15 @@ namespace uPlayAgain.Controllers
             }
 
             db.Proposals.Add(proposal);
-            await db.SaveChangesAsync();
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                _log.Error(ex);
+            }
+            
 
             return CreatedAtRoute("DefaultApi", new { id = proposal.ProposalId }, proposal);
         }
