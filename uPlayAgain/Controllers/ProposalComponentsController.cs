@@ -1,7 +1,10 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -12,6 +15,7 @@ namespace uPlayAgain.Controllers
     public class ProposalComponentsController : ApiController
     {
         private uPlayAgainContext db = new uPlayAgainContext();
+        private NLog.Logger _log = NLog.LogManager.GetLogger("uPlayAgain");
 
         // GET: api/ProposalComponents
         public IQueryable<ProposalComponent> GetProposalComponents()
@@ -77,7 +81,22 @@ namespace uPlayAgain.Controllers
             }
 
             db.ProposalComponents.Add(proposalComponent);
-            await db.SaveChangesAsync();
+            try
+            {
+                await db.SaveChangesAsync();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                StringBuilder sb = new StringBuilder();
+                ex.EntityValidationErrors.ToList().ForEach(entityValidation => { entityValidation.ValidationErrors.ToList().ForEach(validation => sb.Append(string.Concat(validation.PropertyName, " - ", validation.ErrorMessage))); });
+
+                _log.Error("{0}{1}Validation errors:{1}{2}", ex, Environment.NewLine, sb.ToString());
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex);
+            }
 
             return CreatedAtRoute("DefaultApi", new { id = proposalComponent.ProposalComponentId }, proposalComponent);
         }

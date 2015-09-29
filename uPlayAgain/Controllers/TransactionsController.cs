@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -13,6 +16,7 @@ namespace uPlayAgain.Controllers
     public class TransactionsController : ApiController
     {
         private uPlayAgainContext db = new uPlayAgainContext();
+        private NLog.Logger _log = NLog.LogManager.GetLogger("uPlayAgain");
 
         // GET: api/Transactions
         public IQueryable<Transaction> GetTransactions()
@@ -87,7 +91,15 @@ namespace uPlayAgain.Controllers
             {
                 await db.SaveChangesAsync();
             }
-            catch(System.Exception ex)
+            catch (DbEntityValidationException ex)
+            {
+                StringBuilder sb = new StringBuilder();
+                ex.EntityValidationErrors.ToList().ForEach(entityValidation => { entityValidation.ValidationErrors.ToList().ForEach(validation => sb.Append(string.Concat(validation.PropertyName, " - ", validation.ErrorMessage))); });
+
+                _log.Error("{0}{1}Validation errors:{1}{2}", ex, Environment.NewLine, sb.ToString());
+                throw;
+            }
+            catch (Exception ex)
             {
                 BadRequest(ex.Message);
             }
