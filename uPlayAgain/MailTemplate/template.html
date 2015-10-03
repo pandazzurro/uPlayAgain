@@ -1,13 +1,71 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title></title>
-	<meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <style>
+        body {
+            background-color: #fbc170;
+        }
+
+        .box{
+            margin: auto;
+            max-height: 80%;
+            max-width: 60%;
+            background-color: #030555;
+            text-decoration-color: #ffffff;
+            color: #ffffff;
+        }
+        a:link, a:visited, a:hover, a:active {
+            color: #ffffff;
+            font-style:italic;
+        }
+        .headerImage {
+            background-image: url(cid:logo);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center center;     
+            margin: 15px;       
+        }
+
+        .headerText {
+            margin: 5px;
+            font-size: large;
+            text-align: center;            
+            margin: 15px;
+        }
+
+        .headerName {
+            text-transform: uppercase;
+            font-size: large;
+        }
+
+        .bodyText {
+            font-size: small;
+            text-align: justify;
+            margin: 15px;
+        }
+        .linkSection{
+            text-align: center;
+            font-size: x-large;
+            text-decoration-color: #ffffff;
+        }
+    </style>
 </head>
 <body>
-    <img src=cid:logo>
-    <a href="{URL}">Clicca qui</a>
-    {USER}
+    <div class="box">
+        <div class="headerImage"></div>
+        <div class="headerText">
+            <span class="headerName">{USER}</span> benvenuto sul sito <a href="http://www.uplayagain.com">UplayAgain</a>!
+        </div>
+        <div class="bodyText">
+            Lo staff del sito UPlayAgain ti fa un caloroso benvenuto ...
+            Inserire un corpo di testo con la presentazione dello staff o una presentazione del sito.
+            <br />            
+        </div>
+        <div class="linkSection">
+            Per attivare il tuo account e accedere al sito: <a href="{URL}" class="h3">Clicca qui</a>
+        </div>
+    </div>
 </body>
 </html>
