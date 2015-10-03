@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
@@ -6,30 +7,22 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using System.Web.Http.ModelBinding;
 using uPlayAgain.Models;
+using uPlayAgain.Utilities;
 
 namespace uPlayAgain.Controllers
 {
     public class UsersController : ApiController
     {
-        public class UserResponse
+        private uPlayAgainContext db;
+        private ApplicationUserManager _userManager;
+        private static readonly int PAGE_COUNT = 40;
+
+        public UsersController()
         {
-            public string Id;
-            public string Username;
-            public float FeedbackAvg;
-            public int FeedbackCount;
+            db = new uPlayAgainContext();
+            _userManager = new ApplicationUserManager(new UserStore<User>(db));
         }
-
-        public class MessageCountResponse
-        {
-            public int Incoming;
-            public int Outgoing;
-            public int Transactions;
-        }
-
-        private uPlayAgainContext db = new uPlayAgainContext();
-
         // GET: api/Users
         public IQueryable<User> GetUsers()
         {
@@ -40,29 +33,29 @@ namespace uPlayAgain.Controllers
         [ResponseType(typeof(UserResponse))]
         public async Task<IHttpActionResult> GetUser(int id)
         {
-            User user = await Task.Run(() => db.Users.FirstOrDefault(u => u.UserId == id));
+            User user = await db.Users.FirstOrDefaultAsync(u => u.UserId == id);
             if (user == null)
             {
                 return NotFound();
             }
 
-            IQueryable<Feedback> feedbacks = await Task.Run(() => db.Feedbacks.Where(f => f.UserId == user.Id));
-
-            UserResponse result = new UserResponse()
-            {
-                Id = user.Id,
-                Username = user.UserName,
-                FeedbackAvg = (float)feedbacks.Average(f => (float)f.Rate),
-                FeedbackCount = feedbacks.Count()
-            };
-
-            return Ok(result);
+            return Ok(
+                db.Feedbacks
+                  .Where(f => f.UserId == user.Id)
+                  .GroupBy(t => t.UserId, (key, g) => new { UserId = key, Feedback = g.ToList()})
+                  .Select(t => new UserResponse()
+                  {
+                      Id = user.Id,
+                      Username = user.UserName,
+                      FeedbackAvg = t.Feedback.Average(f => (float)f.Rate),
+                      FeedbackCount = t.Feedback.Count()
+                  }));
         }
 
 
         // GET: api/Users/5
         [Route("api/Users/Identity/{id}")]
-        [ResponseType(typeof(UserResponse))]
+        [ResponseType(typeof(int))]
         public async Task<IHttpActionResult> GetUserIdentity(string id)
         {
             User user = await Task.Run(() => db.Users.Find(id));
@@ -73,8 +66,7 @@ namespace uPlayAgain.Controllers
 
             return await GetUser(user.UserId);
         }
-
-
+        
         // PUT: api/Users/5
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> PutUser(int id, User user)
@@ -114,31 +106,6 @@ namespace uPlayAgain.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/Users
-        //[ResponseType(typeof(User))]
-        //public async Task<IHttpActionResult> PostUser(User user)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        List<ModelErrorCollection> errors = ModelState.Select(x => x.Value.Errors)
-        //                                                      .Where(y => y.Count > 0)
-        //                                                      .ToList();
-
-        //        return BadRequest(ModelState);
-        //    }
-
-        //    if (db.Users.Where(u => u.UserName.CompareTo(user.UserName) == 0 && u.Provider.CompareTo(user.Provider) == 0).Any())
-        //    {
-        //        return BadRequest("Utente già presente");                
-        //    }
-        //    else
-        //    {
-        //        db.Users.Add(user);
-        //        await db.SaveChangesAsync();
-        //        return CreatedAtRoute("DefaultApi", new { id = user.UserId }, user);
-        //    }            
-        //}
-
         // DELETE: api/Users/5
         [ResponseType(typeof(User))]
         public async Task<IHttpActionResult> DeleteUser(int id)
@@ -150,6 +117,10 @@ namespace uPlayAgain.Controllers
             }
 
             db.Users.Remove(user);
+            db.Libraries.Where(t => t.UserId == user.Id).ToList().ForEach(lib =>
+            {
+                db.Libraries.Remove(lib);
+            });            
             await db.SaveChangesAsync();
 
             return Ok(user);
@@ -160,8 +131,7 @@ namespace uPlayAgain.Controllers
         [ResponseType(typeof(Transaction))]
         public async Task<IHttpActionResult> CheckByUsername(string username)
         {
-            bool exist = await db.Users.Where(t => string.Compare(t.UserName,username, true) == 0).AnyAsync();
-            if (!exist)
+            if (await _userManager.FindByNameAsync(username) == null)
                 return NotFound();
             return Ok();
         }
@@ -171,35 +141,14 @@ namespace uPlayAgain.Controllers
         // GET: api/Messages/ByUser/5
         [Route("api/Messages/ByUser/{id}/transactions/{page}")]
         [ResponseType(typeof(Transaction))]
-        public async Task<IHttpActionResult> GetTransactionByUser(string id, ushort page)
+        public IQueryable<Transaction> GetTransactionByUser(string id, ushort page)
         {
-            IQueryable<Transaction> transactions = await Task.Run(() => db.Transactions
-                .Where(t => t.UserProponent_Id == id || t.UserReceiving_Id == id));
-
-            transactions = await Task.Run(() => transactions.Where(t => t.Proposals.Count > 0)
-                .OrderByDescending(t => t.Proposals.OrderByDescending(p => p.DateStart).FirstOrDefault().DateStart)
-                .Skip((page - 1) * PAGE_COUNT)
-                .Take(PAGE_COUNT));
-
-            return Ok(transactions.ToListAsync());
-            /*
-            // Esplicito di caricare gli oggetti Game, ProposalComponent e Library Component!
-            await db.Proposals.LoadAsync();
-            await db.ProposalComponents.LoadAsync();
-            await db.LibraryComponents.LoadAsync();
-            // Esplicito di caricare gli oggetti Game!
-            await db.Games.LoadAsync();
-            await db.Genres.LoadAsync();
-            await db.Platforms.LoadAsync();
-            await db.GameLanguages.LoadAsync();
-            await db.Status.LoadAsync();
-
-            List<User> users = await db.Users
-                                       .Include(t => t.TransactionsProponent)
-                                       .Include(t => t.TransactionsReceiving)
-                                       .Where(t => t.UserId == id)
-                                       .ToListAsync();
-            return Ok(users);*/
+            return db.Transactions
+                  .Where(t => t.UserProponent_Id == id || t.UserReceiving_Id == id)
+                  .Where(t => t.Proposals.Count > 0)
+                  .OrderByDescending(t => t.Proposals.OrderByDescending(p => p.DateStart).FirstOrDefault().DateStart)
+                  .Skip((page - 1) * PAGE_COUNT)
+                  .Take(PAGE_COUNT);
         }
 
 
@@ -208,72 +157,45 @@ namespace uPlayAgain.Controllers
         [ResponseType(typeof(MessageCountResponse))]
         public async Task<IHttpActionResult> GetMessages(string id)
         {
-            /*
-            User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
-            if (user == null)
+            IQueryable<Message> incoming = db.Messages.Where(m => m.UserReceiving_Id == id && !m.IsAlreadyRead);
+
+            IQueryable<Message> outgoing = db.Messages.Where(m => m.UserProponent_Id == id && !m.IsAlreadyRead);
+
+            IQueryable<Transaction> transactions = db.Transactions
+                                                     .Where(t => t.UserProponent_Id == id || t.UserReceiving_Id == id)
+                                                     .Where(t => t.Proposals.Count > 0)
+                                                     .Where(t => t.TransactionStatus != TransactionStatus.Conclusa);
+
+            return Ok(new MessageCountResponse
             {
-                return NotFound();
-            }*/
-            
-            IQueryable<Message> incoming = await Task.Run(() => db.Messages
-                .Where(m => m.UserReceiving_Id == id && !m.IsAlreadyRead));
-
-            IQueryable<Message> outgoing = await Task.Run(() => db.Messages
-                .Where(m => m.UserProponent_Id == id && !m.IsAlreadyRead));
-
-            IQueryable<Transaction> transactions = await Task.Run(() =>  db.Transactions
-                .Where(t => t.UserProponent_Id == id || t.UserReceiving_Id == id)
-                .Where(t => t.Proposals.Count > 0)
-                .Where(t => t.TransactionStatus != TransactionStatus.Conclusa));
-
-            MessageCountResponse result = new MessageCountResponse()
-            {
-                Incoming = incoming.Count(),
-                Outgoing = outgoing.Count(),
-                Transactions = transactions.Count()
-            };
-            /*
-            List<User> users = await db.Users
-                                       .Include(t => t.MessagesIn)
-                                       .Include(t => t.MessagesIn.Select(p => p.UserProponent))
-                                       .Include(t => t.MessagesIn.Select(p => p.UserReceiving))
-                                       .Include(t => t.MessagesOut)
-                                       .Include(t => t.MessagesOut.Select(p => p.UserProponent))
-                                       .Include(t => t.MessagesOut.Select(p => p.UserReceiving))
-                                       .Where(t => t.UserId == id)
-                                       .ToListAsync();
-            */
-            return Ok(result);
+                Incoming = await incoming.CountAsync(),
+                Outgoing = await outgoing.CountAsync(),
+                Transactions = await transactions.CountAsync()
+            });
         }
-
-        private static readonly int PAGE_COUNT = 40;
-
+        
         // GET: api/Messages/ByUser/5
         [Route("api/Messages/ByUser/{id}/incoming/{page}")]
         [ResponseType(typeof(Message))]
-        public async Task<IHttpActionResult> GetIncomingMessages(string id, ushort page)
+        public IQueryable<Message> GetIncomingMessages(string id, ushort page)
         {
-            IQueryable<Message> incoming = await Task.Run(() => db.Messages
-                .Where(m => m.UserReceiving_Id == id)
-                .OrderByDescending(m => m.MessageDate)
-                .Skip((page - 1) * PAGE_COUNT)
-                .Take(PAGE_COUNT));
-
-            return Ok(incoming.ToListAsync());
+            return db.Messages
+                     .Where(m => m.UserReceiving_Id == id)
+                     .OrderByDescending(m => m.MessageDate)
+                     .Skip((page - 1) * PAGE_COUNT)
+                     .Take(PAGE_COUNT);
         }
 
         // GET: api/Messages/ByUser/5
         [Route("api/Messages/ByUser/{id}/outgoing/{page}")]
         [ResponseType(typeof(Message))]
-        public async Task<IHttpActionResult> GetOutgoingMessages(string id, ushort page)
+        public IQueryable<Message> GetOutgoingMessages(string id, ushort page)
         {
-            IQueryable<Message> outgoing = await Task.Run(() => db.Messages
-                .Where(m => m.UserProponent_Id == id)
-                .OrderByDescending(m => m.MessageDate)
-                .Skip((page - 1) * PAGE_COUNT)
-                .Take(PAGE_COUNT));
-
-            return Ok(outgoing.ToListAsync());
+            return db.Messages
+                     .Where(m => m.UserProponent_Id == id)
+                     .OrderByDescending(m => m.MessageDate)
+                     .Skip((page - 1) * PAGE_COUNT)
+                     .Take(PAGE_COUNT);
         }
 
 
