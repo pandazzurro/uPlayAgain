@@ -1,6 +1,9 @@
 (function() {
   var COOKIE_ID = '__UPA__LOGIN__COOKIE__';
-  var app = angular.module('gxc', ['gxc.factories', 'gxc.services', 'gxc.directives', 'gxc.templates', 'ngRoute', 'ngResource', 'ngCookies', 'ngImgCrop', 'uiGmapgoogle-maps']);
+  var app = angular.module('gxc', ['gxc.factories', 'gxc.services',
+      'gxc.directives.games', 'gxc.directives.mail', 'gxc.directives.misc', 'gxc.directives.user',
+      'gxc.templates', 'ngRoute', 'ngResource', 'ngCookies', 'ngImgCrop',
+      'uiGmapgoogle-maps']);
 
   // http://stackoverflow.com/questions/20506360/angular-repeat-span-n-times
   app.filter('range', function() {
