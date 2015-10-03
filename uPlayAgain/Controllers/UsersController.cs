@@ -13,6 +13,21 @@ namespace uPlayAgain.Controllers
 {
     public class UsersController : ApiController
     {
+        public class UserResponse
+        {
+            public string Id;
+            public string Username;
+            public float FeedbackAvg;
+            public int FeedbackCount;
+        }
+
+        public class MessageCountResponse
+        {
+            public int Incoming;
+            public int Outgoing;
+            public int Transactions;
+        }
+
         private uPlayAgainContext db = new uPlayAgainContext();
 
         // GET: api/Users
@@ -22,7 +37,7 @@ namespace uPlayAgain.Controllers
         }
 
         // GET: api/Users/5
-        [ResponseType(typeof(User))]
+        [ResponseType(typeof(UserResponse))]
         public async Task<IHttpActionResult> GetUser(int id)
         {
             User user = await Task.Run(() => db.Users.FirstOrDefault(u => u.UserId == id));
@@ -31,12 +46,23 @@ namespace uPlayAgain.Controllers
                 return NotFound();
             }
 
-            return Ok(user);
+            IQueryable<Feedback> feedbacks = await Task.Run(() => db.Feedbacks.Where(f => f.UserId == user.Id));
+
+            UserResponse result = new UserResponse()
+            {
+                Id = user.Id,
+                Username = user.UserName,
+                FeedbackAvg = (float)feedbacks.Average(f => (float)f.Rate),
+                FeedbackCount = feedbacks.Count()
+            };
+
+            return Ok(result);
         }
+
 
         // GET: api/Users/5
         [Route("api/Users/Identity/{id}")]
-        [ResponseType(typeof(User))]
+        [ResponseType(typeof(UserResponse))]
         public async Task<IHttpActionResult> GetUserIdentity(string id)
         {
             User user = await Task.Run(() => db.Users.Find(id));
@@ -45,8 +71,9 @@ namespace uPlayAgain.Controllers
                 return NotFound();
             }
 
-            return Ok(user);
+            return await GetUser(user.UserId);
         }
+
 
         // PUT: api/Users/5
         [ResponseType(typeof(void))]
@@ -142,16 +169,20 @@ namespace uPlayAgain.Controllers
 
         #region ExtractByUser
         // GET: api/Messages/ByUser/5
-        [Route("api/Transactions/ByUser/{id:int}")]
+        [Route("api/Messages/ByUser/{id}/transactions/{page}")]
         [ResponseType(typeof(Transaction))]
-        public async Task<IHttpActionResult> GetTransactionByUser(int id)
+        public async Task<IHttpActionResult> GetTransactionByUser(string id, ushort page)
         {
-            User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
-            if (user == null)
-            {
-                return NotFound();
-            }
+            IQueryable<Transaction> transactions = await Task.Run(() => db.Transactions
+                .Where(t => t.UserProponent_Id == id || t.UserReceiving_Id == id));
 
+            transactions = await Task.Run(() => transactions.Where(t => t.Proposals.Count > 0)
+                .OrderByDescending(t => t.Proposals.OrderByDescending(p => p.DateStart).FirstOrDefault().DateStart)
+                .Skip((page - 1) * PAGE_COUNT)
+                .Take(PAGE_COUNT));
+
+            return Ok(transactions.ToListAsync());
+            /*
             // Esplicito di caricare gli oggetti Game, ProposalComponent e Library Component!
             await db.Proposals.LoadAsync();
             await db.ProposalComponents.LoadAsync();
@@ -168,21 +199,40 @@ namespace uPlayAgain.Controllers
                                        .Include(t => t.TransactionsReceiving)
                                        .Where(t => t.UserId == id)
                                        .ToListAsync();
-            return Ok(users);
+            return Ok(users);*/
         }
 
 
         // GET: api/Messages/ByUser/5
-        [Route("api/Messages/ByUser/{id:int}")]
-        [ResponseType(typeof(Message))]
-        public async Task<IHttpActionResult> GetMessage(int id)
+        [Route("api/Messages/ByUser/{id}")]
+        [ResponseType(typeof(MessageCountResponse))]
+        public async Task<IHttpActionResult> GetMessages(string id)
         {
+            /*
             User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
             if (user == null)
             {
                 return NotFound();
-            }
+            }*/
+            
+            IQueryable<Message> incoming = await Task.Run(() => db.Messages
+                .Where(m => m.UserReceiving_Id == id && !m.IsAlreadyRead));
 
+            IQueryable<Message> outgoing = await Task.Run(() => db.Messages
+                .Where(m => m.UserProponent_Id == id && !m.IsAlreadyRead));
+
+            IQueryable<Transaction> transactions = await Task.Run(() =>  db.Transactions
+                .Where(t => t.UserProponent_Id == id || t.UserReceiving_Id == id)
+                .Where(t => t.Proposals.Count > 0)
+                .Where(t => t.TransactionStatus != TransactionStatus.Conclusa));
+
+            MessageCountResponse result = new MessageCountResponse()
+            {
+                Incoming = incoming.Count(),
+                Outgoing = outgoing.Count(),
+                Transactions = transactions.Count()
+            };
+            /*
             List<User> users = await db.Users
                                        .Include(t => t.MessagesIn)
                                        .Include(t => t.MessagesIn.Select(p => p.UserProponent))
@@ -192,9 +242,40 @@ namespace uPlayAgain.Controllers
                                        .Include(t => t.MessagesOut.Select(p => p.UserReceiving))
                                        .Where(t => t.UserId == id)
                                        .ToListAsync();
-
-            return Ok(users);
+            */
+            return Ok(result);
         }
+
+        private static readonly int PAGE_COUNT = 40;
+
+        // GET: api/Messages/ByUser/5
+        [Route("api/Messages/ByUser/{id}/incoming/{page}")]
+        [ResponseType(typeof(Message))]
+        public async Task<IHttpActionResult> GetIncomingMessages(string id, ushort page)
+        {
+            IQueryable<Message> incoming = await Task.Run(() => db.Messages
+                .Where(m => m.UserReceiving_Id == id)
+                .OrderByDescending(m => m.MessageDate)
+                .Skip((page - 1) * PAGE_COUNT)
+                .Take(PAGE_COUNT));
+
+            return Ok(incoming.ToListAsync());
+        }
+
+        // GET: api/Messages/ByUser/5
+        [Route("api/Messages/ByUser/{id}/outgoing/{page}")]
+        [ResponseType(typeof(Message))]
+        public async Task<IHttpActionResult> GetOutgoingMessages(string id, ushort page)
+        {
+            IQueryable<Message> outgoing = await Task.Run(() => db.Messages
+                .Where(m => m.UserProponent_Id == id)
+                .OrderByDescending(m => m.MessageDate)
+                .Skip((page - 1) * PAGE_COUNT)
+                .Take(PAGE_COUNT));
+
+            return Ok(outgoing.ToListAsync());
+        }
+
 
         // GET: api/Libraries/ByUser/5
         [Route("api/Libraries/ByUser/{id:int}")]
