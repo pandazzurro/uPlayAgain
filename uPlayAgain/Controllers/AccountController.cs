@@ -12,6 +12,10 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using uPlayAgain.Models;
 using uPlayAgain.Results;
+using System.Web;
+using System.Text;
+using uPlayAgain.Utilities;
+using System.Data.Entity;
 
 namespace uPlayAgain.Controllers
 {
@@ -19,44 +23,127 @@ namespace uPlayAgain.Controllers
     public class AccountController : ApiController
     {
         private AuthRepository _repo = null;
-        private uPlayAgainContext db = new uPlayAgainContext();
+        private uPlayAgainContext db;
+        private UserManager<User> _userManager;
+        private SignInManager<User, string> _signInManager;
         private IAuthenticationManager Authentication
         {
-            get { return Request.GetOwinContext().Authentication; }
+            get
+            {
+                if (Request != null)
+                    return Request.GetOwinContext().Authentication;
+                return HttpContext.Current.GetOwinContext().Authentication;
+            }
         }
+        private NLog.Logger _log = NLog.LogManager.GetLogger("uPlayAgain");
 
         public AccountController()
         {
             _repo = new AuthRepository();
+            db = new uPlayAgainContext();
+            _userManager = new ApplicationUserManager(new UserStore<User>(db));
+            _signInManager = new SignInManager<User, string>(_userManager, Authentication);
         }
 
+        // POST api/Account/Login
+        [AllowAnonymous]
+        [Route("Login")]
+        public async Task<IHttpActionResult> LogIn(UserLogin user)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Verifica mail abilitata
+            User userLogin = await _userManager.FindAsync(user.Username, user.Password);
+            if (userLogin != null)
+            {
+                if (!await _userManager.IsEmailConfirmedAsync(userLogin.Id))
+                {
+                    return BadRequest("L'utente non ha ancora confermato l'indirizzo mail. Il login non può essere effettuato");
+                }
+            }
+            // Login effettivo
+
+            SignInStatus status = await _signInManager.PasswordSignInAsync(user.Username, user.Password, true, true);
+            if (status == SignInStatus.LockedOut)
+                return BadRequest("L'utente risulta bloccato");
+            if (status == SignInStatus.Success)
+            {
+                await SignInAsync(userLogin, true);
+
+                if (userLogin.LastLogin == DateTimeOffset.MinValue || userLogin.LastLogin < DateTimeOffset.Now)
+                    userLogin.LastLogin = DateTimeOffset.Now;
+
+                db.Entry(userLogin).State = EntityState.Modified;
+                await db.SaveChangesAsync();
+                return Ok(userLogin);
+            }
+            if (status == SignInStatus.Failure)
+            {
+                return BadRequest("Login errato");
+            }
+            if (status == SignInStatus.RequiresVerification)
+            {
+                // TODO: redirect sulla pagina di rigenerazione del token
+                //string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                //var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                //await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                //return RedirectToAction("ForgotPasswordConfirmation", "Account");
+                return BadRequest("L'utente non ha ancora confermato l'indirizzo mail. Il login non può essere effettuato");
+            }
+
+            return NotFound();
+        }
+
+        private async Task SignInAsync(User user, bool isPersistent)
+        {
+            Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
+            ClaimsIdentity identity = await _userManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
+            Authentication.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, identity);
+        }
+        
+        [HttpGet]
+        [Route("ValidateMail/{userId}/{token}")]
+        public async Task ValidateMailConfirmationToken(string userId, string token)
+        {
+            string decode = Encoding.Default.GetString(HttpServerUtility.UrlTokenDecode(token));
+            bool result = await _repo.ValidateMailTokenAndConfirm(userId, decode);
+            if (result)
+                Redirect(System.Web.HttpContext.Current.Request.Url.AbsoluteUri);
+            else
+                BadRequest("Errore, token non valido per questo utente. Generare un nuovo token");
+        }
         // POST api/Account/Register
         [AllowAnonymous]
         [Route("Register")]
-        public async Task<IHttpActionResult> Register(User userModel)
+        public async Task<IHttpActionResult> Register(UserLogin userModel) // UserLogin
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    return BadRequest(ModelState);
-            //}
-
-            IdentityResult result = await _repo.RegisterUser(userModel);
-
-            IHttpActionResult errorResult = GetErrorResult(result);
-
-            if (errorResult != null)
+            try
             {
-                return errorResult;
+                IdentityResult result = await _repo.RegisterUser(userModel);
+                IHttpActionResult errorResult = GetErrorResult(result);
+                if (errorResult != null)
+                {
+                    return errorResult;
+                }
+                else
+                {
+                    // Aggiungo una libreria all'utente
+                    User newUser = await _repo.FindUser(userModel.Username, userModel.Password);
+                    // Segnalo ad EF che è l'utente non deve essere inserito! Viene inserito in precedenza.
+                    db.Entry(newUser).State = System.Data.Entity.EntityState.Unchanged;
+                    db.Libraries.Add(new Library() { User = newUser });
+                    await db.SaveChangesAsync();
+                    return Ok();
+                }                
             }
-            else
+            catch(Exception ex)
             {
-                // Aggiungo una libreria all'utente
-                User newUser = db.Users.Where(t => t.UserName == userModel.UserName && t.Email == userModel.Email).FirstOrDefault();
-                db.Libraries.Add(new Library() { User = newUser });
-                await db.SaveChangesAsync();
-            }
-
-            return Ok();
+                _log.Error(ex);
+                return BadRequest("Errore" + ex.Message);
+            }                
         }
 
         // POST api/Account/RegisterExternal

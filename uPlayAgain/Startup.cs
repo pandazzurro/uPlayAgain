@@ -10,6 +10,11 @@ using System.Web.Http.Validation;
 using Microsoft.Owin.Security.Cookies;
 using System.Security.Claims;
 using System.Web.Helpers;
+using Microsoft.Owin.Security.DataProtection;
+using uPlayAgain.Models;
+using uPlayAgain.Utilities;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.AspNet.Identity;
 
 [assembly: OwinStartup(typeof(uPlayAgain.Startup))]
 namespace uPlayAgain
@@ -19,14 +24,14 @@ namespace uPlayAgain
         public static OAuthBearerAuthenticationOptions OAuthBearerOptions { get; private set; }
         public static GoogleOAuth2AuthenticationOptions googleAuthOptions { get; private set; }
         public static FacebookAuthenticationOptions facebookAuthOptions { get; private set; }
+        public static IDataProtectionProvider DataProtectionProvider { get; set; }
 
         public void Configuration(IAppBuilder app)
         {
             HttpConfiguration config = new HttpConfiguration();
-
             WebApiConfig.Register(config);
             // Pulire la validazione
-            config.Services.Clear(typeof(System.Web.Http.Validation.ModelValidatorProvider));
+            config.Services.Clear(typeof(ModelValidatorProvider));
             // Configura il model validator corretto
             GlobalConfiguration.Configuration.Services.Replace(typeof(IBodyModelValidator), new CustomBodyModelValidator());
             ////Webapi
@@ -42,11 +47,29 @@ namespace uPlayAgain
 
         public void ConfigureOAuth(IAppBuilder app)
         {
+            DataProtectionProvider = app.GetDataProtectionProvider();
+            app.CreatePerOwinContext<uPlayAgainContext>(uPlayAgainContext.Create);
+            app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
+
             // Enable the application to use a cookie to store information for the signed in user
-            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            CookieAuthenticationOptions option = new CookieAuthenticationOptions
             {
-                AuthenticationType = Microsoft.AspNet.Identity.DefaultAuthenticationTypes.ApplicationCookie,
-                LoginPath = new PathString("/Account/LogOn")
+                AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
+                LoginPath = new PathString("/Account/Login"),
+                Provider = new CookieAuthenticationProvider
+                {
+                    // Enables the application to validate the security stamp when the user logs in.
+                    // This is a security feature which is used when you change a password or add an external login to your account.  
+                    OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, User>(
+                    validateInterval: TimeSpan.FromMinutes(30),
+                    regenerateIdentity: (manager, user) => user.GenerateUserIdentityAsync(manager, user))
+                }
+            };
+
+            app.UseCookieAuthentication(option);
+            app.Use(async (Context, next) =>
+            {
+                await next.Invoke();
             });
 
             AntiForgeryConfig.UniqueClaimTypeIdentifier = ClaimTypes.NameIdentifier;
@@ -55,8 +78,7 @@ namespace uPlayAgain
             app.UseExternalSignInCookie(Microsoft.AspNet.Identity.DefaultAuthenticationTypes.ExternalCookie);
             OAuthBearerOptions = new OAuthBearerAuthenticationOptions();
 
-            OAuthAuthorizationServerOptions OAuthServerOptions = new OAuthAuthorizationServerOptions() {
-            
+            OAuthAuthorizationServerOptions OAuthServerOptions = new OAuthAuthorizationServerOptions() {            
                 AllowInsecureHttp = true,
                 TokenEndpointPath = new PathString("/token"),
                 AccessTokenExpireTimeSpan = TimeSpan.FromMinutes(30),
@@ -84,8 +106,9 @@ namespace uPlayAgain
                 AppSecret = "xxxxxx",
                 Provider = new FacebookAuthProvider()
             };
-            app.UseFacebookAuthentication(facebookAuthOptions);
-
+            app.UseFacebookAuthentication(facebookAuthOptions);           
         }
+
+
     }
 }

@@ -61,7 +61,7 @@ namespace uPlayAgain.Controllers
                 User userToSave = await db.Users.Where(p => p.UserId == id).FirstOrDefaultAsync();
                 userToSave.Image = user.Image;
                 userToSave.Email = user.Email;
-                userToSave.Password = user.Password;
+                userToSave.PasswordHash = user.PasswordHash;
                 userToSave.PositionUser = user.PositionUser;
                 userToSave.Provider = user.Provider;
                 userToSave.UserName = user.UserName;
@@ -88,29 +88,29 @@ namespace uPlayAgain.Controllers
         }
 
         // POST: api/Users
-        [ResponseType(typeof(User))]
-        public async Task<IHttpActionResult> PostUser(User user)
-        {
-            if (!ModelState.IsValid)
-            {
-                List<ModelErrorCollection> errors = ModelState.Select(x => x.Value.Errors)
-                                                              .Where(y => y.Count > 0)
-                                                              .ToList();
+        //[ResponseType(typeof(User))]
+        //public async Task<IHttpActionResult> PostUser(User user)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        List<ModelErrorCollection> errors = ModelState.Select(x => x.Value.Errors)
+        //                                                      .Where(y => y.Count > 0)
+        //                                                      .ToList();
 
-                return BadRequest(ModelState);
-            }
+        //        return BadRequest(ModelState);
+        //    }
 
-            if (db.Users.Where(u => u.UserName.CompareTo(user.UserName) == 0 && u.Provider.CompareTo(user.Provider) == 0).Any())
-            {
-                return BadRequest("Utente già presente");                
-            }
-            else
-            {
-                db.Users.Add(user);
-                await db.SaveChangesAsync();
-                return CreatedAtRoute("DefaultApi", new { id = user.UserId }, user);
-            }            
-        }
+        //    if (db.Users.Where(u => u.UserName.CompareTo(user.UserName) == 0 && u.Provider.CompareTo(user.Provider) == 0).Any())
+        //    {
+        //        return BadRequest("Utente già presente");                
+        //    }
+        //    else
+        //    {
+        //        db.Users.Add(user);
+        //        await db.SaveChangesAsync();
+        //        return CreatedAtRoute("DefaultApi", new { id = user.UserId }, user);
+        //    }            
+        //}
 
         // DELETE: api/Users/5
         [ResponseType(typeof(User))]

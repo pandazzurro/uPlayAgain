@@ -42,7 +42,7 @@
         get: { url: app.webapi + '/api/users/:userId', method: 'GET', isArray: false },
         checkUsername: { url: app.webapi + '/api/users/Exists/:username', method: 'GET', isArray: false },
         byId: { url: app.webapi + '/api/users/identity/:userId', method: 'GET', isArray: false },
-        login: { url: app.webapi + '/api/auth', method: 'POST', isArray: false },
+        login: { url: app.webapi + '/api/account/login', method: 'POST', isArray: false },
         register: { url: app.webapi + '/api/account/register', method: 'POST', isArray: true },
         update: { url: app.webapi + '/api/users/:userId', method: 'PUT', isArray: false },
         remove: { url: app.webapi + '/api/users/:userId', method: 'DELETE', isArray: false }

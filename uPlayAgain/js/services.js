@@ -32,8 +32,8 @@
     this.login = function(username, password) {
       var queryParameters = {
           Username: username,
-          Password: password,
-          ConfirmPassword: password
+          Password: password//,
+          //ConfirmPassword: password
       };
       
       gxcFct.user.login(queryParameters).$promise

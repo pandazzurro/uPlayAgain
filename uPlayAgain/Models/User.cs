@@ -6,6 +6,9 @@ using Newtonsoft.Json;
 using uPlayAgain.Converters;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using uPlayAgain.Utilities;
 
 namespace uPlayAgain.Models
 {
@@ -25,31 +28,35 @@ namespace uPlayAgain.Models
             Feedbacks = new HashSet<Feedback>();
             Proposals = new HashSet<Proposal>();
         }
-        
+
+        [Key]
+        public override string Id
+        {
+            get { return base.Id; }
+            set { base.Id = value; }
+        }
+
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UserId { get; set; }        
 
         [Required]
         public override string UserName { get; set; }
 
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
-        [DataType(DataType.Password)]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        public string ConfirmPassword { get; set; }
+        [JsonIgnore]
         public byte[] Image { get; set; }
+        [JsonIgnore]
         public string Provider { get; set; }
-        [DataType(DataType.EmailAddress)]
-        public override string Email { get; set; }
-
-        
         [JsonConverter(typeof(DbGeographyConverter))]
+        [JsonIgnore]
         public DbGeography PositionUser { get; set; }
+        [JsonIgnore]
         public DateTimeOffset LastLogin { get; set; }
 
-        #region OverrideIdentityUser
+        #region [ Overrides ]
+        [DataType(DataType.EmailAddress)]
+        [JsonIgnore]
+        public override string Email { get; set; }
+        
         [JsonIgnore]
         public override int AccessFailedCount
         {
@@ -63,7 +70,6 @@ namespace uPlayAgain.Models
                 base.AccessFailedCount = value;
             }
         }
-
         [JsonIgnore]
         public override ICollection<IdentityUserClaim> Claims
         {
@@ -72,7 +78,6 @@ namespace uPlayAgain.Models
                 return base.Claims;
             }
         }
-
         [JsonIgnore]
         public override bool EmailConfirmed
         {
@@ -86,21 +91,6 @@ namespace uPlayAgain.Models
                 base.EmailConfirmed = value;
             }
         }
-
-        [Key]
-        public override string Id
-        {
-            get
-            {
-                return base.Id;
-            }
-
-            set
-            {
-                base.Id = value;
-            }
-        }
-
         [JsonIgnore]
         public override bool LockoutEnabled
         {
@@ -114,7 +104,6 @@ namespace uPlayAgain.Models
                 base.LockoutEnabled = value;
             }
         }
-
         [JsonIgnore]
         public override DateTime? LockoutEndDateUtc
         {
@@ -128,7 +117,7 @@ namespace uPlayAgain.Models
                 base.LockoutEndDateUtc = value;
             }
         }
-
+        
         [JsonIgnore]
         public override ICollection<IdentityUserLogin> Logins
         {
@@ -137,7 +126,6 @@ namespace uPlayAgain.Models
                 return base.Logins;
             }
         }
-
         [JsonIgnore]
         public override string PasswordHash
         {
@@ -151,7 +139,6 @@ namespace uPlayAgain.Models
                 base.PasswordHash = value;
             }
         }
-
         [JsonIgnore]
         public override string PhoneNumber
         {
@@ -165,7 +152,6 @@ namespace uPlayAgain.Models
                 base.PhoneNumber = value;
             }
         }
-
         [JsonIgnore]
         public override bool PhoneNumberConfirmed
         {
@@ -179,7 +165,6 @@ namespace uPlayAgain.Models
                 base.PhoneNumberConfirmed = value;
             }
         }
-
         [JsonIgnore]
         public override ICollection<IdentityUserRole> Roles
         {
@@ -188,7 +173,6 @@ namespace uPlayAgain.Models
                 return base.Roles;
             }
         }
-
         [JsonIgnore]
         public override string SecurityStamp
         {
@@ -202,7 +186,6 @@ namespace uPlayAgain.Models
                 base.SecurityStamp = value;
             }
         }
-
         [JsonIgnore]
         public override bool TwoFactorEnabled
         {
@@ -218,7 +201,6 @@ namespace uPlayAgain.Models
         }
         #endregion
 
-
         #region NavigationProperty
         public virtual ICollection<Feedback> Feedbacks { get; set; }
         public virtual ICollection<Transaction> TransactionsProponent { get; set; }
@@ -229,5 +211,9 @@ namespace uPlayAgain.Models
         public virtual ICollection<Proposal> Proposals { get; set; }
         #endregion
 
+        public Task<ClaimsIdentity> GenerateUserIdentityAsync(ApplicationUserManager manager, User user)
+        {
+            return manager.CreateIdentityAsync(user, "UPlayAgainAuth");
+        }
     }
 }

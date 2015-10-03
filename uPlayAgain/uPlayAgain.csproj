@@ -227,6 +227,9 @@
     <Content Include="js\services.js" />
     <Content Include="js\templates.js" />
     <Content Include="js\test.js" />
+    <Content Include="MailTemplate\template.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="partials\games.html" />
     <Content Include="partials\mailbox.html" />
     <Content Include="partials\message.html" />
@@ -466,7 +469,6 @@
     <Compile Include="AuthRepository.cs" />
     <Compile Include="BaseProxy.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\AuthController.cs" />
     <Compile Include="Controllers\CounterController.cs" />
     <Compile Include="Controllers\FeedbacksController.cs" />
     <Compile Include="Controllers\GameImportController.cs" />
@@ -515,6 +517,7 @@
     <Compile Include="Models\TransactionStatus.cs" />
     <Compile Include="Models\uPlayAgainContext.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\UserLogin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\FacebookAuthProvider.cs" />
     <Compile Include="Providers\GoogleAuthProvider.cs" />
@@ -522,6 +525,9 @@
     <Compile Include="Results\ChallengeResult.cs" />
     <Compile Include="Providers\SimpleAuthorizationServerProvider.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Utilities\ApplicationUserManager.cs" />
+    <Compile Include="Utilities\EmailService.cs" />
+    <Compile Include="Utilities\PasswordHasher.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

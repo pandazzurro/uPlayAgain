@@ -6,6 +6,8 @@ namespace uPlayAgain.Models
 {
     public class uPlayAgainContext : IdentityDbContext<User>
     {
+        private NLog.Logger _log = NLog.LogManager.GetLogger("uPlayAgain");
+
         public DbSet<Game> Games { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Platform> Platforms { get; set; }
@@ -26,7 +28,7 @@ namespace uPlayAgain.Models
             this.Configuration.ProxyCreationEnabled = false;
             this.Configuration.LazyLoadingEnabled = false;            
             // Log query DB
-            this.Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
+            this.Database.Log = s => _log.Info(s);
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -98,6 +100,11 @@ namespace uPlayAgain.Models
             modelBuilder.Entity<IdentityUserLogin>().ToTable("UserLogins");
             modelBuilder.Entity<IdentityUserClaim>().ToTable("UserClaims");
             return modelBuilder;
+        }
+
+        public static uPlayAgainContext Create()
+        {
+            return new uPlayAgainContext();
         }
 
     }
