@@ -222,7 +222,10 @@
     <Content Include="js\core\lodash.js" />
     <Content Include="js\core\lodash.min.js" />
     <Content Include="js\core\ng-img-crop.js" />
-    <Content Include="js\directives.js" />
+    <Content Include="js\directives-games.js" />
+    <Content Include="js\directives-mail.js" />
+    <Content Include="js\directives-misc.js" />
+    <Content Include="js\directives-user.js" />
     <Content Include="js\factories.js" />
     <Content Include="js\services.js" />
     <Content Include="js\templates.js" />
