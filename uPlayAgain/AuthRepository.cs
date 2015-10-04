@@ -52,12 +52,13 @@ namespace uPlayAgain
                     string token = await _userManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     string encode = HttpServerUtility.UrlTokenEncode(Encoding.UTF8.GetBytes(token));
                     // Settare il callback url che abilita l'utente.
-                    Uri callbackUrl = new Uri(String.Format("{0}/api/account/ValidateMail/{1}/{2}", HttpContext.Current.Request.Url.AbsoluteUri.Replace(HttpContext.Current.Request.Url.AbsolutePath.ToString(), ""), user.Id, encode));
+                    Uri callbackUrl = new Uri(String.Format("{0}/mail-activation.html?userId={1}&token={2}", HttpContext.Current.Request.Url.AbsoluteUri.Replace(HttpContext.Current.Request.Url.AbsolutePath.ToString(), ""), user.Id, encode));
 
                     // Caricare il testo della mail e riempire i dati
                     string mailText = File.ReadAllText(HttpContext.Current.Server.MapPath("~/MailTemplate/template.html"));
                     mailText = mailText.Replace("{URL}", callbackUrl.ToString());
                     mailText = mailText.Replace("{USER}", user.UserName);
+                    mailText = mailText.Replace("{USERPIC}", Convert.ToBase64String(user.Image));                    
 
                     await _userManager.SendEmailAsync(user.Id,"UplayAgain ti da il benvenuto. Conferma la tua password!", mailText);
                 }
@@ -83,14 +84,20 @@ namespace uPlayAgain
             if(result.Errors.Any())
             {
                 _log.Error(string.Concat(result.Errors));
+                return false;
             }
             return result.Succeeded;
         }
 
         public async Task<User> FindUser(string userName, string password)
         {
-            User user = await _userManager.FindAsync(userName, password);
-            
+            User user = await _userManager.FindAsync(userName, password);            
+            return user;
+        }
+
+        public async Task<User> FindByIdAsync(string userId)
+        {
+            User user = await _userManager.FindByIdAsync(userId);
             return user;
         }
 

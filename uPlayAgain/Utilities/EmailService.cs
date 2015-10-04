@@ -25,31 +25,28 @@ namespace uPlayAgain.Utilities
                 var pwd = ConfigurationManager.AppSettings["emailPassword"];
 
                 // Configure the client:
-                client = new SmtpClient(ConfigurationManager.AppSettings["smtpClient"]);
-                //client.Port = 587;
-                client.Port = 25;
-                client.DeliveryMethod = SmtpDeliveryMethod.Network;
-                client.UseDefaultCredentials = false;
-
-                // Create the credentials:
-                NetworkCredential credentials = new NetworkCredential(credentialUserName, pwd);
-                //client.EnableSsl = true;
-                client.EnableSsl = false;
-                client.Credentials = credentials;
+                client = new SmtpClient(ConfigurationManager.AppSettings["smtpClient"])
+                {
+                    Port = 25,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    UseDefaultCredentials = false,
+                    EnableSsl = false,
+                    Credentials = new NetworkCredential(credentialUserName, pwd)
+                };
 
                 // Creazione logo
-                LinkedResource logo = new LinkedResource(HttpContext.Current.Server.MapPath("~/css/images/logo.png"));
-                logo.ContentId = "logo";
-                logo.ContentType = new ContentType("image/jpg");
                 AlternateView av = AlternateView.CreateAlternateViewFromString(message.Body, null, MediaTypeNames.Text.Html);
-                av.LinkedResources.Add(logo);
+                //av.LinkedResources.Add(await CreateEmbeddedImageAsync(HttpContext.Current.Server.MapPath("~/css/images/logo.png"), "logo"));
 
                 // Create the message:
-                MailMessage mail = new MailMessage(sentFrom, message.Destination);
-                mail.IsBodyHtml = true;
-                mail.Priority = MailPriority.High;
+                MailMessage mail = new MailMessage(sentFrom, message.Destination)
+                {
+                    IsBodyHtml = true,
+                    Priority = MailPriority.High,
+                    From = new MailAddress(ConfigurationManager.AppSettings["emailFrom"], "UPlayAgain"),
+                    Subject = message.Subject
+                };
                 mail.AlternateViews.Add(av);
-                mail.From = new MailAddress(ConfigurationManager.AppSettings["emailFrom"]);
                 mail.To.Add(new MailAddress(message.Destination));
                 mail.Subject = message.Subject;
 
@@ -64,6 +61,16 @@ namespace uPlayAgain.Utilities
             {
                 client.Dispose();
             }
-        }        
+        }       
+        
+        private async Task<LinkedResource> CreateEmbeddedImageAsync(string path, string CID)
+        {
+            return await Task.Run(() => {
+                LinkedResource image = new LinkedResource(path);
+                image.ContentId = CID;
+                image.ContentType = new ContentType("image/jpg");
+                return image;
+            });
+        }
     }
 }

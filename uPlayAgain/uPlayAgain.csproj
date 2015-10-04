@@ -200,8 +200,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\XmlDocument.xml" />
+    <Content Include="css\images\ajax-loader.gif" />
     <Content Include="css\images\logo.png" />
     <Content Include="css\images\logo.svg" />
+    <Content Include="css\images\logoMaxi.svg" />
+    <Content Include="css\loading.css" />
+    <Content Include="css\mail-attivation.css" />
     <Content Include="css\maps.css" />
     <Content Include="css\ng-img-crop.css" />
     <Content Include="css\platforms.css" />
@@ -227,9 +231,12 @@
     <Content Include="js\directives-misc.js" />
     <Content Include="js\directives-user.js" />
     <Content Include="js\factories.js" />
+    <Content Include="js\loading.js" />
+    <Content Include="js\mail-activation.js" />
     <Content Include="js\services.js" />
     <Content Include="js\templates.js" />
     <Content Include="js\test.js" />
+    <Content Include="mail-activation.html" />
     <Content Include="MailTemplate\template.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -523,6 +530,7 @@
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserLogin.cs" />
     <Compile Include="Models\UserResponse.cs" />
+    <Compile Include="OwinContextDisposal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\FacebookAuthProvider.cs" />
     <Compile Include="Providers\GoogleAuthProvider.cs" />

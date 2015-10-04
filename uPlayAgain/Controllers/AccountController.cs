@@ -48,7 +48,7 @@ namespace uPlayAgain.Controllers
         // POST api/Account/Login
         [AllowAnonymous]
         [Route("Login")]
-        public async Task<IHttpActionResult> LogIn(UserLogin user)
+        public async Task<IHttpActionResult> Login(UserLogin user)
         {
             if (!ModelState.IsValid)
             {
@@ -64,15 +64,15 @@ namespace uPlayAgain.Controllers
                     return BadRequest("L'utente non ha ancora confermato l'indirizzo mail. Il login non può essere effettuato");
                 }
             }
+            
             // Login effettivo
-
-            SignInStatus status = await _signInManager.PasswordSignInAsync(user.Username, user.Password, true, true);
+            SignInStatus status = await _signInManager.PasswordSignInAsync(user.Username, user.Password, false, true);
             if (status == SignInStatus.LockedOut)
                 return BadRequest("L'utente risulta bloccato");
             if (status == SignInStatus.Success)
             {
-                await SignInAsync(userLogin, true);
-
+                await SignInAsync(userLogin, false);
+                
                 if (userLogin.LastLogin == DateTimeOffset.MinValue || userLogin.LastLogin < DateTimeOffset.Now)
                     userLogin.LastLogin = DateTimeOffset.Now;
 
@@ -97,23 +97,66 @@ namespace uPlayAgain.Controllers
             return NotFound();
         }
 
+        
         private async Task SignInAsync(User user, bool isPersistent)
         {
             Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
+            Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             ClaimsIdentity identity = await _userManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
             Authentication.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, identity);
         }
-        
+
+        [AllowAnonymous]
+        [Route("Logout")]
+        public async Task<IHttpActionResult> Logout(UserLogin user)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            User userLogOut = await _userManager.FindAsync(user.Username, user.Password);
+            if (userLogOut != null)
+            {
+                // LogOut
+                await SignOutAsync(userLogOut);
+                return Ok();
+            }
+            return BadRequest("Utente non esistente");
+        }
+
+        private async Task SignOutAsync(User user)
+        {
+            await Task.Run(() => {
+                Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
+                Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            });
+        }
+
         [HttpGet]
         [Route("ValidateMail/{userId}/{token}")]
-        public async Task ValidateMailConfirmationToken(string userId, string token)
+        public async Task<IHttpActionResult> ValidateMailConfirmationToken(string userId, string token)
         {
             string decode = Encoding.Default.GetString(HttpServerUtility.UrlTokenDecode(token));
             bool result = await _repo.ValidateMailTokenAndConfirm(userId, decode);
             if (result)
-                Redirect(System.Web.HttpContext.Current.Request.Url.AbsoluteUri);
+            {
+                User newUser = await _repo.FindByIdAsync(userId);
+                // Aggiungo una libreria all'utente
+                if (!newUser.Libraries.Any())
+                {
+                    db.Libraries.Add(new Library() { User = newUser });
+
+                    // Non aggiungere un nuovo utente al DB.
+                    db.Entry(newUser).State = EntityState.Unchanged;
+                    // Non aggiungere un nuovo utente al DB.
+
+                    await db.SaveChangesAsync();
+                }
+                return Ok();
+            }
             else
-                BadRequest("Errore, token non valido per questo utente. Generare un nuovo token");
+                return BadRequest("Errore, token non valido per questo utente. Generare un nuovo token");
         }
         // POST api/Account/Register
         [AllowAnonymous]
@@ -129,15 +172,7 @@ namespace uPlayAgain.Controllers
                     return errorResult;
                 }
                 else
-                {
-                    // Aggiungo una libreria all'utente
-                    User newUser = await _repo.FindUser(userModel.Username, userModel.Password);
-                    // Segnalo ad EF che è l'utente non deve essere inserito! Viene inserito in precedenza.
-                    db.Entry(newUser).State = System.Data.Entity.EntityState.Unchanged;
-                    db.Libraries.Add(new Library() { User = newUser });
-                    await db.SaveChangesAsync();
                     return Ok();
-                }                
             }
             catch(Exception ex)
             {

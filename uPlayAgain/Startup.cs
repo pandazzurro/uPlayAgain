@@ -15,6 +15,10 @@ using uPlayAgain.Models;
 using uPlayAgain.Utilities;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.AspNet.Identity;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Net;
 
 [assembly: OwinStartup(typeof(uPlayAgain.Startup))]
 namespace uPlayAgain
@@ -29,17 +33,19 @@ namespace uPlayAgain
         public void Configuration(IAppBuilder app)
         {
             HttpConfiguration config = new HttpConfiguration();
+            config.MessageHandlers.Add(new CancelledTaskBugWorkaroundMessageHandler());
+            ConfigureOAuth(app);
+
             WebApiConfig.Register(config);
             // Pulire la validazione
             config.Services.Clear(typeof(ModelValidatorProvider));
             // Configura il model validator corretto
-            GlobalConfiguration.Configuration.Services.Replace(typeof(IBodyModelValidator), new CustomBodyModelValidator());
+            GlobalConfiguration.Configuration.Services.Replace(typeof(IBodyModelValidator), new GeographyBodyModelValidator());
             ////Webapi
             //AreaRegistration.RegisterAllAreas();
-            
-            HibernatingRhinos.Profiler.Appender.EntityFramework.EntityFrameworkProfiler.Initialize();
 
-            ConfigureOAuth(app);
+            //HibernatingRhinos.Profiler.Appender.EntityFramework.EntityFrameworkProfiler.Initialize();
+
             
             app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
             app.UseWebApi(config);            
@@ -48,7 +54,7 @@ namespace uPlayAgain
         public void ConfigureOAuth(IAppBuilder app)
         {
             DataProtectionProvider = app.GetDataProtectionProvider();
-            app.CreatePerOwinContext<uPlayAgainContext>(uPlayAgainContext.Create);
+            app.CreatePerOwinContext(uPlayAgainContext.Create);
             app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
 
             // Enable the application to use a cookie to store information for the signed in user
@@ -67,48 +73,63 @@ namespace uPlayAgain
             };
 
             app.UseCookieAuthentication(option);
-            app.Use(async (Context, next) =>
-            {
-                await next.Invoke();
-            });
-
-            AntiForgeryConfig.UniqueClaimTypeIdentifier = ClaimTypes.NameIdentifier;
-
+            //AntiForgeryConfig.UniqueClaimTypeIdentifier = ClaimTypes.NameIdentifier;
+            
             //use a cookie to temporarily store information about a user logging in with a third party login provider
-            app.UseExternalSignInCookie(Microsoft.AspNet.Identity.DefaultAuthenticationTypes.ExternalCookie);
-            OAuthBearerOptions = new OAuthBearerAuthenticationOptions();
+            //app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
+            //OAuthBearerOptions = new OAuthBearerAuthenticationOptions();
 
-            OAuthAuthorizationServerOptions OAuthServerOptions = new OAuthAuthorizationServerOptions() {            
-                AllowInsecureHttp = true,
-                TokenEndpointPath = new PathString("/token"),
-                AccessTokenExpireTimeSpan = TimeSpan.FromMinutes(30),
-                Provider = new SimpleAuthorizationServerProvider(),
-                RefreshTokenProvider = new SimpleRefreshTokenProvider()
-            };
+            //OAuthAuthorizationServerOptions OAuthServerOptions = new OAuthAuthorizationServerOptions() {            
+            //    AllowInsecureHttp = true,
+            //    TokenEndpointPath = new PathString("/token"),
+            //    AccessTokenExpireTimeSpan = TimeSpan.FromMinutes(30),
+            //    Provider = new SimpleAuthorizationServerProvider(),
+            //    RefreshTokenProvider = new SimpleRefreshTokenProvider()
+            //};
 
-            // Token Generation
-            app.UseOAuthAuthorizationServer(OAuthServerOptions);
-            app.UseOAuthBearerAuthentication(OAuthBearerOptions);
+            //// Token Generation
+            //app.UseOAuthAuthorizationServer(OAuthServerOptions);
+            //app.UseOAuthBearerAuthentication(OAuthBearerOptions);
 
-            //Configure Google External Login
-            googleAuthOptions = new GoogleOAuth2AuthenticationOptions()
-            {
-                ClientId = "xxxxxx",
-                ClientSecret = "xxxxxx",
-                Provider = new GoogleAuthProvider()
-            };
-            app.UseGoogleAuthentication(googleAuthOptions);
+            ////Configure Google External Login
+            //googleAuthOptions = new GoogleOAuth2AuthenticationOptions()
+            //{
+            //    ClientId = "xxxxxx",
+            //    ClientSecret = "xxxxxx",
+            //    Provider = new GoogleAuthProvider()
+            //};
+            //app.UseGoogleAuthentication(googleAuthOptions);
 
-            //Configure Facebook External Login
-            facebookAuthOptions = new FacebookAuthenticationOptions()
-            {
-                AppId = "xxxxxx",
-                AppSecret = "xxxxxx",
-                Provider = new FacebookAuthProvider()
-            };
-            app.UseFacebookAuthentication(facebookAuthOptions);           
+            ////Configure Facebook External Login
+            //facebookAuthOptions = new FacebookAuthenticationOptions()
+            //{
+            //    AppId = "xxxxxx",
+            //    AppSecret = "xxxxxx",
+            //    Provider = new FacebookAuthProvider()
+            //};
+            //app.UseFacebookAuthentication(facebookAuthOptions);
+
+
+            // Register disposable OwinContext
+            app.CreatePerOwinContext<OwinContextDisposal>((o, c) => new OwinContextDisposal(c));
         }
+    }
 
 
+
+    class CancelledTaskBugWorkaroundMessageHandler : DelegatingHandler
+    {
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
+
+            // Try to suppress response content when the cancellation token has fired; ASP.NET will log to the Application event log if there's content in this case.
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return new HttpResponseMessage(HttpStatusCode.InternalServerError);
+            }
+
+            return response;
+        }
     }
 }

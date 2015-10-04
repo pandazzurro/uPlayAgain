@@ -32,8 +32,7 @@
     this.login = function(username, password) {
       var queryParameters = {
           Username: username,
-          Password: password//,
-          //ConfirmPassword: password
+          Password: password
       };
       
       gxcFct.user.login(queryParameters).$promise
@@ -73,8 +72,20 @@
         }); // mail.byUser     
     };
     
-    this.logout = function() {
-      user = {};
+    this.logout = function(username, password) {
+        var queryParameters = {
+            Username: username,
+            Password: password
+        };
+
+        gxcFct.user.logout(queryParameters).$promise
+          .then(function (userSuccess) {
+              user = userSuccess;
+          },
+          function (error) {
+              UIkit.notify('Errore di logout', { status: 'warning', timeout: 5000 });
+              user = {};
+          });
     };
     
     this.isLoggedIn = function() {

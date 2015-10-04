@@ -5,7 +5,7 @@ using System.Web.Http.Validation;
 namespace uPlayAgain
 {
     
-    public class CustomBodyModelValidator : DefaultBodyModelValidator
+    public class GeographyBodyModelValidator : DefaultBodyModelValidator
     {
         public override bool ShouldValidateType(Type type)
         {

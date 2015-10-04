@@ -149,7 +149,7 @@ http://stackoverflow.com/questions/11541695/redirecting-to-a-certain-route-based
     };
     
     this.logout = function() {
-      userSrv.logout();
+      userSrv.logout($scope.username, $scope.password);
       
       $scope.username = '';
       $scope.password = '';
