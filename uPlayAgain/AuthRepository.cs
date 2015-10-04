@@ -80,15 +80,27 @@ namespace uPlayAgain
 
         public async Task<bool> ValidateMailTokenAndConfirm(string userId, string token)
         {
-            IdentityResult result =  await _userManager.ConfirmEmailAsync(userId, token);
-            if(result.Errors.Any())
+            try
             {
-                _log.Error(string.Concat(result.Errors));
-                return false;
+                IdentityResult result =  await _userManager.ConfirmEmailAsync(userId, token);
+                if(result.Errors.Any())
+                {
+                    _log.Error(string.Concat(result.Errors));
+                    return false;
+                }
+                return result.Succeeded;
             }
-            return result.Succeeded;
+            catch(Exception ex)
+            {
+                _log.Error(ex);
+                return false;
+            }            
         }
-
+        public async Task<IList<string>> ValidateMailTokenMessages(string userId, string token)
+        {
+            IdentityResult result = await _userManager.ConfirmEmailAsync(userId, token);
+            return result.Errors.ToList();
+        }
         public async Task<User> FindUser(string userName, string password)
         {
             User user = await _userManager.FindAsync(userName, password);            

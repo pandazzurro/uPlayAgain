@@ -16,6 +16,8 @@ using System.Web;
 using System.Text;
 using uPlayAgain.Utilities;
 using System.Data.Entity;
+using System.Collections.Generic;
+using System.Data.Entity.Validation;
 
 namespace uPlayAgain.Controllers
 {
@@ -141,22 +143,37 @@ namespace uPlayAgain.Controllers
             bool result = await _repo.ValidateMailTokenAndConfirm(userId, decode);
             if (result)
             {
-                User newUser = await _repo.FindByIdAsync(userId);
-                // Aggiungo una libreria all'utente
-                if (!newUser.Libraries.Any())
+                User newUser = null;
+                try
                 {
-                    db.Libraries.Add(new Library() { User = newUser });
+                    newUser = await _repo.FindByIdAsync(userId);
+                    // Aggiungo una libreria all'utente
+                    if (await db.Libraries.Where(p => p.UserId == newUser.Id).CountAsync() == 0)
+                    {
+                        db.Libraries.Add(new Library() { User = newUser });
 
-                    // Non aggiungere un nuovo utente al DB.
-                    db.Entry(newUser).State = EntityState.Unchanged;
-                    // Non aggiungere un nuovo utente al DB.
+                        // Non aggiungere un nuovo utente al DB.
+                        db.Entry(newUser).State = EntityState.Unchanged;
+                        // Non aggiungere un nuovo utente al DB.
 
-                    await db.SaveChangesAsync();
+                        await db.SaveChangesAsync();
+                    }
+                    return Ok();
                 }
-                return Ok();
+                catch (Exception ex)
+                {
+                    _log.Error(string.Concat(newUser.Id, ex.Message, ex.InnerException));
+                    return BadRequest("Errore del server: " + ex.Message);
+                }
             }
             else
+            {
+                IList<string>Errors = await _repo.ValidateMailTokenMessages(userId, decode);
+                string errorsResult = string.Empty;
+                Errors.ToList().ForEach(error => { errorsResult = string.Concat(errorsResult, error); });
                 return BadRequest("Errore, token non valido per questo utente. Generare un nuovo token");
+            }
+                
         }
         // POST api/Account/Register
         [AllowAnonymous]
