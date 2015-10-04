@@ -74,16 +74,14 @@ namespace uPlayAgain.Controllers
         [Route("api/Games/Search/{gameTitle?}/{platformId?}")]
         [Route("api/Games/Search/{gameTitle?}/{platformId?}/{genreId?}")]
         [ResponseType(typeof(Game))]
-        public async Task<IHttpActionResult> SearchGame(string gameTitle = "", string platformId = "", string genreId = "")
+        public IQueryable<Game> SearchGame(string gameTitle = "", string platformId = "", string genreId = "")
         {
-            ICollection<Game> result = await db.Games
-                                               .Include(p => p.Platform)
-                                               .Include(p => p.Genre)
-                                               .Where(g => string.IsNullOrEmpty(gameTitle) || g.Title.Contains(gameTitle))
-                                               .Where(gr => string.IsNullOrEmpty(genreId) || string.Equals(gr.Genre.GenreId, genreId))
-                                               .Where(p => string.IsNullOrEmpty(platformId) || string.Equals(p.Platform.PlatformId, platformId))
-                                               .ToListAsync();
-            return Ok(result);
+            return db.Games
+                     .Include(p => p.Platform)
+                     .Include(p => p.Genre)
+                     .Where(g => string.IsNullOrEmpty(gameTitle) || g.Title.Contains(gameTitle))
+                     .Where(gr => string.IsNullOrEmpty(genreId) || string.Equals(gr.Genre.GenreId, genreId))
+                     .Where(p => string.IsNullOrEmpty(platformId) || string.Equals(p.Platform.PlatformId, platformId));            
         }
 
         protected override void Dispose(bool disposing)

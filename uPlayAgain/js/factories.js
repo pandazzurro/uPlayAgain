@@ -10,7 +10,7 @@
   app.factory('factories', ['$resource', function($resource) {
     return {
       mail: $resource(app.webapi, {}, {
-          byUser: { url: app.webapi + '/api/messages/byUser/:userId', method: 'GET', isArray: true },
+          byUser: { url: app.webapi + '/api/messages/byUser/:userId', method: 'GET', isArray: false },
           get: { url: app.webapi + '/api/messages/:messageId', method: 'GET', isArray: false },
           send: { url: app.webapi + '/api/messages', method: 'POST', isArray: false },
       }),
