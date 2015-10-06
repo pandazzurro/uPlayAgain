@@ -139,20 +139,6 @@ namespace uPlayAgain.Controllers
 
         #region ExtractByUser
         // GET: api/Messages/ByUser/5
-        [Route("api/Messages/ByUser/{id}/transactions/{page}")]
-        [ResponseType(typeof(Transaction))]
-        public IQueryable<Transaction> GetTransactionByUser(string id, ushort page)
-        {
-            return db.Transactions
-                  .Where(t => t.UserProponent_Id == id || t.UserReceiving_Id == id)
-                  .Where(t => t.Proposals.Count > 0)
-                  .OrderByDescending(t => t.Proposals.OrderByDescending(p => p.DateStart).FirstOrDefault().DateStart)
-                  .Skip((page - 1) * PAGE_COUNT)
-                  .Take(PAGE_COUNT);
-        }
-
-
-        // GET: api/Messages/ByUser/5
         [Route("api/Messages/ByUser/{id}")]
         [ResponseType(typeof(MessageCountResponse))]
         public async Task<IHttpActionResult> GetMessages(string id)
@@ -198,7 +184,43 @@ namespace uPlayAgain.Controllers
                      .Take(PAGE_COUNT);
         }
 
+        // GET: api/Messages/ByUser/5
+        [Route("api/Messages/ByUser/{id}/transactions/{page}")]
+        [ResponseType(typeof(TransactionResponse))]
+        public IQueryable<TransactionResponse> GetTransactionByUser(string id, ushort page)
+        {
+            List<TransactionResponse> result = new List<TransactionResponse>();
 
+            var transactions = db.Transactions
+                  .Where(t => t.UserProponent_Id == id || t.UserReceiving_Id == id)
+                  .Where(t => t.Proposals.Count > 0)
+                  .OrderByDescending(t => t.Proposals.OrderByDescending(p => p.DateStart).FirstOrDefault().DateStart)
+                  .Skip((page - 1) * PAGE_COUNT)
+                  .Take(PAGE_COUNT);
+
+            foreach(Transaction t in transactions)
+            {
+                var lastProposal = t.Proposals.OrderByDescending(p => p.DateStart).First();
+                bool isProponent = t.UserProponent_Id == id;
+
+                var components = db.LibraryComponents.Where(lc => lastProposal.ProposalComponents.Any(pc => pc.LibraryComponentId == lc.LibraryComponentId));
+                var myComponents = components.Where(c => c.Library.UserId == id);
+                var theirComponents = components.Where(c => c.Library.UserId != id);
+
+                result.Add(new TransactionResponse()
+                {
+                    LastChange = lastProposal.DateStart,
+                    UserId = isProponent ? t.UserReceiving_Id : t.UserProponent_Id,
+                    MyStatus = isProponent ? lastProposal.UserProponent_ProposalStatus : lastProposal.UserReceiving_ProposalStatus,
+                    TheirStatus = isProponent ? lastProposal.UserReceiving_ProposalStatus : lastProposal.UserProponent_ProposalStatus,
+                    MyItems = myComponents.ToList(),
+                    TheirItems = theirComponents.ToList()
+                });
+            }
+
+            return result.AsQueryable();
+        }
+        
         // GET: api/Libraries/ByUser/5
         [Route("api/Libraries/ByUser/{id:int}")]
         [ResponseType(typeof(Library))]
