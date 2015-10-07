@@ -191,35 +191,38 @@ namespace uPlayAgain.Controllers
         {
             IList<TransactionResponse> result = new List<TransactionResponse>();
 
-            await db.Transactions
+            var trans = await db.Transactions
                     .Where(t => t.UserProponent_Id == id || t.UserReceiving_Id == id)
                     .Where(t => t.Proposals.Count > 0)
                     .OrderByDescending(t => t.Proposals.OrderByDescending(p => p.DateStart).FirstOrDefault().DateStart)
-                    //.Skip((page - 1) * PAGE_COUNT)
+                    .Skip((page - 1) * PAGE_COUNT)
                     .Take(PAGE_COUNT)
-                    .ForEachAsync(async t =>
+                    .Select(x => new { Transaction = x, Proposals = x.Proposals})           
+                    .ToListAsync();
+                     
+            trans.ForEach(t =>
                     {
                         Proposal lastProposal = t.Proposals
-                                                .OrderByDescending(p => p.DateStart)
-                                                .FirstOrDefault();
-                    
-                        bool isProponent = (t.UserProponent_Id == id);
-                    
-                        IQueryable<LibraryComponent> components = db.LibraryComponents
-                                                                    .Where(lc => lastProposal.ProposalComponents
-                                                                                            .Any(pc => pc.LibraryComponentId == lc.LibraryComponentId)
-                                                                            );
-                        IQueryable<LibraryComponent> myComponents = components.Where(c => c.Library.UserId == id);
-                        IQueryable<LibraryComponent> theirComponents = components.Where(c => c.Library.UserId != id);
+                                            .OrderByDescending(p => p.DateStart)
+                                            .FirstOrDefault();
+                        bool isProponent = (t.Transaction.UserProponent_Id == id);
+
+                        var components = db.ProposalComponents
+                                           .Where(x => x.Proposal.ProposalId == lastProposal.ProposalId)
+                                           .Select(z => new { LibraryComponents = z.LibraryComponents, UserId = z.LibraryComponents.Library.UserId })
+                                           .ToList();
+                        
+                        List<LibraryComponent> myComponents = components.Where(c => c.UserId == id).Select(x => x.LibraryComponents).ToList();
+                        List<LibraryComponent> theirComponents = components.Where(c => c.UserId != id).Select(x => x.LibraryComponents).ToList();
                     
                         result.Add(new TransactionResponse()
                         {
                             LastChange = lastProposal.DateStart,
-                            UserId = isProponent ? t.UserReceiving_Id : t.UserProponent_Id,
+                            UserId = isProponent ? t.Transaction.UserReceiving_Id : t.Transaction.UserProponent_Id,
                             MyStatus = isProponent ? lastProposal.UserProponent_ProposalStatus : lastProposal.UserReceiving_ProposalStatus,
                             TheirStatus = isProponent ? lastProposal.UserReceiving_ProposalStatus : lastProposal.UserProponent_ProposalStatus,
-                            MyItems = await myComponents.ToListAsync(),
-                            TheirItems = await theirComponents.ToListAsync()
+                            MyItems = myComponents,
+                            TheirItems = theirComponents
                         });
                     });
             

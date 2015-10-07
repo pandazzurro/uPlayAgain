@@ -7,11 +7,11 @@ namespace uPlayAgain.Models
 {
     public class TransactionResponse
     {
-        public string UserId;
-        public DateTimeOffset LastChange;
-        public ProposalStatus MyStatus;
-        public ProposalStatus TheirStatus;
-        public List<LibraryComponent> MyItems;
-        public List<LibraryComponent> TheirItems;
+        public string UserId { get; set; }
+        public DateTimeOffset LastChange { get; set; }
+        public ProposalStatus MyStatus { get; set; }
+        public ProposalStatus TheirStatus { get; set; }
+        public IList<LibraryComponent> MyItems { get; set; }
+        public IList<LibraryComponent> TheirItems { get; set; }
     }
 }
