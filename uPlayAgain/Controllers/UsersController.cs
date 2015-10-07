@@ -191,21 +191,28 @@ namespace uPlayAgain.Controllers
         {
             List<TransactionResponse> result = new List<TransactionResponse>();
 
-            var transactions = db.Transactions
-                  .Where(t => t.UserProponent_Id == id || t.UserReceiving_Id == id)
-                  .Where(t => t.Proposals.Count > 0)
-                  .OrderByDescending(t => t.Proposals.OrderByDescending(p => p.DateStart).FirstOrDefault().DateStart)
-                  .Skip((page - 1) * PAGE_COUNT)
-                  .Take(PAGE_COUNT);
+            List<Transaction> transactions = db.Transactions
+               .Include(t => t.Proposals)
+               .Include(t => t.Proposals.Select(p => p.ProposalComponents))
+               .Where(t => t.UserProponent_Id == id || t.UserReceiving_Id == id)
+               .Where(t => t.Proposals.Count > 0)
+               .OrderByDescending(t => t.Proposals.OrderByDescending(p => p.DateStart).FirstOrDefault().DateStart)
+               .Skip((page - 1) * PAGE_COUNT)
+               .Take(PAGE_COUNT)
+               .ToList();
 
             foreach(Transaction t in transactions)
             {
-                var lastProposal = t.Proposals.OrderByDescending(p => p.DateStart).First();
+                Proposal lastProposal = t.Proposals.OrderByDescending(p => p.DateStart).First();
+                List<ProposalComponent> proposalComponents = lastProposal.ProposalComponents.ToList();
+
                 bool isProponent = t.UserProponent_Id == id;
 
-                var components = db.LibraryComponents.Where(lc => lastProposal.ProposalComponents.Any(pc => pc.LibraryComponentId == lc.LibraryComponentId));
-                var myComponents = components.Where(c => c.Library.UserId == id);
-                var theirComponents = components.Where(c => c.Library.UserId != id);
+                List<LibraryComponent> components = db.LibraryComponents
+                    .Where(lc => proposalComponents.Any(pc => pc.LibraryComponentId == lc.LibraryComponentId))
+                    .ToList();
+                var myComponents = components.Where(c => c.Library.UserId == id).ToList();
+                var theirComponents = components.Where(c => c.Library.UserId != id).ToList();
 
                 result.Add(new TransactionResponse()
                 {
