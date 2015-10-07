@@ -32,13 +32,17 @@ namespace uPlayAgain.Models
         {
             get
             {
-                using (var ms = new MemoryStream(Image))
+                if(Image != null)
                 {
-                    Image img = System.Drawing.Image.FromStream(ms);
-                    int fixedWidth = 100;
-                    double widthPercentage = (double)fixedWidth / (double)img.Width;
-                    return img.GetThumbnailImage(fixedWidth, (int)(img.Height * widthPercentage), () => false, IntPtr.Zero);
+                    using (var ms = new MemoryStream(Image))
+                    {
+                        Image img = System.Drawing.Image.FromStream(ms);
+                        int fixedWidth = 100;
+                        double widthPercentage = (double)fixedWidth / (double)img.Width;
+                        return img.GetThumbnailImage(fixedWidth, (int)(img.Height * widthPercentage), () => false, IntPtr.Zero);
+                    }
                 }
+                return null;
             }
         }
 

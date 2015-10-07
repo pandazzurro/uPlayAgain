@@ -498,6 +498,7 @@
     <Compile Include="Converters\BitmapConverter.cs" />
     <Compile Include="Converters\DbGeographyConverter.cs" />
     <Compile Include="CustomBodyModelValidator.cs" />
+    <Compile Include="Dto\LibraryComponentDto.cs" />
     <Compile Include="Dto\SearchGame.cs" />
     <Compile Include="Entities\Client.cs" />
     <Compile Include="Entities\RefreshToken.cs" />
@@ -525,7 +526,7 @@
     <Compile Include="Models\RegisterExternalBindingModel.cs" />
     <Compile Include="Models\Status.cs" />
     <Compile Include="Models\Transaction.cs" />
-    <Compile Include="Models\TransactionResponse.cs" />
+    <Compile Include="Dto\TransactionDto.cs" />
     <Compile Include="Models\TransactionStatus.cs" />
     <Compile Include="Models\uPlayAgainContext.cs" />
     <Compile Include="Models\User.cs" />
