@@ -40,17 +40,24 @@ namespace uPlayAgain.Controllers
                 return NotFound();
             }
 
-            return Ok(
-                db.Feedbacks
-                  .Where(f => f.UserId == user.Id)
-                  .GroupBy(t => t.UserId, (key, g) => new { UserId = key, Feedback = g.ToList()})
-                  .Select(t => new UserResponse()
-                  {
-                      Id = user.Id,
-                      Username = user.UserName,
-                      FeedbackAvg = t.Feedback.Average(f => (float)f.Rate),
-                      FeedbackCount = t.Feedback.Count()
-                  }));
+            UserResponse response = null;
+            response = db.Feedbacks
+                         .Where(f => f.UserId == user.Id)
+                         .GroupBy(t => t.UserId, (key, g) => new { UserId = key, Feedback = g.ToList() })
+                         .Select(t => new UserResponse()
+                         {
+                             Id = user.Id,
+                             Username = user.UserName,
+                             FeedbackAvg = t.Feedback.Average(f => (float)f.Rate),
+                             FeedbackCount = t.Feedback.Count()
+                         })
+                         .FirstOrDefault();
+            if(response == null)
+            {
+                response = new UserResponse() { Username = user.UserName, Id = user.Id };
+            }
+
+            return Ok(response);
         }
 
 
