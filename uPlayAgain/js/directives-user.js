@@ -147,7 +147,7 @@
         };
     }]);
 
-    app.directive('formEditRegister', ['factories', function (gxcFct) {
+    app.directive('formEditRegister', ['factories', 'user-service', function (gxcFct, userSrv) {
         return {
             restrict: 'E',
             templateUrl: 'templates/form-edit-register.html',
