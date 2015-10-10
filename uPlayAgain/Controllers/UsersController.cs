@@ -84,7 +84,21 @@ namespace uPlayAgain.Controllers
 
             return await GetUser(user.UserId);
         }
-        
+
+        // GET: api/Users/5
+        [Route("api/Users/Profile/{id}")]
+        [ResponseType(typeof(User))]
+        public async Task<IHttpActionResult> GetUserProfile(string id)
+        {
+            User user = await Task.Run(() => db.Users.FirstOrDefault(u => u.Id == id));
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
+        }
+
         // PUT: api/Users/5
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> PutUser(int id, User user)

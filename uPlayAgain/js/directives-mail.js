@@ -17,7 +17,7 @@
 
                 var getMessages = function (direction, page) {
                     var queryParameters = {
-                        userId: userSrv.getUser().userId,
+                        userId: userSrv.getCurrentUser().userId,
                     };
                     var incoming = (direction === 'in');
                     _this.showTransactions = (direction === 'transactions');
@@ -109,7 +109,7 @@
                       gxcFct.user.byId({ userId: success.userReceiving_Id }).$promise
                       .then(function (receiverSuccess) {
                           _this.message.receiver = receiverSuccess;
-                          _this.message.isIncoming = receiverSuccess.id == userSrv.getUser().id;
+                          _this.message.isIncoming = receiverSuccess.id == userSrv.getCurrentUser().id;
                       });
                   });
             },
@@ -142,14 +142,14 @@
                         proposalDate: new Date().toISOString(),
                         direction: (_this.currentProposal === undefined ? true : !_this.currentProposal.direction),
                         transactionId: _this.currentTransaction.transactionId,
-                        userLastChanges_Id: userSrv.getUser().id,
+                        userLastChanges_Id: userSrv.getCurrentUser().id,
                         proposalComponents: []
                     };
 
                     for (i in _this.message.myItems) {
                         queryParams.proposalComponents.push({ 
                             libraryComponentId: _this.message.myItems[i].libraryComponentId,
-                            userOwnerId: userSrv.getUser().id
+                            userOwnerId: userSrv.getCurrentUser().id
                         });
                     }
                     for (i in _this.message.hisItems) {
@@ -189,7 +189,7 @@
                     {
                         if (_this.currentTransaction === undefined) {
                             var queryParams = {
-                                userProponent_Id: userSrv.getUser().id,
+                                userProponent_Id: userSrv.getCurrentUser().id,
                                 userReceiving_Id: _this.recipientData.id
                             }
 
@@ -209,7 +209,7 @@
                             messageText: _this.message.text,
                             messageObject: _this.message.titolo,
                             messageDate: new Date().toISOString(),
-                            userProponent_Id: userSrv.getUser().id,
+                            userProponent_Id: userSrv.getCurrentUser().id,
                             userReceiving_Id: _this.recipientData.id
                         };
                         
@@ -255,7 +255,7 @@
 
                 _this.recipientId = $routeParams.recipientId;
 
-                gxcFct.library.get({ libraryId: userSrv.getUser().LibraryId }).$promise
+                gxcFct.library.get({ libraryId: userSrv.getCurrentUser().LibraryId }).$promise
                 .then(function (librarySuccess) {
 
                     for (i in librarySuccess.libraryComponents) {
@@ -315,7 +315,7 @@
                     proposalText: _this.proposalText,
                     proposalObject: _this.proposalObject,
                     transactionId: undefined, // La transazione all'inizio non è ancora stata creata
-                    userLastChanges_Id: 'b692ce4a-f114-473d-a754-1e30173fb4cb', //userSrv.getUser().id, // utente Proponente
+                    userLastChanges_Id: 'b692ce4a-f114-473d-a754-1e30173fb4cb', //userSrv.getCurrentUser().id, // utente Proponente
                     userProponent_ProposalStatus: _this.proposalStatus[1], // Stato della proposta corrente per l'utente proponente. Se la propone ovviamente significa che l'accetta
                     userReceiving_ProposalStatus: _this.proposalStatus[0], // Stato della proposta corrente per l'utente ricevente
                     proposalComponents: []
@@ -330,7 +330,7 @@
                     // I giochi selezionati saranno presenti nella libreria dell'utente ricevente e nella libreria dell'utente proponente.
 
                     // TODO: sistemare la libreria di lettura!
-                    gxcFct.library.get({ libraryId: userSrv.getUser().LibraryId }).$promise
+                    gxcFct.library.get({ libraryId: userSrv.getCurrentUser().LibraryId }).$promise
                     .then(function (librarySuccess) {
                         for (i in librarySuccess.libraryComponents) {
                             var g = librarySuccess.libraryComponents[i];
@@ -345,7 +345,7 @@
 
                 $scope.createInitialProposal = function () {
                     var queryParams = {
-                        userProponent_Id: userSrv.getUser().id,
+                        userProponent_Id: userSrv.getCurrentUser().id,
                         userReceiving_Id: _this.userReceiving_Id,
                         transactionStatus: _this.transactionStatus[0],
                         feedbacks: undefined,
@@ -372,7 +372,7 @@
                 */
                 $scope.LoadTransactionByUser = function () {
                     var queryParameters = {
-                        userId: userSrv.getUser().userId,
+                        userId: userSrv.getCurrentUser().userId,
                     };
                     gxcFct.transaction.byUser(queryParameters).$promise
                       .then(function (transSuccess) {
@@ -394,7 +394,7 @@
                     newProposal.proposalComponents = [_this.currentProposal[0].proposalComponents[1]];
                     newProposal.proposalText = 'Rilancio';
                     newProposal.proposalObject = 'Oggetto del rilancio';
-                    newProposal.userLastChanges_Id = userSrv.getUser().id;
+                    newProposal.userLastChanges_Id = userSrv.getCurrentUser().id;
                     newProposal.direction = false; // Rilancio del ricevente
                     newProposal.userProponent_ProposalStatus = _this.proposalStatus[0], // Stato della proposta corrente per l'utente proponente.
                     newProposal.userReceiving_ProposalStatus = _this.proposalStatus[1], // Stato della proposta corrente per l'utente ricevente. Se la propone ovviamente significa che l'accetta
@@ -478,7 +478,7 @@
                 $scope.GetRate = function () {
                     // Ritorno il rate dell'utente corrente
                     var queryParameters = {
-                        userId: userSrv.getUser().id,
+                        userId: userSrv.getCurrentUser().id,
                     };
 
                     gxcFct.feedback.rate(queryParameters).$promise
@@ -494,7 +494,7 @@
                 $scope.GetPendingTransactionFeedback = function () {
                     // Ritorno il rate dell'utente corrente
                     var queryParameters = {
-                        userId: 'b692ce4a-f114-473d-a754-1e30173fb4cb'//userSrv.getUser().id,
+                        userId: 'b692ce4a-f114-473d-a754-1e30173fb4cb'//userSrv.getCurrentUser().id,
                     };
 
                     gxcFct.feedback.pending(queryParameters).$promise
@@ -516,11 +516,11 @@
             templateUrl: 'templates/feedback-vote.html',
             controller: function ($routeParams) {
                 var _this = this;
-                _this.currentUserId = userSrv.getUser().id;
+                _this.currentUserId = userSrv.getCurrentUser().id;
                 _this.currentTransactionToVote = [];                
 
                 _this.GetPendingTransactionFeedback = function () {
-                    gxcFct.feedback.pending({ userId: userSrv.getUser().id }).$promise
+                    gxcFct.feedback.pending({ userId: userSrv.getCurrentUser().id }).$promise
                     .then(function (success) {
                         success.forEach(function (tran) {
                             gxcFct.transaction.get({ tranId: tran }).$promise
@@ -573,9 +573,9 @@
                         if (_this.currentTransactionToVote[i].transactionId === transactionId) {
                             // Reperisco l'utente corretto al quale rilasciare il feedback.
                             var userToFeedback = undefined;
-                            if (_this.currentTransactionToVote[i].userProponent_Id != userSrv.getUser().id && _this.currentTransactionToVote[i].userReceiving_Id == userSrv.getUser().id)
+                            if (_this.currentTransactionToVote[i].userProponent_Id != userSrv.getCurrentUser().id && _this.currentTransactionToVote[i].userReceiving_Id == userSrv.getCurrentUser().id)
                                 userToFeedback = _this.currentTransactionToVote[i].userProponent_Id;
-                            if (_this.currentTransactionToVote[i].userProponent_Id == userSrv.getUser().id && _this.currentTransactionToVote[i].userReceiving_Id != userSrv.getUser().id)
+                            if (_this.currentTransactionToVote[i].userProponent_Id == userSrv.getCurrentUser().id && _this.currentTransactionToVote[i].userReceiving_Id != userSrv.getCurrentUser().id)
                                 userToFeedback = _this.currentTransactionToVote[i].userReceiving_Id;
 
                             _this.Feedback = {

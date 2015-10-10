@@ -159,8 +159,8 @@ http://stackoverflow.com/questions/11541695/redirecting-to-a-certain-route-based
       return userSrv.isLoggedIn();
     };
 
-    this.getUser = function() {
-      return userSrv.getUser();
+    this.getCurrentUser = function () {
+      return userSrv.getCurrentUser();
     };
     
     this.register = function() {

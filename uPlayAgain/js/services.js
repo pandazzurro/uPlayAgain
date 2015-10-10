@@ -28,7 +28,7 @@
   app.service('user-service', [ 'factories', function(gxcFct) {
     var _this = this;
     var user = {};
-    
+
     this.login = function(username, password) {
       var queryParameters = {
           Username: username,
@@ -65,7 +65,7 @@
 
       gxcFct.mail.byUser({ userId: user.userId }).$promise
         .then(function(mailSuccess) {
-          user.Messages = mailSuccess[0].messagesIn.length;
+          user.Messages = mailSuccess.incoming;
         }, 
         function(error) {
           UIkit.notify('Si &egrave; verificato un errore nel recupero dei dati utente.', { status: 'warning', timeout: 5000 });
@@ -92,8 +92,8 @@
       return user.userId !== undefined;
     }
     
-    this.getUser = function() {
-      return user;
+    this.getCurrentUser = function () {
+        return user;
     }
   }]);
   

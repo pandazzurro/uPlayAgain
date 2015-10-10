@@ -159,7 +159,7 @@
 
                 // Recupero i dati dell'utente
                 var queryParameters = {
-                    userId: userSrv.getUser().userId
+                    userId: userSrv.getCurrentUser().userId
                 };
                 gxcFct.user.get(queryParameters,
                 function (success) {
@@ -330,7 +330,7 @@
                     userId: $routeParams.userId
                 };
 
-                gxcFct.user.byId(queryParameters).$promise
+                gxcFct.user.profile(queryParameters).$promise
                 .then(function (success) {
                     _this.user = success;
                     var coords = _this.user.positionUser.geography.wellKnownText.replace('POINT (', '').replace(')', '').split(" ");                    
@@ -366,7 +366,8 @@
 
                 gxcFct.user.byId(queryParameters).$promise
                 .then(function (success) {
-                    _this.username = success.userName;
+                    _this.username = success[0].username;
+                    _this.ranking = success[0].feedbackAvg;
                 });
             },
             controllerAs: 'link'
