@@ -165,7 +165,9 @@
                 function (success) {
                     $scope.currentUser = success;
                     $scope.currentImage = "data:image/png;base64," + $scope.currentUser.image;
-                    
+                    $scope.currentUser.email = $scope.currentUser.mail;
+                    $scope.currentUser.userName = $scope.currentUser.username;
+
                     var coords = $scope.currentUser.positionUser.geography.wellKnownText.replace('POINT (', '').replace(')', '').split(" ");
 
                     $scope.map = {

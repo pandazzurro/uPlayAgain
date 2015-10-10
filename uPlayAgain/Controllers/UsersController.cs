@@ -48,13 +48,23 @@ namespace uPlayAgain.Controllers
                          {
                              Id = user.Id,
                              Username = user.UserName,
+                             Mail = user.Email,
+                             PositionUser = user.PositionUser,
+                             Image = user.Image,
                              FeedbackAvg = t.Feedback.Average(f => (float)f.Rate),
                              FeedbackCount = t.Feedback.Count()
                          })
                          .FirstOrDefault();
             if(response == null)
             {
-                response = new UserResponse() { Username = user.UserName, Id = user.Id };
+                response = new UserResponse()
+                {
+                    Id = user.Id,
+                    Username = user.UserName,
+                    Mail = user.Email,                    
+                    PositionUser = user.PositionUser,
+                    Image = user.Image
+                };
             }
 
             return Ok(response);
