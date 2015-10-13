@@ -23,13 +23,13 @@
             <li>
                 <a href="#/library" class="uk-navbar-nav-subtitle">
                     <i class="fa fa-list"></i> Libreria
-                    <div>hai registrato {{ userCtrl.getUser().Games }} giochi</div>
+                    <div>hai registrato {{ userCtrl.getCurrentUser().Games }} giochi</div>
                 </a>
             </li>
             <li>
                 <a href="#/mail" class="uk-navbar-nav-subtitle">
-                    <i class="fa fa-envelope-o fa-status-{{ userCtrl.getUser().Messages > 0 ? 'warn' : 'ok' }}"></i> Messaggi
-                    <div>hai {{ userCtrl.getUser().Messages }} messaggi da leggere</div>
+                    <i class="fa fa-envelope-o fa-status-{{ userCtrl.getCurrentUser().Messages > 0 ? 'warn' : 'ok' }}"></i> Messaggi
+                    <div>hai {{ userCtrl.getCurrentUser().Messages }} messaggi da leggere</div>
                 </a>
             </li>
         </ul>
@@ -39,7 +39,7 @@
                 <form-login id="loginPanel" class="uk-dropdown uk-dropdown-navbar uk-dropdown-width-2"></form-login>
             </li>
             <li class="uk-parent" ng-show="userCtrl.isLoggedIn()" data-uk-dropdown="{mode:'click'}">
-                <a href=""><img width="30" height="30" margin="3" data-ng-src="data:image/PNG;base64,{{userCtrl.getUser().image}}" /><!--<i class="fa fa-user"></i>--> {{ userCtrl.getUser().userName }} <i class="uk-icon-caret-down"></i></a>
+                <a href=""><img width="30" height="30" margin="3" data-ng-src="data:image/PNG;base64,{{userCtrl.getCurrentUser().image}}" /><!--<i class="fa fa-user"></i>--> {{ userCtrl.getCurrentUser().userName }} <i class="uk-icon-caret-down"></i></a>
                 <div class="uk-dropdown uk-dropdown-navbar">
                     <a href="#/edit-register">Il mio profilo</a>
                     <hr>

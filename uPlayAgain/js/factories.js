@@ -41,7 +41,8 @@
       user: $resource(app.webapi, {}, {
         get: { url: app.webapi + '/api/users/:userId', method: 'GET', isArray: false },
         checkUsername: { url: app.webapi + '/api/users/Exists/:username', method: 'GET', isArray: false },
-        byId: { url: app.webapi + '/api/users/identity/:userId', method: 'GET', isArray: false },
+        byId: { url: app.webapi + '/api/users/identity/:userId', method: 'GET', isArray: true },
+        profile: { url: app.webapi + '/api/users/profile/:userId', method: 'GET', isArray: false },
         login: { url: app.webapi + '/api/account/login', method: 'POST', isArray: false },
         logout: { url: app.webapi + '/api/account/logout', method: 'POST', isArray: false },
         register: { url: app.webapi + '/api/account/register', method: 'POST', isArray: true },

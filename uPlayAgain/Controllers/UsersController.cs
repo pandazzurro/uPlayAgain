@@ -7,6 +7,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
+using uPlayAgain.Dto;
 using uPlayAgain.Models;
 using uPlayAgain.Utilities;
 
@@ -39,17 +40,34 @@ namespace uPlayAgain.Controllers
                 return NotFound();
             }
 
-            return Ok(
-                db.Feedbacks
-                  .Where(f => f.UserId == user.Id)
-                  .GroupBy(t => t.UserId, (key, g) => new { UserId = key, Feedback = g.ToList()})
-                  .Select(t => new UserResponse()
-                  {
-                      Id = user.Id,
-                      Username = user.UserName,
-                      FeedbackAvg = t.Feedback.Average(f => (float)f.Rate),
-                      FeedbackCount = t.Feedback.Count()
-                  }));
+            UserResponse response = null;
+            response = db.Feedbacks
+                         .Where(f => f.UserId == user.Id)
+                         .GroupBy(t => t.UserId, (key, g) => new { UserId = key, Feedback = g.ToList() })
+                         .Select(t => new UserResponse()
+                         {
+                             Id = user.Id,
+                             Username = user.UserName,
+                             Mail = user.Email,
+                             PositionUser = user.PositionUser,
+                             Image = user.Image,
+                             FeedbackAvg = t.Feedback.Average(f => (float)f.Rate),
+                             FeedbackCount = t.Feedback.Count()
+                         })
+                         .FirstOrDefault();
+            if(response == null)
+            {
+                response = new UserResponse()
+                {
+                    Id = user.Id,
+                    Username = user.UserName,
+                    Mail = user.Email,                    
+                    PositionUser = user.PositionUser,
+                    Image = user.Image
+                };
+            }
+
+            return Ok(response);
         }
 
 
@@ -66,7 +84,21 @@ namespace uPlayAgain.Controllers
 
             return await GetUser(user.UserId);
         }
-        
+
+        // GET: api/Users/5
+        [Route("api/Users/Profile/{id}")]
+        [ResponseType(typeof(User))]
+        public async Task<IHttpActionResult> GetUserProfile(string id)
+        {
+            User user = await Task.Run(() => db.Users.FirstOrDefault(u => u.Id == id));
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
+        }
+
         // PUT: api/Users/5
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> PutUser(int id, User user)
@@ -127,7 +159,7 @@ namespace uPlayAgain.Controllers
         }
 
         #region CheckUser
-        [Route("api/Users/Exists/{username}")]
+        [Route("api/Users/ExistsUser/{username}")]
         [ResponseType(typeof(Transaction))]
         public async Task<IHttpActionResult> CheckByUsername(string username)
         {
@@ -135,23 +167,18 @@ namespace uPlayAgain.Controllers
                 return NotFound();
             return Ok();
         }
+
+        [Route("api/Users/ExistsMail/{username}")]
+        [ResponseType(typeof(Transaction))]
+        public async Task<IHttpActionResult> CheckByMail(string mail)
+        {
+            if (await _userManager.FindByEmailAsync(mail) == null)
+                return NotFound();
+            return Ok();
+        }
         #endregion
 
         #region ExtractByUser
-        // GET: api/Messages/ByUser/5
-        [Route("api/Messages/ByUser/{id}/transactions/{page}")]
-        [ResponseType(typeof(Transaction))]
-        public IQueryable<Transaction> GetTransactionByUser(string id, ushort page)
-        {
-            return db.Transactions
-                  .Where(t => t.UserProponent_Id == id || t.UserReceiving_Id == id)
-                  .Where(t => t.Proposals.Count > 0)
-                  .OrderByDescending(t => t.Proposals.OrderByDescending(p => p.DateStart).FirstOrDefault().DateStart)
-                  .Skip((page - 1) * PAGE_COUNT)
-                  .Take(PAGE_COUNT);
-        }
-
-
         // GET: api/Messages/ByUser/5
         [Route("api/Messages/ByUser/{id}")]
         [ResponseType(typeof(MessageCountResponse))]
@@ -198,7 +225,55 @@ namespace uPlayAgain.Controllers
                      .Take(PAGE_COUNT);
         }
 
+        // GET: api/Messages/ByUser/5
+        [Route("api/Messages/ByUser/{id}/transactions/{page}")]
+        [ResponseType(typeof(TransactionDto))]
+        public async Task<IList<TransactionDto>> GetTransactionByUser(string id, ushort page)
+        {
+            IList<TransactionDto> result = new List<TransactionDto>();
 
+            var trans = await db.Transactions
+                    .Where(t => t.UserProponent_Id == id || t.UserReceiving_Id == id)
+                    .Where(t => t.Proposals.Count > 0)
+                    .OrderByDescending(t => t.Proposals.OrderByDescending(p => p.DateStart).FirstOrDefault().DateStart)
+                    .Skip((page - 1) * PAGE_COUNT)
+                    .Take(PAGE_COUNT)
+                    .Select(x => new
+                    {
+                        Transaction = x,
+                        LastProposals = x.Proposals
+                                         .OrderByDescending(p => p.DateStart)
+                                         .FirstOrDefault(),
+                        Components = x.Proposals
+                                      .OrderByDescending(p => p.DateStart)
+                                      .FirstOrDefault()
+                                      .ProposalComponents
+                                      .Where(y => y.Proposal.ProposalId == x.Proposals.OrderByDescending(p => p.DateStart).FirstOrDefault().ProposalId)
+                                      .Select(z => new { LibraryComponents = z.LibraryComponents, UserId = z.LibraryComponents.Library.UserId })
+                    })           
+                    .ToListAsync();
+                     
+            trans.ForEach(t =>
+                    {
+                        bool isProponent = (t.Transaction.UserProponent_Id == id);
+
+                        List<LibraryComponent> myComponents = t.Components.Where(c => c.UserId == id).Select(x => x.LibraryComponents).ToList();
+                        List<LibraryComponent> theirComponents = t.Components.Where(c => c.UserId != id).Select(x => x.LibraryComponents).ToList();
+                    
+                        result.Add(new TransactionDto()
+                        {
+                            LastChange = t.LastProposals.DateStart,
+                            UserId = isProponent ? t.Transaction.UserReceiving_Id : t.Transaction.UserProponent_Id,
+                            MyStatus = isProponent ? t.LastProposals.UserProponent_ProposalStatus : t.LastProposals.UserReceiving_ProposalStatus,
+                            TheirStatus = isProponent ? t.LastProposals.UserReceiving_ProposalStatus : t.LastProposals.UserProponent_ProposalStatus,
+                            MyItems = myComponents,
+                            TheirItems = theirComponents
+                        });
+                    });
+            
+            return result;
+        }
+        
         // GET: api/Libraries/ByUser/5
         [Route("api/Libraries/ByUser/{id:int}")]
         [ResponseType(typeof(Library))]
@@ -253,6 +328,89 @@ namespace uPlayAgain.Controllers
                                        .Where(t => t.UserId == id)
                                        .ToListAsync();
             return Ok(users);
+        }
+
+        [Route("api/Games/ByUser/{id:int}")]
+        [ResponseType(typeof(int))]
+        public async Task<IHttpActionResult> GetGamesByUser(int id)
+        {
+            User user = db.Users.Where(t => t.UserId == id).SingleOrDefault();
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            IList<int> games = new List<int>();
+
+            await db.Libraries
+                    .Include(x => x.LibraryComponents)
+                    .Where(x => x.UserId == user.Id)
+                    .ForEachAsync( l =>
+                    {
+                        l.LibraryComponents
+                         .Select(lc => lc.GameId)
+                         .ToList()
+                         .ForEach(g => games.Add(g));
+                    }); 
+            
+            return Ok(games);
+        }
+
+        [Route("api/GamesComplete/ByUser/{id:int}")]
+        [ResponseType(typeof(int))]
+        public async Task<IHttpActionResult> GetGamesCompleteByUser(int id)
+        {
+            User user = db.Users.Where(t => t.UserId == id).SingleOrDefault();
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            IList<LibraryComponentDto> components = new List<LibraryComponentDto>();
+
+            await db.Libraries
+                    .Include(x => x.LibraryComponents)
+                    .Include(x => x.LibraryComponents.Select(z => z.Status))
+                    .Include(x => x.LibraryComponents.Select(z => z.GameLanguage))
+                    .Include(x => x.LibraryComponents.Select(z => z.Games))
+                    .Where(x => x.UserId == user.Id)
+                    .ForEachAsync(l =>
+                    {
+                        l.LibraryComponents
+                         .ToList()
+                         .ForEach(lc =>
+                         {
+                             components.Add(
+                             new LibraryComponentDto
+                             {
+                                 GameLanguage = lc.GameLanguage,
+                                 Games = new Game() {
+                                     GameId = lc.Games.GameId,
+                                     GenreId = lc.Games.GenreId,
+                                     Genre = lc.Games.Genre,
+                                     Platform = lc.Games.Platform,
+                                     PlatformId = lc.Games.PlatformId,
+                                     ShortName = lc.Games.ShortName,
+                                     Title = lc.Games.Title,
+                                     Description = lc.Games.Description,
+                                     Image = null
+                                 },
+                                 LibraryComponents = new LibraryComponent() {
+                                     GameId = lc.GameId,
+                                     GameLanguageId = lc.GameLanguageId,
+                                     IsDeleted = lc.IsDeleted,
+                                     IsExchangeable = lc.IsExchangeable,
+                                     LibraryComponentId = lc.LibraryComponentId,
+                                     LibraryId = lc.LibraryId,
+                                     Note = lc.Note,
+                                     StatusId = lc.StatusId
+                                 },
+                                 Status = lc.Status
+                             });
+                         });                           
+                    });
+
+            return Ok(components);
         }
         #endregion
 

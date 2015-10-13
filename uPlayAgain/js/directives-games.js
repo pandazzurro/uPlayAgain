@@ -12,9 +12,9 @@
                 _this.PLATFORMS_ALL = "Tutte";
                 _this.DISTANCES_ALL = "Nessun limite";
 
-                _this.genres = gxcFct.genre.query();
-                _this.platforms = gxcFct.platform.query();
-                _this.distances = [5, 10, 20, 50, 100];
+                _this.genres = gamesSrv.genres;
+                _this.platforms = gamesSrv.platforms;
+                _this.distances = gamesSrv.distances;
 
                 _this.searchPerformed = false;
                 _this.params = {};
@@ -62,10 +62,6 @@
                     return result;
                 }
 
-                this.getDistances = function () {
-                    return gamesSrv.getDistances();
-                };
-
                 this.round = function (value) {
                     return Math.round(value * 100) / 100;
                 };
@@ -74,7 +70,7 @@
                     _this.results = [];
 
                     var queryParameters = {
-                        userId: userSrv.getUser().userId,
+                        userId: userSrv.getCurrentUser().userId,
                         gameTitle: _this.params.string === undefined ? '' : _this.params.string,
                         genreId: _this.params.genre === undefined ? '' : _this.params.genre.genreId,
                         platformId: _this.params.platform === undefined ? '' : _this.params.platform.platformId,
@@ -110,8 +106,8 @@
                 _this.GENRES_ALL = "Tutti";
                 _this.PLATFORMS_ALL = "Tutte";
 
-                _this.genres = gxcFct.genre.query();
-                _this.platforms = gxcFct.platform.query();
+                _this.genres = gamesSrv.genres;
+                _this.platforms = gamesSrv.platforms;
 
                 _this.searchPerformed = false;
                 _this.params = {};
@@ -171,7 +167,7 @@
 
                 this.addToLibrary = function (game) {
                     var queryParameters = {
-                        LibraryId: userSrv.getUser().LibraryId,
+                        LibraryId: userSrv.getCurrentUser().LibraryId,
                         GameId: game.gameId,
                         GameLanguageId: 3, //per ora fisso
                         StatusId: 1
@@ -200,8 +196,8 @@
                 _this.games = [];
                 _this.gameSrv = gameSrv;
 
-                _this.statuses = gxcFct.status.query();
-                _this.languages = gxcFct.language.query();
+                _this.statuses = gameSrv.statuses;
+                _this.languages = gameSrv.languages;
 
                 this.setStatus = function (status) {
                     _this.editingGame.gameData.status = status;
@@ -219,7 +215,7 @@
                         for (i in success.libraryComponents) {
                             var g = success.libraryComponents[i];
 
-                            g.canEdit = _this.libraryOwner == userSrv.getUser().id;
+                            g.canEdit = _this.libraryOwner == userSrv.getCurrentUser().id;
                             gameSrv.fillGameData(g);
                         }
 
@@ -264,7 +260,7 @@
 
                         gxcFct.library.remove(queryParameters).$promise
                         .then(function (success) {
-                            getGames(userSrv.getUser().LibraryId);
+                            getGames(userSrv.getCurrentUser().LibraryId);
                             userSrv.updateUserData();
                         });
                     });
@@ -283,13 +279,13 @@
 
                     gxcFct.library.update({ componentId: gameEdit.libraryComponentId }, queryParameters).$promise
                     .then(function (success) {
-                        getGames(userSrv.getUser().LibraryId);
+                        getGames(userSrv.getCurrentUser().LibraryId);
                         var modal = UIkit.modal("#gameEditor");
                         modal.hide();
                     });
                 }
 
-                getGames(userSrv.getUser().LibraryId);
+                getGames(userSrv.getCurrentUser().LibraryId);
             },
             controllerAs: 'library'
         };

@@ -8,7 +8,7 @@
     </ul>
     <ul class="uk-nav uk-nav-offcanvas" data-uk-nav ng-show="userCtrl.isLoggedIn()">
       <li class="uk-nav-header">
-        Connesso come <span class="nav-header-username">{{ userCtrl.getUser().Username }}</span>
+        Connesso come <span class="nav-header-username">{{ userCtrl.getCurrentUser().Username }}</span>
       </li>
       <li><a href="#" ng-click="userCtrl.logout()">
         Esci
@@ -23,11 +23,11 @@
 </a></li>
       <li><a href="#/library" class="uk-navbar-nav-subtitle">
     Libreria
-    <div>hai registrato {{ userCtrl.getUser().Games }} giochi</div>
+    <div>hai registrato {{ userCtrl.getCurrentUser().Games }} giochi</div>
 </a></li>
       <li><a href="#/mail" class="uk-navbar-nav-subtitle">
     Messaggi
-    <div>hai {{ userCtrl.getUser().Messages }} messaggi da leggere</div>
+    <div>hai {{ userCtrl.getCurrentUser().Messages }} messaggi da leggere</div>
 </a></li>
     </ul>
   </div>

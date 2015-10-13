@@ -147,7 +147,7 @@
         };
     }]);
 
-    app.directive('formEditRegister', ['factories', function (gxcFct) {
+    app.directive('formEditRegister', ['factories', 'user-service', function (gxcFct, userSrv) {
         return {
             restrict: 'E',
             templateUrl: 'templates/form-edit-register.html',
@@ -159,13 +159,15 @@
 
                 // Recupero i dati dell'utente
                 var queryParameters = {
-                    userId: userSrv.getUser().userId
+                    userId: userSrv.getCurrentUser().userId
                 };
                 gxcFct.user.get(queryParameters,
                 function (success) {
                     $scope.currentUser = success;
                     $scope.currentImage = "data:image/png;base64," + $scope.currentUser.image;
-                    
+                    $scope.currentUser.email = $scope.currentUser.mail;
+                    $scope.currentUser.userName = $scope.currentUser.username;
+
                     var coords = $scope.currentUser.positionUser.geography.wellKnownText.replace('POINT (', '').replace(')', '').split(" ");
 
                     $scope.map = {
@@ -328,7 +330,7 @@
                     userId: $routeParams.userId
                 };
 
-                gxcFct.user.byId(queryParameters).$promise
+                gxcFct.user.profile(queryParameters).$promise
                 .then(function (success) {
                     _this.user = success;
                     var coords = _this.user.positionUser.geography.wellKnownText.replace('POINT (', '').replace(')', '').split(" ");                    
@@ -364,7 +366,8 @@
 
                 gxcFct.user.byId(queryParameters).$promise
                 .then(function (success) {
-                    _this.username = success.userName;
+                    _this.username = success[0].username;
+                    _this.ranking = success[0].feedbackAvg;
                 });
             },
             controllerAs: 'link'
