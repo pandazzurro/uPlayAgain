@@ -200,6 +200,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\XmlDocument.xml" />
+    <Content Include="authComplete.html" />
     <Content Include="css\images\ajax-loader.gif" />
     <Content Include="css\images\logo.png" />
     <Content Include="css\images\logo.svg" />
@@ -216,6 +217,8 @@
     <Content Include="Global.asax" />
     <Content Include="index.html" />
     <Content Include="js\app.js" />
+    <Content Include="js\authInterceptorService.js" />
+    <Content Include="js\authService.js" />
     <Content Include="js\core\angular-google-maps-street-view.js" />
     <Content Include="js\core\angular-google-maps-street-view.min.js" />
     <Content Include="js\core\angular-google-maps.js" />
@@ -223,6 +226,7 @@
     <Content Include="js\core\angular-mocks.js" />
     <Content Include="js\core\angular.js" />
     <Content Include="js\core\angular.min.js" />
+    <Content Include="js\core\authComplete.js" />
     <Content Include="js\core\lodash.js" />
     <Content Include="js\core\lodash.min.js" />
     <Content Include="js\core\ng-img-crop.js" />
@@ -231,11 +235,11 @@
     <Content Include="js\directives-misc.js" />
     <Content Include="js\directives-user.js" />
     <Content Include="js\factories.js" />
-    <Content Include="js\loading.js" />
     <Content Include="js\mail-activation.js" />
     <Content Include="js\services.js" />
     <Content Include="js\templates.js" />
     <Content Include="js\test.js" />
+    <Content Include="js\tokensManagerService.js" />
     <Content Include="mail-activation.html" />
     <Content Include="MailTemplate\template.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -491,6 +495,7 @@
     <Compile Include="Controllers\PlatformsController.cs" />
     <Compile Include="Controllers\ProposalComponentsController.cs" />
     <Compile Include="Controllers\ProposalsController.cs" />
+    <Compile Include="Controllers\RefreshTokensController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\StatusController.cs" />
     <Compile Include="Controllers\TransactionsController.cs" />
@@ -562,6 +567,7 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="js\core\angular-local-storage.min.js" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
