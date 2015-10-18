@@ -11,6 +11,7 @@ namespace uPlayAgain.Models
     public class UserResponse
     {
         public string Id { get; set; }
+        public int UserId { get; set; }
         public string Username { get; set; }
         public string Mail { get; set; }
         public float FeedbackAvg{ get; set; }
@@ -18,5 +19,7 @@ namespace uPlayAgain.Models
         [JsonConverter(typeof(DbGeographyConverter))]
         public DbGeography PositionUser { get; set; }
         public byte[] Image { get; set; }
+        public DateTimeOffset LastLogin { get; set; }
+        public int GameInLibrary { get; set; }
     }
 }

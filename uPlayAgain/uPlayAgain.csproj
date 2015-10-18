@@ -204,6 +204,7 @@
     <Content Include="css\images\logo.png" />
     <Content Include="css\images\logo.svg" />
     <Content Include="css\images\logoMaxi.svg" />
+    <Content Include="css\loading-bar.css" />
     <Content Include="css\loading.css" />
     <Content Include="css\mail-attivation.css" />
     <Content Include="css\maps.css" />
@@ -223,6 +224,7 @@
     <Content Include="js\core\angular-mocks.js" />
     <Content Include="js\core\angular.js" />
     <Content Include="js\core\angular.min.js" />
+    <Content Include="js\core\loading-bar.js" />
     <Content Include="js\core\lodash.js" />
     <Content Include="js\core\lodash.min.js" />
     <Content Include="js\core\ng-img-crop.js" />

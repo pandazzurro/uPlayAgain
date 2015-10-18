@@ -10,45 +10,72 @@
 
                 _this.params = $routeParams;
                 _this.messages = [];
+                _this.messagesIncoming = [];
+                _this.messagesOutgoing = [];
                 _this.transactions = [];
                 _this.messagesCount = { in: 0, out: 0, trn: 0 };
                 _this.currentPage = 1;
                 _this.showTransactions = false;
 
-                var getMessages = function (direction, page) {
+                this.getMessages = function (direction, page) {
                     var queryParameters = {
                         userId: userSrv.getCurrentUser().userId,
+                        page: page
                     };
-                    var incoming = (direction === 'in');
+                    //var incoming = (direction === 'in');
                     _this.showTransactions = (direction === 'transactions');
 
                     _this.messages = [];
                     _this.transactions = [];
 
-                    gxcFct.mail.byUser(queryParameters).$promise
-                      .then(function (mailSuccess) {
-                          _this.messages = incoming ? mailSuccess[0].messagesIn : mailSuccess[0].messagesOut;
+                    if (direction === 'transactions') {
+                        gxcFct.mail.transactions(queryParameters).$promise
+                        .then(function (trnSuccess) {
+                            for (trn in trnSuccess[0].transactionsProponent) {
+                                _this.transactions.push(trnSuccess[0].transactionsProponent[trn]);
+                            }
+                            for (trn in trnSuccess[0].transactionsReceiving) {
+                                _this.transactions.push(trnSuccess[0].transactionsReceiving[trn]);
+                            }
 
-                          for (msg in _this.messages) {
-                              _this.messages[msg].userId = incoming ? _this.messages[msg].userProponent.userId : _this.messages[msg].userReceiving.userId;
-                          }
+                            _this.messagesCount.trn += trnSuccess[0].transactionsProponent.length;
+                            _this.messagesCount.trn += trnSuccess[0].transactionsReceiving.length;
+                        });
+                    }else   if (direction === 'in') {
+                                gxcFct.mail.incoming(queryParameters).$promise
+                                .then(function (mailSuccess) {
+                                    _this.messagesIncoming = mailSuccess;
+                                    if (_this.messagesIncoming.length > 0) {
+                                        //TODO
+                                        _this.messagesCount.in = mailSuccess.length;
+                                    }
+                                });
+                            }
+                            else {
+                                gxcFct.mail.outgoing(queryParameters).$promise
+                               .then(function (mailSuccess) {
+                                   _this.messagesOutgoing = mailSuccess;
+                                   //TODO
+                                   _this.messagesCount.in = mailSuccess.length;
+                               });
+                            }
+                    
 
-                          _this.messagesCount.in = mailSuccess[0].messagesIn.length;
-                          _this.messagesCount.out = mailSuccess[0].messagesOut.length;
-                      }); // mail.byUser     
+                   
 
-                    gxcFct.transaction.byUser(queryParameters).$promise
-                    .then(function (trnSuccess) {
-                        for (trn in trnSuccess[0].transactionsProponent) {
-                            _this.transactions.push(trnSuccess[0].transactionsProponent[trn]);
-                        }
-                        for (trn in trnSuccess[0].transactionsReceiving) {
-                            _this.transactions.push(trnSuccess[0].transactionsReceiving[trn]);
-                        }
+                    //gxcFct.mail.byUser(queryParameters).$promise
+                      //.then(function (mailSuccess) {
+                      //    _this.messages = incoming ? mailSuccess[0].messagesIn : mailSuccess[0].messagesOut;
 
-                        _this.messagesCount.trn += trnSuccess[0].transactionsProponent.length;
-                        _this.messagesCount.trn += trnSuccess[0].transactionsReceiving.length;
-                    });
+                      //    for (msg in _this.messages) {
+                      //        _this.messages[msg].userId = incoming ? _this.messages[msg].userProponent.userId : _this.messages[msg].userReceiving.userId;
+                      //    }
+
+                      //    _this.messagesCount.in = mailSuccess[0].messagesIn.length;
+                      //    _this.messagesCount.out = mailSuccess[0].messagesOut.length;
+                      //}); // mail.byUser     
+
+                    
 
                     _this.currentPage = page;
                 };
@@ -65,7 +92,7 @@
                     window.location = '#/mail/message/' + mail.messageId;
                 }
 
-                getMessages(_this.params.direction, _this.params.page);
+                this.getMessages(_this.params.direction, _this.params.page);
             },
             controllerAs: 'mailbox'
         }
@@ -266,23 +293,35 @@
                     _this.myLibrary = librarySuccess.libraryComponents;
                 });
 
-                gxcFct.user.byId({ userId: _this.recipientId }).$promise
-                .then(function (userSuccess) {
-                    gxcFct.library.byUser({ userId: userSuccess.userId }).$promise
-                    .then(function(ulSuccess) {
-                    _this.recipientData = ulSuccess[0];
-                        gxcFct.library.get({ libraryId: ulSuccess[0].libraries[0].libraryId }).$promise
-                        .then(function (librarySuccess) {
-
-                            for (i in librarySuccess.libraryComponents) {
-                                var g = librarySuccess.libraryComponents[i];
-                                gameSrv.fillGameData(g);
-                            }
-
-                            _this.hisLibrary = librarySuccess.libraryComponents;
-                        });
-                    });
+                gxcFct.game.byUser({ userId: _this.recipientId }).$promise
+                .then(function (gamesId) {
+                    var g = {};
+                    for (i in gamesIds) {
+                        g.gameId = gamesIds[i];
+                        gameSrv.fillGameData(g);
+                    }
+                    _this.hisLibrary = librarySuccess.libraryComponents;
                 });
+
+                //gxcFct.user.byId({ userId: _this.recipientId }).$promise
+                //.then(function (userSuccess) {
+                //    gxcFct.game.byUser({ userId: _this.recipientId })
+
+                //    gxcFct.library.byUser({ userId: userSuccess.userId }).$promise
+                //    .then(function(ulSuccess) {
+                //    _this.recipientData = ulSuccess[0];
+                //        gxcFct.library.get({ libraryId: ulSuccess[0].libraries[0].libraryId }).$promise
+                //        .then(function (librarySuccess) {
+
+                //            for (i in librarySuccess.libraryComponents) {
+                //                var g = librarySuccess.libraryComponents[i];
+                //                gameSrv.fillGameData(g);
+                //            }
+
+                //            _this.hisLibrary = librarySuccess.libraryComponents;
+                //        });
+                //    });
+                //});
                 
             },
             controllerAs: 'mail'

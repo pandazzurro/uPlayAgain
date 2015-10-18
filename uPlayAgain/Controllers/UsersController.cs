@@ -60,6 +60,7 @@ namespace uPlayAgain.Controllers
                 response = new UserResponse()
                 {
                     Id = user.Id,
+                    UserId = user.UserId,
                     Username = user.UserName,
                     Mail = user.Email,                    
                     PositionUser = user.PositionUser,
@@ -95,8 +96,22 @@ namespace uPlayAgain.Controllers
             {
                 return NotFound();
             }
+            
+            int gameInLibrary = db.LibraryComponents.Where(p => p.LibraryId == db.Libraries.Where(x => x.UserId == user.Id).FirstOrDefault().LibraryId).Count();
 
-            return Ok(user);
+            UserResponse response = new UserResponse()
+            {
+                Id = user.Id,
+                UserId = user.UserId,
+                Username = user.UserName,
+                Mail = user.Email,
+                PositionUser = user.PositionUser,
+                Image = user.Image,
+                LastLogin = user.LastLogin,
+                GameInLibrary = gameInLibrary
+            };
+
+            return Ok(response);
         }
 
         // PUT: api/Users/5
@@ -330,11 +345,11 @@ namespace uPlayAgain.Controllers
             return Ok(users);
         }
 
-        [Route("api/Games/ByUser/{id:int}")]
+        [Route("api/Games/ByUser/{id}")]
         [ResponseType(typeof(int))]
-        public async Task<IHttpActionResult> GetGamesByUser(int id)
+        public async Task<IHttpActionResult> GetGamesByUser(string id)
         {
-            User user = db.Users.Where(t => t.UserId == id).SingleOrDefault();
+            User user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
                 return NotFound();

@@ -304,6 +304,7 @@
             restrict: 'E',
             templateUrl: 'templates/user-profile.html',
             controller: function ($routeParams, $scope) {
+                
                 var _this = this;
 
                 // gestore delle mappe
@@ -354,11 +355,15 @@
             scope: {
                 userId: '@user'
             },
-            template: '<a href=\'#/user/{{ userId }}\'>{{ link.username }} ({{ link.ranking }})</a>',
+            template: '<a href=\'#/user/{{ userId }}\'>{{ link.username }} - ({{ link.ranking }}) su {{link.rankingCount}}</a>',
             controller: function ($scope) {
                 var _this = this;
                 _this.username = '';
                 _this.ranking = 0;
+                _this.rankingCount = 0;
+                _this.mail = '';
+                _this.image = '';
+                _this.positionUser = {};
 
                 var queryParameters = {
                     userId: $scope.userId
@@ -366,8 +371,12 @@
 
                 gxcFct.user.byId(queryParameters).$promise
                 .then(function (success) {
-                    _this.username = success[0].username;
-                    _this.ranking = success[0].feedbackAvg;
+                    _this.username = success.username;
+                    _this.ranking = success.feedbackAvg;
+                    _this.rankingCount = success.feedbackCount;
+                    _this.mail = success.mail;
+                    _this.image = success.image;
+                    _this.positionUser = success.positionUser
                 });
             },
             controllerAs: 'link'
