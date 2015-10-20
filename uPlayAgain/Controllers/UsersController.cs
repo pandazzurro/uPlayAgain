@@ -371,11 +371,11 @@ namespace uPlayAgain.Controllers
             return Ok(games);
         }
 
-        [Route("api/GamesComplete/ByUser/{id:int}")]
+        [Route("api/GamesComplete/ByUser/{id}")]
         [ResponseType(typeof(int))]
-        public async Task<IHttpActionResult> GetGamesCompleteByUser(int id)
+        public async Task<IHttpActionResult> GetGamesCompleteByUser(string id)
         {
-            User user = db.Users.Where(t => t.UserId == id).SingleOrDefault();
+            User user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
                 return NotFound();

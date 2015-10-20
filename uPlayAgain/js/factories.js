@@ -32,8 +32,9 @@
             game: $resource(app.webapi, {}, {
                 query: { url: app.webapi + '/api/games/search', method: 'GET', isArray: true },
                 get: { url: app.webapi + '/api/games/:gameId', method: 'GET', isArray: false },
-                byUser: { url: app.webapi + '/api/games/byUser/:userId', method: 'GET', isArray: false, params: { userId: '@userId' } },                
-                search: { url: app.webapi + '/api/search', method: 'GET', isArray: false }
+                byUser: { url: app.webapi + '/api/games/byUser/:userId', method: 'GET', isArray: true, params: { userId: '@userId' } },                
+                search: { url: app.webapi + '/api/search', method: 'GET', isArray: false },
+                byUserWithComponent: { url: app.webapi + '/api/GamesComplete/ByUser/:userId', method: 'GET', isArray: true, params: { userId: '@userId' } }
             }),
             library: $resource(app.webapi, {}, {
                 byUser: { url: app.webapi + '/api/libraries/byUser/:userId', method: 'GET', isArray: true, params: { userId: '@userId' } },
@@ -51,8 +52,7 @@
                 logout: { url: app.webapi + '/api/account/logout', method: 'POST', isArray: false },
                 register: { url: app.webapi + '/api/account/register', method: 'POST', isArray: true },
                 update: { url: app.webapi + '/api/users/:userId', method: 'PUT', isArray: false },
-                remove: { url: app.webapi + '/api/users/:userId', method: 'DELETE', isArray: false },
-                getGamesComplete: { url: app.webapi + '/api/GamesComplete/ByUser/:userId', method: 'GET', isArray: false }
+                remove: { url: app.webapi + '/api/users/:userId', method: 'DELETE', isArray: false }
             }),
             transaction: $resource(app.webapi, {}, {
                 //byUser: { url: app.webapi + '/api/transactions/byUser/:userId', method: 'GET', isArray: true },

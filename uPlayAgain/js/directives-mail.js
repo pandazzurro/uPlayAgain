@@ -282,47 +282,25 @@
 
                 _this.recipientId = $routeParams.recipientId;
 
-                gxcFct.library.get({ libraryId: userSrv.getCurrentUser().LibraryId }).$promise
-                .then(function (librarySuccess) {
-
-                    for (i in librarySuccess.libraryComponents) {
-                        var g = librarySuccess.libraryComponents[i];
-                        gameSrv.fillGameData(g);
-                    }
-
-                    _this.myLibrary = librarySuccess.libraryComponents;
-                });
-
-                gxcFct.game.byUser({ userId: _this.recipientId }).$promise
-                .then(function (gamesId) {
-                    var g = {};
+                // My Library Components
+                gxcFct.game.byUserWithComponent({ userId: userSrv.getCurrentUser().id }).$promise
+                .then(function (gamesIds) {
+                    var game = [];
                     for (i in gamesIds) {
-                        g.gameId = gamesIds[i];
-                        gameSrv.fillGameData(g);
+                        game.push(gamesIds[i]);
                     }
-                    _this.hisLibrary = librarySuccess.libraryComponents;
+                    _this.myLibrary = game;
                 });
 
-                //gxcFct.user.byId({ userId: _this.recipientId }).$promise
-                //.then(function (userSuccess) {
-                //    gxcFct.game.byUser({ userId: _this.recipientId })
-
-                //    gxcFct.library.byUser({ userId: userSuccess.userId }).$promise
-                //    .then(function(ulSuccess) {
-                //    _this.recipientData = ulSuccess[0];
-                //        gxcFct.library.get({ libraryId: ulSuccess[0].libraries[0].libraryId }).$promise
-                //        .then(function (librarySuccess) {
-
-                //            for (i in librarySuccess.libraryComponents) {
-                //                var g = librarySuccess.libraryComponents[i];
-                //                gameSrv.fillGameData(g);
-                //            }
-
-                //            _this.hisLibrary = librarySuccess.libraryComponents;
-                //        });
-                //    });
-                //});
-                
+                // His Library Components
+                gxcFct.game.byUserWithComponent({ userId: _this.recipientId }).$promise
+                .then(function (gamesIds) {
+                    var game = [];                    
+                    for (i in gamesIds) {
+                        game.push(gamesIds[i]);
+                    }
+                    _this.hisLibrary = game;
+                });                
             },
             controllerAs: 'mail'
         };
