@@ -420,7 +420,8 @@ namespace uPlayAgain.Controllers
                                      Note = lc.Note,
                                      StatusId = lc.StatusId
                                  },
-                                 Status = lc.Status
+                                 Status = lc.Status,
+                                 UserId = lc.Library.UserId
                              });
                          });                           
                     });

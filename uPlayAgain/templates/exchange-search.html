@@ -62,7 +62,7 @@
     </div>
     <div class="uk-form-row uk-display-inline-block">
       <span>&nbsp;</span>
-      <button class="uk-button uk-button-primary" ng-click="search.startSearch()">Cerca...</button>
+      <button class="uk-button uk-button-primary" ng-click="search.startSearch()" ng-keypress="($event.which === 13)?search.startSearch():0">Cerca...</button>
     </div>
   </fieldset>
 </form>

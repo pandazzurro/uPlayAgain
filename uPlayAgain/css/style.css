@@ -139,7 +139,7 @@ message-new .uk-grid.small-margin {
   margin-top: 10px;
 }
 .logo-small{
-    background:url(../css/images/logo.svg);
+    background:url(../css/images/logoMaxi.svg);
     width: 100%; 
     height: auto !important;
 }
@@ -147,5 +147,5 @@ message-new .uk-grid.small-margin {
 .logo-big{
     width: 100%; 
     height: auto !important;
-    background:url(../css/images/logo.svg);    
+    background:url(../css/images/logoMaxi.svg);    
 }

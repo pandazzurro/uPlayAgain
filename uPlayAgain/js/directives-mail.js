@@ -154,7 +154,7 @@
             controller: function ($scope, $routeParams) {
                 var _this = this;
                 _this.message = { myItems: [], hisItems: [] };
-                _this.recipientData = undefined;
+                _this.hisUserId = undefined;
 
                 var start = new Date();
                 var end = new Date();
@@ -182,7 +182,7 @@
                     for (i in _this.message.hisItems) {
                         queryParams.proposalComponents.push({
                             libraryComponentId: _this.message.hisItems[i].libraryComponentId,
-                            userOwnerId: _this.recipientData.id
+                            userOwnerId: _this.hisUserId
                         });
                     }
 
@@ -217,7 +217,7 @@
                         if (_this.currentTransaction === undefined) {
                             var queryParams = {
                                 userProponent_Id: userSrv.getCurrentUser().id,
-                                userReceiving_Id: _this.recipientData.id
+                                userReceiving_Id: _this.hisUserId
                             }
 
                             gxcFct.transaction.add(queryParams).$promise
@@ -237,7 +237,7 @@
                             messageObject: _this.message.titolo,
                             messageDate: new Date().toISOString(),
                             userProponent_Id: userSrv.getCurrentUser().id,
-                            userReceiving_Id: _this.recipientData.id
+                            userReceiving_Id: _this.hisUserId
                         };
                         
                         gxcFct.mail.send(queryParams).$promise
@@ -300,6 +300,7 @@
                         game.push(gamesIds[i]);
                     }
                     _this.hisLibrary = game;
+                    _this.hisUserId = _this.recipientId;
                 });                
             },
             controllerAs: 'mail'
