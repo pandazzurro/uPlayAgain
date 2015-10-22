@@ -54,20 +54,20 @@
                     </tr>
                 </tfoot>-->
                 <tbody>
-                    <tr class="transaction" ng-repeat="mail in mailbox.transactions" ng-mouseover="mailbox.hoverIn(mail)" ng-mouseleave="mailbox.hoverOut(mail)" ng-class="mail.hovered ? 'hover': ''" ng-click="mailbox.open(mail)">
+                    <tr class="transaction" ng-repeat="transaction in mailbox.transactions">
                         <td>
                             <table class="uk-table uk-table-condensed">
                                 <tbody>
                                     <tr>
                                         <td colspan="2">
                                             <user-link data-user='{{ tran.userId }}'></user-link>
-                                            <button class="uk-button" ng-class="tran.myStatus === 0 ? 'uk-button-primary' : (tran.myStatus === 1 ? '.uk-button-success' : '.uk-button-danger')" ng-click="changeMyTranStatus(tran)" type="button">{{getStatus(tran.myStatus)}}</button>
-                                            <button class="uk-button" ng-class="tran.theirStatus === 0 ? 'uk-button-primary' : (tran.theirStatus === 1 ? '.uk-button-success' : '.uk-button-danger')" type="button" disabled>{{getStatus(tran.theirStatus)}}</button>
+                                            <button class="uk-button" ng-class="transaction.myStatus === 0 ? 'uk-button-primary' : (transaction.myStatus === 1 ? '.uk-button-success' : '.uk-button-danger')" ng-click="changeMyTranStatus(transaction)" type="button">{{getStatus(transaction.myStatus)}}</button>
+                                            <button class="uk-button" ng-class="transaction.theirStatus === 0 ? 'uk-button-primary' : (transaction.theirStatus === 1 ? '.uk-button-success' : '.uk-button-danger')" type="button" disabled>{{getStatus(transaction.theirStatus)}}</button>
                                         </td>                                        
                                     </tr>
                                     <tr>
                                         <td colspan="2">
-                                            <table>
+                                            <table class="uk-table uk-table-condensed">
                                                 <tr>
                                                     <td>
                                                         <ul class="uk-grid uk-text-center uk-grid-width-1-1 uk-grid-width-medium-1-2 uk-grid-width-large-1-3">
