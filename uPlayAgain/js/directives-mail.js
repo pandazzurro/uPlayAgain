@@ -97,22 +97,8 @@
                 this.open = function (mail) {
                     window.location = '#/mail/message/' + mail.messageId;
                 }
-
-                this.getStatus = function (status) {
-                    switch (status) {
-                        case 0:
-                            return 'da approvare';
-                            break;
-                        case 1:
-                            return 'accettata';
-                            break;
-                        case 2:
-                            return 'rifiutata';
-                            break;
-                    }
-                }
-
-                this.changeMyTranStatus = function (tran) {
+                
+                this.changeMyTranStatus = function (tran, newState) {
                     // TODO: aggiornare lo stato della proposta
                     var a = tran.proposal.proposalId;
                 }

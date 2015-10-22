@@ -40,65 +40,58 @@
             </table>
             <!-- disegno le transazioni. Per ogni transazione ho una sola proposta attiva -->
             <table class="uk-table uk-table-condensed" ng-show="mailbox.showTransactions">
-                <!--<thead>
-                    <tr>
-                        <th></th>
-                        <th>Data</th>
-                        <th>Titolo</th>
-                        <th>{{ mailbox.params.direction == 'in' ? 'Mittente' : 'Destinatario' }}</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <td colspan="4"></td>
-                    </tr>
-                </tfoot>-->
                 <tbody>
-                    <tr class="transaction" ng-repeat="transaction in mailbox.transactions">
+                    <tr ng-repeat="transaction in mailbox.transactions">
                         <td>
                             <table class="uk-table uk-table-condensed">
                                 <tbody>
                                     <tr>
-                                        <td colspan="2">
-                                            <user-link data-user='{{ tran.userId }}'></user-link>
-                                            <button class="uk-button" ng-class="transaction.myStatus === 0 ? 'uk-button-primary' : (transaction.myStatus === 1 ? '.uk-button-success' : '.uk-button-danger')" ng-click="changeMyTranStatus(transaction)" type="button">{{getStatus(transaction.myStatus)}}</button>
-                                            <button class="uk-button" ng-class="transaction.theirStatus === 0 ? 'uk-button-primary' : (transaction.theirStatus === 1 ? '.uk-button-success' : '.uk-button-danger')" type="button" disabled>{{getStatus(transaction.theirStatus)}}</button>
-                                        </td>                                        
+                                        <td>
+                                            <div class="uk-grid uk-grid-divider">
+                                                <div class="uk-width-2-4">
+                                                    <button ng-hide="transaction.myStatus === 0" class="uk-button uk-button-primary" ng-click="mailbox.changeMyTranStatus(transaction, 0)" type="button"><span class="fa fa-clock-o" />da approvare</button>
+                                                    <button ng-hide="transaction.myStatus === 1" class="uk-button uk-button-success" ng-click="mailbox.changeMyTranStatus(transaction, 1)" type="button"><span class="fa fa-thumbs-o-up" /> accetta</button>
+                                                    <button ng-hide="transaction.myStatus === 2" class="uk-button uk-button-danger" ng-click="mailbox.changeMyTranStatus(transaction, 2)" type="button"><span class="fa fa-thumbs-o-down" /> rifiuta</button>
+                                                </div>
+                                                <div class="uk-width-2-4">
+                                                    <button ng-show="transaction.theirStatus === 0" class="uk-button uk-button-primary" ng-click="mailbox.changeMyTranStatus(transaction, 0)" type="button" disabled><span class="fa fa-clock-o" /> da approvare</button>
+                                                    <button ng-show="transaction.theirStatus === 1" class="uk-button uk-button-success" ng-click="mailbox.changeMyTranStatus(transaction, 1)" type="button" disabled><span class="fa fa-thumbs-o-up" /> accettata</button>
+                                                    <button ng-show="transaction.theirStatus === 2" class="uk-button uk-button-danger" ng-click="mailbox.changeMyTranStatus(transaction, 2)" type="button" disabled><span class="fa fa-thumbs-o-down" /> rifiutata</button>
+                                                    <user-link data-user='{{ transaction.userId }}'></user-link>
+                                                </div>
+                                            </div>
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="2">
-                                            <table class="uk-table uk-table-condensed">
-                                                <tr>
-                                                    <td>
-                                                        <ul class="uk-grid uk-text-center uk-grid-width-1-1 uk-grid-width-medium-1-2 uk-grid-width-large-1-3">
-                                                            <li ng-repeat="item in transaction.myItems" style="margin-bottom:5px">
-                                                                <article class="uk-comment uk-animation-shake">
-                                                                    <header class="uk-comment-header">
-                                                                        <img class="uk-comment-avatar" src="data:image/gif;base64,{{item.game.gameData.image}}" alt="{{item.game.gameData.title}}" style="height:80px">
-                                                                        <h4 class="uk-comment-title">{{item.game.gameData.title}}</h4>
-                                                                        <div class="uk-comment-meta">{{item.game.gameData.language.description}} - {{item.game.gameData.status.description}}</div>                                                                        
-                                                                    </header>
-                                                                </article>
-                                                            </li>
-                                                        </ul>                                                       
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <ul class="uk-grid uk-text-center uk-grid-width-1-1 uk-grid-width-medium-1-2 uk-grid-width-large-1-3">
-                                                            <li ng-repeat="item in transaction.theirItems" style="margin-bottom:5px">
-                                                                <article class="uk-comment uk-animation-shake">
-                                                                    <header class="uk-comment-header">
-                                                                        <img class="uk-comment-avatar" src="data:image/gif;base64,{{item.game.gameData.image}}" alt="{{item.game.gameData.title}}" style="height:80px">
-                                                                        <h4 class="uk-comment-title">{{item.game.gameData.title}}</h4>
-                                                                        <div class="uk-comment-meta">{{item.game.gameData.language.description}} - {{item.game.gameData.status.description}}</div>
-                                                                    </header>
-                                                                </article>
-                                                            </li>
-                                                        </ul>    
-                                                    </td>
-                                                </tr>
-                                            </table>
+                                        <td>
+                                            <div class="uk-grid uk-grid-divider">
+                                                <div class="uk-width-2-4">
+                                                    <ul class="uk-grid uk-text-center uk-grid-width-1-1 uk-grid-width-medium-1-2 uk-grid-width-large-1-3">
+                                                        <li ng-repeat="item in transaction.myItems" style="margin-bottom:5px">
+                                                            <article class="uk-comment uk-animation-shake">
+                                                                <header class="uk-comment-header">
+                                                                    <img class="uk-comment-avatar" ng-src="data:image/gif;base64,{{item.game.gameData.image}}" alt="{{item.game.gameData.title}}" style="height:80px">
+                                                                    <h4 class="uk-comment-title">{{item.game.gameData.title}}</h4>
+                                                                    <div class="uk-comment-meta">{{item.game.gameData.language.description}} - {{item.game.gameData.status.description}}</div>
+                                                                </header>
+                                                            </article>
+                                                        </li>
+                                                    </ul>
+                                                </div>                                            
+                                                <div class="uk-width-2-4">
+                                                    <ul class="uk-grid uk-text-center uk-grid-width-1-1 uk-grid-width-medium-1-2 uk-grid-width-large-1-3">
+                                                        <li ng-repeat="item in transaction.theirItems" style="margin-bottom:5px">
+                                                            <article class="uk-comment uk-animation-shake">
+                                                                <header class="uk-comment-header">
+                                                                    <img class="uk-comment-avatar" ng-src="data:image/gif;base64,{{item.game.gameData.image}}" alt="{{item.game.gameData.title}}" style="height:80px">
+                                                                    <h4 class="uk-comment-title">{{item.game.gameData.title}}</h4>
+                                                                    <div class="uk-comment-meta">{{item.game.gameData.language.description}} - {{item.game.gameData.status.description}}</div>
+                                                                </header>
+                                                            </article>
+                                                        </li>
+                                                    </ul>
+                                                </div>                                            
+                                            </div>                                            
                                         </td>                                        
                                     </tr>
                                 </tbody>
@@ -106,13 +99,7 @@
                         </td>
                     </tr>
                 </tbody>
-            </table>
-            <!--ul class="uk-pagination">
-              <li ng-repeat="page in [] | range:5" ng-class="page == mailbox.currentPage ? 'uk-active' : ''">
-                <a ng-hide="page == mailbox.currentPage" href="#/mail/{{mailbox.params.direction}}/{{page}}">{{page}}</a>
-                <span ng-show="page == mailbox.currentPage">{{page}}</span>
-              </li>
-            </ul -->
+            </table>           
         </div>
     </div>
 </form>

@@ -2,7 +2,7 @@
     <li ng-repeat="game in library.games" style="margin-bottom:5px">
         <article class="uk-comment uk-animation-shake">
             <header class="uk-comment-header">
-                <img class="uk-comment-avatar" src="data:image/gif;base64,{{game.gameData.image}}" alt="{{game.gameData.title}}" style="height:80px">
+                <img class="uk-comment-avatar" ng-src="data:image/gif;base64,{{game.gameData.image}}" alt="{{game.gameData.title}}" style="height:80px">
                 <h4 class="uk-comment-title">{{game.gameData.title}}</h4>
                 <div class="uk-comment-meta">{{game.gameData.language.description}} - {{game.gameData.status.description}}</div>
                 <div class="uk-text-right uk-text-bottom">
