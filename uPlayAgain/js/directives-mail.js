@@ -1,7 +1,7 @@
 (function () {
     var app = angular.module('gxc.directives.mail', []);
 
-    app.directive('mailbox', ['factories', 'user-service', function (gxcFct, userSrv) {
+    app.directive('mailbox', ['factories', 'user-service', 'games-service', function (gxcFct, userSrv, gameSrv) {
         return {
             restrict: 'E',
             templateUrl: 'templates/mail-mailbox.html',
@@ -19,34 +19,41 @@
 
                 this.getMessages = function (direction, page) {
                     var queryParameters = {
-                        userId: userSrv.getCurrentUser().userId,
+                        userId: userSrv.getCurrentUser().id,
                         page: page
                     };
                     //var incoming = (direction === 'in');
-                    _this.showTransactions = (direction === 'transactions');
+                    _this.showTransactions = (direction === 'transaction');
+                    _this.messagesCount.trn = 0;
 
                     _this.messages = [];
                     _this.transactions = [];
 
-                    if (direction === 'transactions') {
+                    if (direction === 'transaction') {
                         gxcFct.mail.transactions(queryParameters).$promise
                         .then(function (trnSuccess) {
-                            for (trn in trnSuccess[0].transactionsProponent) {
-                                _this.transactions.push(trnSuccess[0].transactionsProponent[trn]);
-                            }
-                            for (trn in trnSuccess[0].transactionsReceiving) {
-                                _this.transactions.push(trnSuccess[0].transactionsReceiving[trn]);
-                            }
+                            _this.transactions = trnSuccess;
+                            _this.messagesCount.trn = _this.transactions.length;
+                            _this.transactions.forEach(function (tran) {
+                                tran.myItems.forEach(function (item) {
+                                    item.game = {};
+                                    item.game.gameId = item.gameId;                                    
+                                    gameSrv.fillGameData(item.game);
+                                });
 
-                            _this.messagesCount.trn += trnSuccess[0].transactionsProponent.length;
-                            _this.messagesCount.trn += trnSuccess[0].transactionsReceiving.length;
+                                tran.theirItems.forEach(function (item) {
+                                    item.game = {};
+                                    item.game.gameId = item.gameId;
+                                    gameSrv.fillGameData(item.game);
+                                })
+                            });
+
                         });
                     }else   if (direction === 'in') {
                                 gxcFct.mail.incoming(queryParameters).$promise
                                 .then(function (mailSuccess) {
                                     _this.messagesIncoming = mailSuccess;
-                                    if (_this.messagesIncoming.length > 0) {
-                                        //TODO
+                                    if (_this.messagesIncoming.length > 0) {                                        
                                         _this.messagesCount.in = mailSuccess.length;
                                     }
                                 });
@@ -54,8 +61,7 @@
                             else {
                                 gxcFct.mail.outgoing(queryParameters).$promise
                                .then(function (mailSuccess) {
-                                   _this.messagesOutgoing = mailSuccess;
-                                   //TODO
+                                   _this.messagesOutgoing = mailSuccess;                                   
                                    _this.messagesCount.in = mailSuccess.length;
                                });
                             }
@@ -92,7 +98,26 @@
                     window.location = '#/mail/message/' + mail.messageId;
                 }
 
-                this.getMessages(_this.params.direction, _this.params.page);
+                this.getStatus = function (status) {
+                    switch (status) {
+                        case 0:
+                            return 'da approvare';
+                            break;
+                        case 1:
+                            return 'accettata';
+                            break;
+                        case 2:
+                            return 'rifiutata';
+                            break;
+                    }
+                }
+
+                this.changeMyTranStatus = function (tran) {
+                    // TODO: aggiornare lo stato della proposta
+                    var a = tran.proposal.proposalId;
+                }
+
+                this.getMessages(_this.params.direction, _this.params.page);                
             },
             controllerAs: 'mailbox'
         }
@@ -105,6 +130,7 @@
             controller: function ($routeParams) {
                 var _this = this;
                 _this.message = {};
+                _this.transactions = {};
 
                 this.reply = function () {
 
@@ -138,7 +164,7 @@
                           _this.message.receiver = receiverSuccess;
                           _this.message.isIncoming = receiverSuccess.id == userSrv.getCurrentUser().id;
                       });
-                  });
+                  });               
             },
             controllerAs: 'mail'
         };
@@ -175,13 +201,13 @@
 
                     for (i in _this.message.myItems) {
                         queryParams.proposalComponents.push({ 
-                            libraryComponentId: _this.message.myItems[i].libraryComponentId,
+                            libraryComponentId: _this.message.myItems[i].libraryComponents.libraryComponentId,
                             userOwnerId: userSrv.getCurrentUser().id
                         });
                     }
                     for (i in _this.message.hisItems) {
                         queryParams.proposalComponents.push({
-                            libraryComponentId: _this.message.hisItems[i].libraryComponentId,
+                            libraryComponentId: _this.message.hisItems[i].libraryComponents.libraryComponentId,
                             userOwnerId: _this.hisUserId
                         });
                     }
@@ -286,9 +312,9 @@
                 gxcFct.game.byUserWithComponent({ userId: userSrv.getCurrentUser().id }).$promise
                 .then(function (gamesIds) {
                     var game = [];
-                    for (i in gamesIds) {
-                        game.push(gamesIds[i]);
-                    }
+                    gamesIds.forEach(function (element) {
+                        game.push(element);
+                    });
                     _this.myLibrary = game;
                 });
 
@@ -296,9 +322,9 @@
                 gxcFct.game.byUserWithComponent({ userId: _this.recipientId }).$promise
                 .then(function (gamesIds) {
                     var game = [];                    
-                    for (i in gamesIds) {
-                        game.push(gamesIds[i]);
-                    }
+                    gamesIds.forEach(function(element){
+                        game.push(element);
+                    });
                     _this.hisLibrary = game;
                     _this.hisUserId = _this.recipientId;
                 });                

@@ -1,49 +1,118 @@
 <form class="uk-form">
-<fieldset>
-  <legend>Mailbox</legend>
-</fieldset>
-<div class="uk-grid nomargin">
-  <ul class="uk-tab uk-tab-left uk-width-medium-1-6" data-uk-tab>
-    <li ng-class="mailbox.params.direction==='in' ? 'uk-active' : ''">
-      <a href="#/mail/in/1"><i class="fa fa-sign-in"></i> Ricevuti({{ mailbox.messagesCount.in }})</a>
-    </li>
-    <li ng-class="mailbox.params.direction==='out' ? 'uk-active' : ''">
-      <a href="#/mail/out/1"><i class="fa fa-sign-out"></i> Inviati({{ mailbox.messagesCount.out }})</a>
-    </li>
-    <li ng-class="mailbox.params.direction==='archive' ? 'uk-active' : ''">
-      <a href="#/mail/archive/1"><i class="fa fa-archive"></i> Archiviati</a>
-    </li>
-  </ul>
-  <div class="uk-width-medium-5-6">
-  <table class="uk-table uk-table-condensed">
-    <thead>
-      <tr>
-        <th></th>
-        <th>Data</th>
-        <th>Titolo</th>
-        <th>{{ mailbox.params.direction == 'in' ? 'Mittente' : 'Destinatario' }}</th>
-      </tr>
-    </thead>
-    <tfoot>
-      <tr>
-        <td colspan="4"></td>
-      </tr>
-    </tfoot>
-    <tbody>
-      <tr class="message" ng-repeat="mail in mailbox.messages" ng-mouseover="mailbox.hoverIn(mail)" ng-mouseleave="mailbox.hoverOut(mail)" ng-class="mail.hovered ? 'hover': ''" ng-click="mailbox.open(mail)">
-        <td><i class="fa fa-heart"></i></td>
-        <td>{{ mail.messageDate | date: 'dd-MM-yyyy HH:mm'}}</td>
-        <td>{{ mail.messageObject }}</td>
-        <td><user-link data-user='{{ mail.userProponent_Id }}'></user-link></td>
-      </tr>
-    </tbody>
-  </table>
-  <!--ul class="uk-pagination">
-    <li ng-repeat="page in [] | range:5" ng-class="page == mailbox.currentPage ? 'uk-active' : ''">
-      <a ng-hide="page == mailbox.currentPage" href="#/mail/{{mailbox.params.direction}}/{{page}}">{{page}}</a>
-      <span ng-show="page == mailbox.currentPage">{{page}}</span>
-    </li>
-  </ul -->
-  </div>
-</div>
+    <fieldset>
+        <legend>Mailbox</legend>
+    </fieldset>
+    <div class="uk-grid nomargin">
+        <ul class="uk-tab uk-tab-left uk-width-medium-1-6" data-uk-tab>
+            <li ng-class="mailbox.params.direction==='in' ? 'uk-active' : ''">
+                <a href="#/mail/in/1"><i class="fa fa-sign-in"></i> Ricevuti({{ mailbox.messagesCount.in }})</a>
+            </li>
+            <li ng-class="mailbox.params.direction==='out' ? 'uk-active' : ''">
+                <a href="#/mail/out/1"><i class="fa fa-sign-out"></i> Inviati({{ mailbox.messagesCount.out }})</a>
+            </li>
+            <li ng-class="mailbox.params.direction==='transactions' ? 'uk-active' : ''">
+                <a href="#/mail/transaction/1"><i class="fa fa-archive"></i> Scambi({{ mailbox.messagesCount.trn }})</a>
+            </li>
+        </ul>
+        <div class="uk-width-medium-5-6">
+            <table class="uk-table uk-table-condensed" ng-show="!mailbox.showTransactions">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Data</th>
+                        <th>Titolo</th>
+                        <th>{{ mailbox.params.direction == 'in' ? 'Mittente' : 'Destinatario' }}</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <td colspan="4"></td>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    <tr class="message" ng-repeat="mail in mailbox.messages" ng-mouseover="mailbox.hoverIn(mail)" ng-mouseleave="mailbox.hoverOut(mail)" ng-class="mail.hovered ? 'hover': ''" ng-click="mailbox.open(mail)">
+                        <td><i class="fa fa-heart"></i></td>
+                        <td>{{ mail.messageDate | date: 'dd-MM-yyyy HH:mm'}}</td>
+                        <td>{{ mail.messageObject }}</td>
+                        <td><user-link data-user='{{ mail.userProponent_Id }}'></user-link></td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- disegno le transazioni. Per ogni transazione ho una sola proposta attiva -->
+            <table class="uk-table uk-table-condensed" ng-show="mailbox.showTransactions">
+                <!--<thead>
+                    <tr>
+                        <th></th>
+                        <th>Data</th>
+                        <th>Titolo</th>
+                        <th>{{ mailbox.params.direction == 'in' ? 'Mittente' : 'Destinatario' }}</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <td colspan="4"></td>
+                    </tr>
+                </tfoot>-->
+                <tbody>
+                    <tr class="transaction" ng-repeat="mail in mailbox.transactions" ng-mouseover="mailbox.hoverIn(mail)" ng-mouseleave="mailbox.hoverOut(mail)" ng-class="mail.hovered ? 'hover': ''" ng-click="mailbox.open(mail)">
+                        <td>
+                            <table class="uk-table uk-table-condensed">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="2">
+                                            <user-link data-user='{{ tran.userId }}'></user-link>
+                                            <button class="uk-button" ng-class="tran.myStatus === 0 ? 'uk-button-primary' : (tran.myStatus === 1 ? '.uk-button-success' : '.uk-button-danger')" ng-click="changeMyTranStatus(tran)" type="button">{{getStatus(tran.myStatus)}}</button>
+                                            <button class="uk-button" ng-class="tran.theirStatus === 0 ? 'uk-button-primary' : (tran.theirStatus === 1 ? '.uk-button-success' : '.uk-button-danger')" type="button" disabled>{{getStatus(tran.theirStatus)}}</button>
+                                        </td>                                        
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <table>
+                                                <tr>
+                                                    <td>
+                                                        <ul class="uk-grid uk-text-center uk-grid-width-1-1 uk-grid-width-medium-1-2 uk-grid-width-large-1-3">
+                                                            <li ng-repeat="item in transaction.myItems" style="margin-bottom:5px">
+                                                                <article class="uk-comment uk-animation-shake">
+                                                                    <header class="uk-comment-header">
+                                                                        <img class="uk-comment-avatar" src="data:image/gif;base64,{{item.game.gameData.image}}" alt="{{item.game.gameData.title}}" style="height:80px">
+                                                                        <h4 class="uk-comment-title">{{item.game.gameData.title}}</h4>
+                                                                        <div class="uk-comment-meta">{{item.game.gameData.language.description}} - {{item.game.gameData.status.description}}</div>                                                                        
+                                                                    </header>
+                                                                </article>
+                                                            </li>
+                                                        </ul>                                                       
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <ul class="uk-grid uk-text-center uk-grid-width-1-1 uk-grid-width-medium-1-2 uk-grid-width-large-1-3">
+                                                            <li ng-repeat="item in transaction.theirItems" style="margin-bottom:5px">
+                                                                <article class="uk-comment uk-animation-shake">
+                                                                    <header class="uk-comment-header">
+                                                                        <img class="uk-comment-avatar" src="data:image/gif;base64,{{item.game.gameData.image}}" alt="{{item.game.gameData.title}}" style="height:80px">
+                                                                        <h4 class="uk-comment-title">{{item.game.gameData.title}}</h4>
+                                                                        <div class="uk-comment-meta">{{item.game.gameData.language.description}} - {{item.game.gameData.status.description}}</div>
+                                                                    </header>
+                                                                </article>
+                                                            </li>
+                                                        </ul>    
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>                                        
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <!--ul class="uk-pagination">
+              <li ng-repeat="page in [] | range:5" ng-class="page == mailbox.currentPage ? 'uk-active' : ''">
+                <a ng-hide="page == mailbox.currentPage" href="#/mail/{{mailbox.params.direction}}/{{page}}">{{page}}</a>
+                <span ng-show="page == mailbox.currentPage">{{page}}</span>
+              </li>
+            </ul -->
+        </div>
+    </div>
 </form>

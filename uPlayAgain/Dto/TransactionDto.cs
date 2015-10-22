@@ -11,6 +11,7 @@ namespace uPlayAgain.Dto
             MyItems = new HashSet<LibraryComponent>();
             TheirItems = new HashSet<LibraryComponent>();
         }
+        public Proposal Proposal { get; set; }
         public string UserId { get; set; }
         public DateTimeOffset LastChange { get; set; }
         public ProposalStatus MyStatus { get; set; }

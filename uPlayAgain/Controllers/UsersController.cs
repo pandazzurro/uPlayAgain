@@ -242,10 +242,10 @@ namespace uPlayAgain.Controllers
 
         // GET: api/Messages/ByUser/5
         [Route("api/Messages/ByUser/{id}/transactions/{page}")]
-        [ResponseType(typeof(TransactionDto))]
-        public async Task<IList<TransactionDto>> GetTransactionByUser(string id, ushort page)
+        [ResponseType(typeof(List<TransactionDto>))]
+        public async Task<IHttpActionResult> GetTransactionByUser(string id, ushort page)
         {
-            IList<TransactionDto> result = new List<TransactionDto>();
+            List<TransactionDto> result = new List<TransactionDto>();
 
             var trans = await db.Transactions
                     .Where(t => t.UserProponent_Id == id || t.UserReceiving_Id == id)
@@ -277,6 +277,7 @@ namespace uPlayAgain.Controllers
                     
                         result.Add(new TransactionDto()
                         {
+                            Proposal = t.LastProposals,
                             LastChange = t.LastProposals.DateStart,
                             UserId = isProponent ? t.Transaction.UserReceiving_Id : t.Transaction.UserProponent_Id,
                             MyStatus = isProponent ? t.LastProposals.UserProponent_ProposalStatus : t.LastProposals.UserReceiving_ProposalStatus,
@@ -285,8 +286,8 @@ namespace uPlayAgain.Controllers
                             TheirItems = theirComponents
                         });
                     });
-            
-            return result;
+
+            return Ok(result);
         }
         
         // GET: api/Libraries/ByUser/5

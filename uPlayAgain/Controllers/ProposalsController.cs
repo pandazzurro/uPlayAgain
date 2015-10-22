@@ -93,6 +93,8 @@ namespace uPlayAgain.Controllers
             }
 
             db.Proposals.Add(proposal);
+            db.LibraryComponents.Load();
+            db.Users.Load();
             try
             {
                 await db.SaveChangesAsync();

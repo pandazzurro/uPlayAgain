@@ -40,8 +40,8 @@
                     <ul class="uk-nav uk-nav-dropdown">
                         <li ng-repeat="item in mail.myLibrary" ng-hide="mail.isItemAssigned(item, true)">
                             <a href="" ng-click="mail.addItem(item, true)">
-                                {{ item.gameData.title }}<br />
-                                <small>{{ item.gameData.language.description }} - {{ item.gameData.status.description }}</small>
+                                {{ item.games.title }}<br />
+                                <small>{{ item.gameLanguage.description }} - {{ item.status.description }}</small>
                             </a>
                         </li>
                     </ul>
