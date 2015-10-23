@@ -66,23 +66,6 @@
                                });
                             }
                     
-
-                   
-
-                    //gxcFct.mail.byUser(queryParameters).$promise
-                      //.then(function (mailSuccess) {
-                      //    _this.messages = incoming ? mailSuccess[0].messagesIn : mailSuccess[0].messagesOut;
-
-                      //    for (msg in _this.messages) {
-                      //        _this.messages[msg].userId = incoming ? _this.messages[msg].userProponent.userId : _this.messages[msg].userReceiving.userId;
-                      //    }
-
-                      //    _this.messagesCount.in = mailSuccess[0].messagesIn.length;
-                      //    _this.messagesCount.out = mailSuccess[0].messagesOut.length;
-                      //}); // mail.byUser     
-
-                    
-
                     _this.currentPage = page;
                 };
 
@@ -101,6 +84,11 @@
                 this.changeMyTranStatus = function (tran, newState) {
                     // TODO: aggiornare lo stato della proposta
                     var a = tran.proposal.proposalId;
+                }
+
+                this.raiseOffer = function (tran) {
+                    // TODO: annullare la proposta e crearne una nuova. (la modifica dei dati viene fatta nella pagina di creazione della proposta)
+                    var a = tran;
                 }
 
                 this.getMessages(_this.params.direction, _this.params.page);                
@@ -198,7 +186,13 @@
                         });
                     }
 
-                    gxcFct.proposal.add(queryParams);
+                    gxcFct.proposal.add(queryParams).$promise
+                    .then(function(success){
+                        UIkit.notify('Nuovo scambio creato', { status: 'success', timeout: 5000 });
+                    }, function (reason) {
+                        UIkit.notify('Errore in creazione scambio.', { status: 'success', timeout: 5000 });
+                    });
+
 
                     /*
                     gxcFct.proposal.add(queryParams).$promise
