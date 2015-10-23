@@ -205,7 +205,6 @@
     <Content Include="css\images\logo.svg" />
     <Content Include="css\images\logoMaxi.svg" />
     <Content Include="css\loading-bar.css" />
-    <Content Include="css\loading.css" />
     <Content Include="css\mail-attivation.css" />
     <Content Include="css\maps.css" />
     <Content Include="css\ng-img-crop.css" />
@@ -578,7 +577,9 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Scripts\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
