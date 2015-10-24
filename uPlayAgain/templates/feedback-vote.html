@@ -6,11 +6,14 @@
                     <table>
                         <thead>
                             <tr>
-                                <td><user-link data-user='{{ item.userProponent_Id }}'></user-link></td>
-                                <td><user-link data-user='{{ item.userReceiving_Id }}'></user-link></td>
+                                <td colspan="2">
+                                    <user-link data-user='{{ item.userProponent_Id }}'></user-link>
+                                    &nbsp;<span class="uk-icon-exchange"/>&nbsp;
+                                    <user-link data-user='{{ item.userReceiving_Id }}'></user-link>
+                                </td>
                                 <td>
-                                    <i class="uk-icon-thumbs-up uk-icon-medium uk-icon-button " ng-click="feedbackVote.AddFeedback(item.transactionId,1)" />
-                                    <i class="uk-icon-thumbs-down uk-icon-medium uk-icon-button " ng-click="feedbackVote.AddFeedback(item.transactionId,-3)" />
+                                    <button class="uk-button uk-button-success" ng-click="feedbackVote.AddFeedback(item.transactionId,1)"><span class="uk-icon-thumbs-up uk-icon-small" /></button>
+                                    <button class="uk-button uk-button-danger" ng-click="feedbackVote.AddFeedback(item.transactionId,-3)"><span class="uk-icon-thumbs-down uk-icon-small" /></button>                                    
                                 </td>
                             </tr>
                         </thead>

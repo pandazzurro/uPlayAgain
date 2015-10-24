@@ -265,7 +265,12 @@ namespace uPlayAgain.Controllers
                                       .ProposalComponents
                                       .Where(y => y.Proposal.ProposalId == x.Proposals.OrderByDescending(p => p.DateStart).FirstOrDefault().ProposalId)
                                       .Select(z => new { LibraryComponents = z.LibraryComponents, UserId = z.LibraryComponents.Library.UserId })
-                    })           
+                    })
+                    // escludo le rifiutate e quelle accettate da entrambi (passate in feedback)
+                    .Where(
+                        x => (x.LastProposals.UserProponent_ProposalStatus != ProposalStatus.Rifiutata ) || (x.LastProposals.UserReceiving_ProposalStatus != ProposalStatus.Rifiutata) ||
+                             (x.LastProposals.UserProponent_ProposalStatus != ProposalStatus.Accettata && x.LastProposals.UserReceiving_ProposalStatus != ProposalStatus.Accettata)
+                    )
                     .ToListAsync();
                      
             trans.ForEach(t =>
@@ -279,6 +284,7 @@ namespace uPlayAgain.Controllers
                         {
                             Proposal = t.LastProposals,
                             LastChange = t.LastProposals.DateStart,
+                            UserOwnerId = t.Transaction.UserProponent_Id,
                             UserId = isProponent ? t.Transaction.UserReceiving_Id : t.Transaction.UserProponent_Id,
                             MyStatus = isProponent ? t.LastProposals.UserProponent_ProposalStatus : t.LastProposals.UserReceiving_ProposalStatus,
                             TheirStatus = isProponent ? t.LastProposals.UserReceiving_ProposalStatus : t.LastProposals.UserProponent_ProposalStatus,

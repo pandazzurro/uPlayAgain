@@ -39,8 +39,8 @@
                 </tbody>
             </table>
             <!-- disegno le transazioni. Per ogni transazione ho una sola proposta attiva -->
-            <div class="uk-accordion" data-uk-accordion="{collapse: false, showfirst: true, animate: true}">
-                <div class="uk-table uk-table-condensed" ng-show="mailbox.showTransactions">
+            <div class="uk-table uk-table-condensed" ng-show="mailbox.showTransactions">
+                <div class="uk-accordion" data-uk-accordion="{collapse: false, showfirst: true, animate: true}">
                     <div ng-repeat="transaction in mailbox.transactions">
                         <h3 class="uk-accordion-title">
                             Scambio di {{transaction.myItems.length + transaction.theirItems.length}} giochi con l'utente <user-link data-user='{{ transaction.userId }}'></user-link>
@@ -52,14 +52,15 @@
                                         <td>
                                             <div class="uk-grid uk-grid-divider">
                                                 <div class="uk-width-2-4">
-                                                    <button ng-hide="transaction.myStatus === 1" class="uk-button uk-button-success" ng-click="mailbox.changeMyTranStatus(transaction, 1)" type="button"><span class="fa fa-thumbs-o-up" /> accetta</button>
-                                                    <button ng-hide="transaction.myStatus === 2" class="uk-button uk-button-danger" ng-click="mailbox.changeMyTranStatus(transaction, 2)" type="button"><span class="fa fa-thumbs-o-down" /> rifiuta</button>
-                                                    <button class="uk-button uk-button-primary" ng-click="mailbox.raiseOffer(transaction)" type="button"><span class="fa fa-plus-circle" /> rilancia</button>
+                                                    <button ng-hide="transaction.myStatus === 1" class="uk-button uk-button-success" ng-click="mailbox.changeMyTranStatus(transaction, 1)" type="button"><span class="uk-icon-thumbs-up uk-icon-small" /> accetta</button>
+                                                    <button ng-hide="transaction.myStatus === 2 || transaction.myStatus === 4 || !mailbox.canRaise(transaction)" class="uk-button uk-button-danger" ng-click="mailbox.changeMyTranStatus(transaction, 2)" type="button"><span class="uk-icon-thumbs-down uk-icon-small" /> rifiuta</button>
+                                                    <button ng-hide="transaction.myStatus === 4 || transaction.myStatus === 2 || mailbox.canRaise(transaction)" class="uk-button uk-button-danger" ng-click="mailbox.changeMyTranStatus(transaction, 4)" type="button"><span class="uk-icon-times uk-icon-small" /> annulla</button>
+                                                    <button class="uk-button uk-button-primary" ng-click="mailbox.raiseOffer(transaction)" type="button"><span class="uk-icon-plus-circle uk-icon-small" /> rilancia</button>
                                                 </div>
                                                 <div class="uk-width-2-4">
-                                                    <button ng-show="transaction.theirStatus === 0" class="uk-button uk-button-primary" ng-click="mailbox.changeMyTranStatus(transaction, 0)" type="button" disabled><span class="fa fa-clock-o" /> da approvare</button>
-                                                    <button ng-show="transaction.theirStatus === 1" class="uk-button uk-button-success" ng-click="mailbox.changeMyTranStatus(transaction, 1)" type="button" disabled><span class="fa fa-thumbs-o-up" /> accettata</button>
-                                                    <button ng-show="transaction.theirStatus === 2" class="uk-button uk-button-danger" ng-click="mailbox.changeMyTranStatus(transaction, 2)" type="button" disabled><span class="fa fa-thumbs-o-down" /> rifiutata</button>
+                                                    <button ng-show="transaction.theirStatus === 0" class="uk-button uk-button-primary" ng-click="mailbox.changeMyTranStatus(transaction, 0)" type="button" disabled><span class="uk-icon-clock-o uk-icon-small" /> da approvare</button>
+                                                    <button ng-show="transaction.theirStatus === 1" class="uk-button uk-button-success" ng-click="mailbox.changeMyTranStatus(transaction, 1)" type="button" disabled><span class="uk-icon-thumbs-up uk-icon-small" /> accettata</button>
+                                                    <button ng-show="transaction.theirStatus === 2" class="uk-button uk-button-danger" ng-click="mailbox.changeMyTranStatus(transaction, 2)" type="button" disabled><span class="uk-icon-thumbs-down uk-icon-small" /> rifiutata</button>
                                                     <user-link data-user='{{ transaction.userId }}'></user-link>
                                                 </div>
                                             </div>
@@ -102,7 +103,7 @@
                         </div>
                     </div>
                 </div>
-            </div>               
+            </div>
         </div>
     </div>
 </form>

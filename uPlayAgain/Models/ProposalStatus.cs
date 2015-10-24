@@ -7,6 +7,7 @@ namespace uPlayAgain.Models
     {
         DaApprovare,
         Accettata,
-        Rifiutata
+        Rifiutata,
+        Annullata
     }    
 }

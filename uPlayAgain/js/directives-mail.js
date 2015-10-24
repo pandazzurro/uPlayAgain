@@ -16,10 +16,11 @@
                 _this.messagesCount = { in: 0, out: 0, trn: 0 };
                 _this.currentPage = 1;
                 _this.showTransactions = false;
+                _this.currentUserId = userSrv.getCurrentUser().id;
 
                 this.getMessages = function (direction, page) {
                     var queryParameters = {
-                        userId: userSrv.getCurrentUser().id,
+                        userId: _this.currentUserId,
                         page: page
                     };
                     //var incoming = (direction === 'in');
@@ -78,15 +79,45 @@
                 }
 
                 this.open = function (mail) {
-                    window.location = '#/mail/message/' + mail.messageId;
+                    $location.path('#/mail/message/' + mail.messageId);
                 }
                 
-                this.changeMyTranStatus = function (tran, newState) {
-                    // TODO: aggiornare lo stato della proposta
-                    var a = tran.proposal.proposalId;
+                this.changeMyTranStatus = function (tran, newState) {                    
+                    if (tran.myStatus != newState) {
+
+                        if (tran.userOwnerId == _this.currentUserId)
+                            tran.proposal.userProponent_ProposalStatus = newState;
+                        else
+                            tran.proposal.userReceiving_ProposalStatus = newState;
+                        
+                        gxcFct.proposal.update({ propId: tran.proposal.proposalId }, tran.proposal,
+                        function (success) {
+                            UIkit.notify('Proposta aggiornata', { status: 'success', timeout: 5000 });
+                            _this.transactions.forEach(function (trn) {
+                                if (trn.proposal.proposalId === tran.proposal.proposalId) {
+                                    trn.myStatus = newState;
+                                }
+                                if (tran.userOwnerId == _this.currentUserId)
+                                    trn.proposal.userProponent_ProposalStatus = newState;
+                                else
+                                    trn.proposal.userReceiving_ProposalStatus = newState;
+                            });
+                        }, function (reason) {
+                            UIkit.notify('Errore nella modifica dello stato della proposta', { status: 'success', timeout: 5000 });
+                        });
+                    };
+                }
+
+                this.canRaise = function (tran) {
+                    // CanRaise
+                    if (tran.userOwnerId != _this.currentUserId)
+                        return true;
+                    return false;
                 }
 
                 this.raiseOffer = function (tran) {
+                    // TODO: Inserire nel path l'id della proposta da annullare.
+                    $location.path('/newValue')
                     // TODO: annullare la proposta e crearne una nuova. (la modifica dei dati viene fatta nella pagina di creazione della proposta)
                     var a = tran;
                 }
@@ -553,7 +584,7 @@
                                 for (i = successTran.proposals.length - 1; i >= 0; i--) {
                                     // rimuovo le proposte non accettate da entrambi gli utenti
                                     if (successTran.proposals[i].userReceiving_ProposalStatus != 1 && successTran.proposals[i].userProponent_ProposalStatus != 1) {
-                                        array.splice(i, 1);
+                                        successTran.proposals.splice(i, 1);
                                     }
                                     //Aggiungo i componenti alla proposta
                                     else {

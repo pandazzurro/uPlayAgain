@@ -49,6 +49,7 @@ namespace uPlayAgain.Controllers
         }
 
         // PUT: api/Proposals/5
+        [HttpPut]
         [ResponseType(typeof(void))]
         public async Task<IHttpActionResult> PutProposal(int id, Proposal proposal)
         {
