@@ -5,7 +5,7 @@
         return {
             restrict: 'E',
             templateUrl: 'templates/mail-mailbox.html',
-            controller: function ($routeParams) {
+            controller: function ($routeParams, $location) {
                 var _this = this;
 
                 _this.params = $routeParams;
@@ -93,6 +93,24 @@
                         gxcFct.proposal.update({ propId: tran.proposal.proposalId }, tran.proposal,
                         function (success) {
                             UIkit.notify('Proposta aggiornata', { status: 'success', timeout: 5000 });
+
+                            for (var i = _this.transactions.length - 1; i >= 0; i--) {
+                                // Aggiornamento stato proposta
+                                if (_this.transactions[i].proposal.proposalId === tran.proposal.proposalId) {
+                                    _this.transactions[i].myStatus = newState;
+
+                                    if (tran.userOwnerId == _this.currentUserId)
+                                        _this.transactions[i].proposal.userProponent_ProposalStatus = newState;
+                                    else
+                                        _this.transactions[i].proposal.userReceiving_ProposalStatus = newState;
+
+                                    // Se annullo o rifiuto la proposta, o se entrambi hanno accettato, rimuovo tutto dalla lista di visualizzazione
+                                    if (newState == 2 || newState == 3 || (_this.transactions[i].proposal.userProponent_ProposalStatus == 1 && _this.transactions[i].proposal.userReceiving_ProposalStatus == 1)) {
+                                        _this.transactions.splice(i, 1);
+                                    }
+                                }
+                            }
+
                             _this.transactions.forEach(function (trn) {
                                 if (trn.proposal.proposalId === tran.proposal.proposalId) {
                                     trn.myStatus = newState;
@@ -109,10 +127,32 @@
                 }
 
                 this.canRaise = function (tran) {
-                    // CanRaise
+                    // Can Raise
                     if (tran.userOwnerId != _this.currentUserId)
                         return true;
+                    // Can Cancel
                     return false;
+                }
+
+                this.myStatusVisibilityButton = function (tran, status) {
+                    switch(status)
+                    {
+                        //da Approvare
+                        case 0:
+                            return false;                            
+                        //Accetta
+                        case 1:
+                            return (tran.myStatus == 0);
+                        //Rifiuta
+                        case 2: 
+                            return this.canRaise(tran) && (tran.myStatus == 0);
+                        //Annulla
+                        case 3:
+                            return !this.canRaise(tran) && (tran.myStatus == 1);
+                        // Rilancio (posso rilanciare solo se non sono l'utente proprietario!
+                        case 4:
+                            return this.canRaise(tran) && (tran.myStatus == 1 || tran.myStatus == 0);
+                    }
                 }
 
                 this.raiseOffer = function (tran) {
@@ -187,6 +227,7 @@
                 _this.message = { myItems: [], hisItems: [] };
                 _this.hisUserId = undefined;
 
+
                 var start = new Date();
                 var end = new Date();
                 end.setDate(end.getDate() + 30);
@@ -198,9 +239,11 @@
                         proposalText: _this.message.text,
                         proposalObject: _this.message.titolo,
                         proposalDate: new Date().toISOString(),
-                        direction: (_this.currentProposal === undefined ? true : !_this.currentProposal.direction),
+                        direction: directionProposal(),
                         transactionId: _this.currentTransaction.transactionId,
                         userLastChanges_Id: userSrv.getCurrentUser().id,
+                        userProponent_ProposalStatus: 1, // L'utente che crea la proposta la accetta automaticamente.
+                        userReceiving_ProposalStatus: 0, // da approvare
                         proposalComponents: []
                     };
 
@@ -223,29 +266,11 @@
                     }, function (reason) {
                         UIkit.notify('Errore in creazione scambio.', { status: 'success', timeout: 5000 });
                     });
+                }
 
-
-                    /*
-                    gxcFct.proposal.add(queryParams).$promise
-                    .then(function (success) {
-                        var proposal = success;
-
-                        for (i in _this.message.myItems) {
-                            var queryParams = {
-                                libraryComponentId: _this.message.myItems[i].gameId,
-                                proposalId: success.proposalId
-                            }
-                            gxcFct.proposalComponents.add(queryParams);
-                        }
-                        for (i in _this.message.hisItems) {
-                            var queryParams = {
-                                libraryComponentId: _this.message.hisItems[i].gameId,
-                                proposalId: success.proposalId
-                            }
-                            gxcFct.proposalComponents.add(queryParams);
-                        }
-                    });
-                    */
+                this.directionProposal = function () {
+                    // TODO: Se è un rilancio di una transazione e se non solo l'utente owner, la direzione è false!
+                    return true;
                 }
 
                 this.send = function () {
@@ -583,7 +608,7 @@
                                 // Carico solo la proposta conclusa e i rispettivi componenti.
                                 for (i = successTran.proposals.length - 1; i >= 0; i--) {
                                     // rimuovo le proposte non accettate da entrambi gli utenti
-                                    if (successTran.proposals[i].userReceiving_ProposalStatus != 1 && successTran.proposals[i].userProponent_ProposalStatus != 1) {
+                                    if (!(successTran.proposals[i].userReceiving_ProposalStatus == 1 && successTran.proposals[i].userProponent_ProposalStatus == 1)) {
                                         successTran.proposals.splice(i, 1);
                                     }
                                     //Aggiungo i componenti alla proposta
@@ -595,7 +620,14 @@
                                             // Aggancio la proposta con le componenti alla transazione
                                             for (var i = 0; i < _this.currentTransactionToVote.length; i++) {                                                
                                                 if (_this.currentTransactionToVote[i].proposals[0].proposalId === successComponents.proposalId) {
-                                                    _this.currentTransactionToVote[i].proposals[0] = successComponents;
+                                                    for (var j = 0; j < successComponents.length; j++) {
+                                                        if (successComponents[j].userOwnerId == _this.currentUserId) {
+                                                            _this.currentTransactionToVote[i].proposals[0].myItems.push(successComponents[j])
+                                                        }
+                                                        else
+                                                            _this.currentTransactionToVote[i].proposals[0].theirItems.push(successComponents[j])
+                                                    }
+                                                    //_this.currentTransactionToVote[i].proposals[0] = successComponents;
                                                     break;
                                                 }
                                             }

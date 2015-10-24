@@ -8,6 +8,6 @@ namespace uPlayAgain.Models
         DaApprovare,
         Accettata,
         Rifiutata,
-        Annullata
+        Annullata        
     }    
 }

@@ -6,6 +6,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
+using uPlayAgain.Dto;
 using uPlayAgain.Models;
 
 namespace uPlayAgain.Controllers
@@ -58,17 +59,69 @@ namespace uPlayAgain.Controllers
         }
 
         // GET: api/Feedbacks/5
-        [Route("api/Feedbacks/Pending/{userId}")]
-        [ResponseType(typeof(int))]
-        public IQueryable<int> GetTransactionFeedbacksPendings(string userId)
+        [Route("api/Feedbacks/Pending/{id}")]
+        //[ResponseType(typeof(int))]
+        //public IQueryable<int> GetTransactionFeedbacksPendings(string userId)
+        //{
+        //    return db.Transactions
+        //              Cerco tutte le transazioni dove sono Proponente o Ricevente e NON ho nessun feedback associato
+        //             .Where(p => (p.UserProponent_Id == userId || p.UserReceiving_Id == userId)
+        //                 && (!p.Feedbacks.Where(x => x.UserId == userId).Any() || !p.Feedbacks.Any())
+        //                 )
+        //             .Select(p => p.TransactionId);
+        //}
+        [ResponseType(typeof(List<TransactionDto>))]
+        public async Task<IHttpActionResult> GetTransactionFeedbacksPendings(string id)
         {
-            return db.Transactions
-                     // Cerco tutte le transazioni dove sono Proponente o Ricevente e NON ho nessun feedback associato
-                     .Where(p => (p.UserProponent_Id == userId || p.UserReceiving_Id == userId) 
-                         &&    (!p.Feedbacks.Where(x => x.UserId == userId).Any() || !p.Feedbacks.Any())
-                         )
-                     .Select( p => p.TransactionId);
+            List<TransactionDto> result = new List<TransactionDto>();
+
+            var trans = await db.Transactions
+                    .Where(t => t.UserProponent_Id == id || t.UserReceiving_Id == id)
+                    .Where(t => t.Proposals.Count > 0)
+                    .OrderByDescending(t => t.Proposals.OrderByDescending(p => p.DateStart).FirstOrDefault().DateStart)
+                    .Select(x => new
+                    {
+                        Transaction = x,
+                        LastProposals = x.Proposals
+                                         .OrderByDescending(p => p.DateStart)
+                                         .FirstOrDefault(),
+                        Components = x.Proposals
+                                      .OrderByDescending(p => p.DateStart)
+                                      .FirstOrDefault()
+                                      .ProposalComponents
+                                      .Where(y => y.Proposal.ProposalId == x.Proposals.OrderByDescending(p => p.DateStart).FirstOrDefault().ProposalId)
+                                      .Select(z => new { LibraryComponents = z.LibraryComponents, UserId = z.LibraryComponents.Library.UserId })
+                    })
+                    // Mostro tutte le proposte approvate da entrambi gli utenti e senza feedback da parte dell'utente corrente
+                    .Where(
+                        x => (x.LastProposals.UserProponent_ProposalStatus == ProposalStatus.Accettata && x.LastProposals.UserReceiving_ProposalStatus == ProposalStatus.Accettata) 
+                             && !x.Transaction.Feedbacks.Where(y => y.UserId == id).Any()
+                    )
+                    .ToListAsync();
+
+            trans.ForEach(t =>
+            {
+                bool isProponent = (t.Transaction.UserProponent_Id == id);
+
+                List<LibraryComponent> myComponents = t.Components.Where(c => c.UserId == id).Select(x => x.LibraryComponents).ToList();
+                List<LibraryComponent> theirComponents = t.Components.Where(c => c.UserId != id).Select(x => x.LibraryComponents).ToList();
+
+                result.Add(new TransactionDto()
+                {
+                    Proposal = t.LastProposals,
+                    LastChange = t.LastProposals.DateStart,
+                    UserOwnerId = t.Transaction.UserProponent_Id,
+                    UserId = isProponent ? t.Transaction.UserReceiving_Id : t.Transaction.UserProponent_Id,
+                    MyStatus = isProponent ? t.LastProposals.UserProponent_ProposalStatus : t.LastProposals.UserReceiving_ProposalStatus,
+                    TheirStatus = isProponent ? t.LastProposals.UserReceiving_ProposalStatus : t.LastProposals.UserProponent_ProposalStatus,
+                    MyItems = myComponents,
+                    TheirItems = theirComponents
+                });
+            });
+
+            return Ok(result);
         }
+
 
         // PUT: api/Feedbacks/5
         [ResponseType(typeof(void))]

@@ -245,7 +245,7 @@ namespace uPlayAgain.Controllers
         [ResponseType(typeof(List<TransactionDto>))]
         public async Task<IHttpActionResult> GetTransactionByUser(string id, ushort page)
         {
-            List<TransactionDto> result = new List<TransactionDto>();
+            List<TransactionDto> result = new List<TransactionDto>();            
 
             var trans = await db.Transactions
                     .Where(t => t.UserProponent_Id == id || t.UserReceiving_Id == id)
@@ -266,10 +266,9 @@ namespace uPlayAgain.Controllers
                                       .Where(y => y.Proposal.ProposalId == x.Proposals.OrderByDescending(p => p.DateStart).FirstOrDefault().ProposalId)
                                       .Select(z => new { LibraryComponents = z.LibraryComponents, UserId = z.LibraryComponents.Library.UserId })
                     })
-                    // escludo le rifiutate e quelle accettate da entrambi (passate in feedback)
-                    .Where(
-                        x => (x.LastProposals.UserProponent_ProposalStatus != ProposalStatus.Rifiutata ) || (x.LastProposals.UserReceiving_ProposalStatus != ProposalStatus.Rifiutata) ||
-                             (x.LastProposals.UserProponent_ProposalStatus != ProposalStatus.Accettata && x.LastProposals.UserReceiving_ProposalStatus != ProposalStatus.Accettata)
+                    // Mostro tutte le proposte in attesa di approvazione dall'altro utente e le proposta non annullate dall'utente corrente.
+                    .Where( 
+                        x => (x.LastProposals.UserProponent_ProposalStatus == ProposalStatus.Accettata && x.LastProposals.UserReceiving_ProposalStatus == ProposalStatus.DaApprovare)
                     )
                     .ToListAsync();
                      
