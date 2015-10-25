@@ -107,7 +107,8 @@ namespace uPlayAgain.Controllers
                 return NotFound();
             }
 
-            db.LibraryComponents.Remove(libraryComponent);
+            libraryComponent.IsDeleted = true;
+            db.Entry(libraryComponent).State = EntityState.Modified;            
             await db.SaveChangesAsync();
 
             return Ok(libraryComponent);

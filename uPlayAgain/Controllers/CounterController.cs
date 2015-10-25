@@ -62,49 +62,117 @@ namespace uPlayAgain.Controllers
             {
                 return NotFound();
             }
-            int result = await db.Messages
-                                 .Include(t => t.UserReceiving)
-                                 .Where(t => t.UserReceiving.UserId == id && t.IsAlreadyRead == false)
-                                 .CountAsync();
-            return Ok(result);
+            int resultMessage = await db.Messages
+                                     .Include(t => t.UserReceiving)
+                                     .Where(t => t.UserReceiving.UserId == id && t.IsAlreadyRead == false)
+                                     .CountAsync();
+                        
+            int resultTran = await db.Transactions
+                   .Where(t => t.UserProponent_Id == user.Id || t.UserReceiving_Id == user.Id)
+                   .Where(t => t.Proposals.Count > 0)
+                   .OrderByDescending(t => t.Proposals.OrderByDescending(p => p.DateStart).FirstOrDefault().DateStart)
+                   .Select(x => new
+                   {
+                       Transaction = x,
+                       LastProposals = x.Proposals
+                                        .OrderByDescending(p => p.DateStart)
+                                        .FirstOrDefault(),
+                       Components = x.Proposals
+                                     .OrderByDescending(p => p.DateStart)
+                                     .FirstOrDefault()
+                                     .ProposalComponents
+                                     .Where(y => y.Proposal.ProposalId == x.Proposals.OrderByDescending(p => p.DateStart).FirstOrDefault().ProposalId)
+                                     .Select(z => new { LibraryComponents = z.LibraryComponents, UserId = z.LibraryComponents.Library.UserId })
+                   })
+                   // Mostro tutte le proposte approvate da entrambi gli utenti e senza feedback da parte dell'utente corrente
+                   .Where(
+                       x => (x.LastProposals.UserProponent_ProposalStatus == ProposalStatus.Accettata && x.LastProposals.UserReceiving_ProposalStatus == ProposalStatus.Accettata)
+                            && !x.Transaction.Feedbacks.Where(y => y.UserId != user.Id).Any() //Feedback rilasciati DA me!
+                   )
+                   .CountAsync();
+
+            return Ok(resultMessage + resultTran);
         }
 
-        // GET: api/Counter/TransactionsIngoingByUser/5
-        [Route("api/Counter/TransactionsIngoingByUser/{id:int}")]
-        [ResponseType(typeof(int))]
-        public async Task<IHttpActionResult> GetTransactionsIngoingByUser(int id)
-        {
-            User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
-            if (user == null)
-            {
-                return NotFound();
-            }
-            int result = await db.Transactions
-                                 .Include(t => t.UserReceiving)
-                                 .Include(t => t.Proposals)
-                                 .Where(t => t.UserReceiving.UserId == id)
-                                 .Where(t => t.TransactionStatus != TransactionStatus.Conclusa)
-                                 .CountAsync();
-            return Ok(result);
-        }
+        //// GET: api/Counter/TransactionsIngoingByUser/5
+        //[Route("api/Counter/TransactionsIngoingByUser/{id:int}")]
+        //[ResponseType(typeof(int))]
+        //public async Task<IHttpActionResult> GetTransactionsIngoingByUser(int id)
+        //{
+        //    User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
+        //    if (user == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    int result = await db.Transactions
+        //                         .Include(t => t.UserReceiving)
+        //                         .Include(t => t.Proposals)
+        //                         .Where(t => t.UserReceiving.UserId == id)
+        //                         .Where(t => t.TransactionStatus != TransactionStatus.Conclusa)
+        //                         .CountAsync();
+        //    return Ok(result);
+        //}
 
-        // GET: api/Counter/TransactionsOutgoingByUser/5
-        [Route("api/Counter/TransactionsOutgoingByUser/{id:int}")]
-        [ResponseType(typeof(int))]
-        public async Task<IHttpActionResult> GetTransactionsOutgoingByUser(int id)
+        //// GET: api/Counter/TransactionsOutgoingByUser/5
+        //[Route("api/Counter/TransactionsOutgoingByUser/{id:int}")]
+        //[ResponseType(typeof(int))]
+        //public async Task<IHttpActionResult> GetTransactionsOutgoingByUser(int id)
+        //{
+        //    User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
+        //    if (user == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    int result = await db.Transactions
+        //                         .Include(t => t.UserReceiving)
+        //                         .Include(t => t.Proposals)
+        //                         .Where(t => t.UserProponent.UserId == id)
+        //                         .Where(t => t.TransactionStatus != TransactionStatus.Conclusa)
+        //                         .CountAsync();
+        //    return Ok(result);
+        //}
+        
+        // GET: api/Counter/ByUser/''
+        [Route("api/Counter/ByUser/{id}")]
+        [ResponseType(typeof(MessageCountResponse))]
+
+        public async Task<IHttpActionResult> GetCounter(string id)
         {
-            User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
-            if (user == null)
+            IQueryable<Message> incoming = db.Messages.Where(m => m.UserReceiving_Id == id && !m.IsAlreadyRead);
+
+            IQueryable<Message> outgoing = db.Messages.Where(m => m.UserProponent_Id == id && !m.IsAlreadyRead);
+
+            int resultTran = await db.Transactions
+                                     .Where(t => t.UserProponent_Id == id || t.UserReceiving_Id == id)
+                                     .Where(t => t.Proposals.Count > 0)
+                                     .OrderByDescending(t => t.Proposals.OrderByDescending(p => p.DateStart).FirstOrDefault().DateStart)
+                                     .Select(x => new
+                                     {
+                                         Transaction = x,
+                                         LastProposals = x.Proposals
+                                                          .OrderByDescending(p => p.DateStart)
+                                                          .FirstOrDefault(),
+                                         Components = x.Proposals
+                                                       .OrderByDescending(p => p.DateStart)
+                                                       .FirstOrDefault()
+                                                       .ProposalComponents
+                                                       .Where(y => y.Proposal.ProposalId == x.Proposals.OrderByDescending(p => p.DateStart).FirstOrDefault().ProposalId)
+                                                       .Select(z => new { LibraryComponents = z.LibraryComponents, UserId = z.LibraryComponents.Library.UserId })
+                                     })
+                                      .Where(
+                                            x => (x.LastProposals.UserProponent_ProposalStatus == ProposalStatus.Accettata && x.LastProposals.UserReceiving_ProposalStatus == ProposalStatus.DaApprovare)
+                                        )
+                                     .CountAsync();
+
+            IQueryable<LibraryComponent> libraryComponents = db.LibraryComponents.Include(z => z.Library).Where(m => m.Library.UserId == id && m.IsDeleted == false);
+
+            return Ok(new MessageCountResponse
             {
-                return NotFound();
-            }
-            int result = await db.Transactions
-                                 .Include(t => t.UserReceiving)
-                                 .Include(t => t.Proposals)
-                                 .Where(t => t.UserProponent.UserId == id)
-                                 .Where(t => t.TransactionStatus != TransactionStatus.Conclusa)
-                                 .CountAsync();
-            return Ok(result);
+                Incoming = await incoming.CountAsync(),
+                Outgoing = await outgoing.CountAsync(),
+                Transactions = resultTran,
+                LibrariesComponents = await libraryComponents.CountAsync()
+            });
         }
 
         // GET: api/Counter/GamesByUser/5

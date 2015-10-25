@@ -39,9 +39,12 @@ namespace uPlayAgain.Controllers
                           lc => lc.LibraryComponents.GameId,
                           g => g.GameId,
                           (lc, g) => new { LibraryComponent = lc, Game = g, g.Genre, g.Platform, lc.User, lc.Library })
+                      //Gioco scambiabile e non cancellato
+                      .Where(l => l.LibraryComponent.LibraryComponents.IsExchangeable && !l.LibraryComponent.LibraryComponents.IsDeleted)
+
                       .Where(u => u.User.UserId != userId)
                       .Where(u => u.User.PositionUser.Distance(position) <= distance * 1000)
-                      .Where(g => string.IsNullOrEmpty(gameTitle) || g.Game.Title.Contains(gameTitle) )
+                      .Where(g => string.IsNullOrEmpty(gameTitle) || g.Game.Title.Contains(gameTitle) )                      
                       .Where(gr => string.IsNullOrEmpty(genreId) || string.Equals(gr.Genre.GenreId, genreId))
                       .Where(p => string.IsNullOrEmpty(platformId) || string.Equals(p.Platform.PlatformId, platformId))
                       .Select(x => new SearchGame()

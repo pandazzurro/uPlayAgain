@@ -21,5 +21,6 @@ namespace uPlayAgain.Models
         public byte[] Image { get; set; }
         public DateTimeOffset LastLogin { get; set; }
         public int GameInLibrary { get; set; }
+        public List<int>LibrariesId { get; set; }
     }
 }

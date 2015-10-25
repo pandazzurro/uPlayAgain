@@ -28,8 +28,16 @@ namespace uPlayAgain.Controllers
             Library library = await db.Libraries
                                       .Include(t => t.LibraryComponents)
                                       .Include(t => t.User)
-                                      .Where(t => t.LibraryId == id)
+                                      .Where(t => t.LibraryId == id)                                                                
                                       .SingleOrDefaultAsync();
+
+            for(int i = library.LibraryComponents.Count - 1; i >= 0; i--)
+            {
+                LibraryComponent lc = library.LibraryComponents.ElementAt(i);
+                if (lc.IsDeleted == true)
+                    library.LibraryComponents.Remove(lc);
+            }
+            
             if (library == null)
             {
                 return NotFound();

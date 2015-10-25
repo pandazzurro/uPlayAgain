@@ -97,7 +97,10 @@ namespace uPlayAgain.Controllers
                 return NotFound();
             }
             
-            int gameInLibrary = db.LibraryComponents.Where(p => p.LibraryId == db.Libraries.Where(x => x.UserId == user.Id).FirstOrDefault().LibraryId).Count();
+            int gameInLibrary = db.LibraryComponents
+                                  .Where(p => p.LibraryId == db.Libraries.Where(x => x.UserId == user.Id).FirstOrDefault().LibraryId)
+                                  .Where(p => p.IsDeleted == false)
+                                  .Count();
 
             UserResponse response = new UserResponse()
             {
@@ -203,16 +206,33 @@ namespace uPlayAgain.Controllers
 
             IQueryable<Message> outgoing = db.Messages.Where(m => m.UserProponent_Id == id && !m.IsAlreadyRead);
 
-            IQueryable<Transaction> transactions = db.Transactions
-                                                     .Where(t => t.UserProponent_Id == id || t.UserReceiving_Id == id)
-                                                     .Where(t => t.Proposals.Count > 0)
-                                                     .Where(t => t.TransactionStatus != TransactionStatus.Conclusa);
+            int resultTran = await db.Transactions
+                                     .Where(t => t.UserProponent_Id == id || t.UserReceiving_Id == id)
+                                     .Where(t => t.Proposals.Count > 0)
+                                     .OrderByDescending(t => t.Proposals.OrderByDescending(p => p.DateStart).FirstOrDefault().DateStart)
+                                     .Select(x => new
+                                     {
+                                         Transaction = x,
+                                         LastProposals = x.Proposals
+                                                          .OrderByDescending(p => p.DateStart)
+                                                          .FirstOrDefault(),
+                                         Components = x.Proposals
+                                                       .OrderByDescending(p => p.DateStart)
+                                                       .FirstOrDefault()
+                                                       .ProposalComponents
+                                                       .Where(y => y.Proposal.ProposalId == x.Proposals.OrderByDescending(p => p.DateStart).FirstOrDefault().ProposalId)
+                                                       .Select(z => new { LibraryComponents = z.LibraryComponents, UserId = z.LibraryComponents.Library.UserId })
+                                     })
+                                      .Where(
+                                            x => (x.LastProposals.UserProponent_ProposalStatus == ProposalStatus.Accettata && x.LastProposals.UserReceiving_ProposalStatus == ProposalStatus.DaApprovare)
+                                        )
+                                     .CountAsync();
 
             return Ok(new MessageCountResponse
             {
                 Incoming = await incoming.CountAsync(),
                 Outgoing = await outgoing.CountAsync(),
-                Transactions = await transactions.CountAsync()
+                Transactions = resultTran
             });
         }
         
@@ -267,7 +287,7 @@ namespace uPlayAgain.Controllers
                                       .Select(z => new { LibraryComponents = z.LibraryComponents, UserId = z.LibraryComponents.Library.UserId })
                     })
                     // Mostro tutte le proposte in attesa di approvazione dall'altro utente e le proposta non annullate dall'utente corrente.
-                    .Where( 
+                    .Where(
                         x => (x.LastProposals.UserProponent_ProposalStatus == ProposalStatus.Accettata && x.LastProposals.UserReceiving_ProposalStatus == ProposalStatus.DaApprovare)
                     )
                     .ToListAsync();
@@ -378,7 +398,7 @@ namespace uPlayAgain.Controllers
             return Ok(games);
         }
 
-        [Route("api/GamesComplete/ByUser/{id}")]
+        [Route("api/GameExchangeable/ByUser/{id}")]
         [ResponseType(typeof(int))]
         public async Task<IHttpActionResult> GetGamesCompleteByUser(string id)
         {
@@ -402,34 +422,39 @@ namespace uPlayAgain.Controllers
                          .ToList()
                          .ForEach(lc =>
                          {
-                             components.Add(
-                             new LibraryComponentDto
+                             if (lc.IsExchangeable)
                              {
-                                 GameLanguage = lc.GameLanguage,
-                                 Games = new Game() {
-                                     GameId = lc.Games.GameId,
-                                     GenreId = lc.Games.GenreId,
-                                     Genre = lc.Games.Genre,
-                                     Platform = lc.Games.Platform,
-                                     PlatformId = lc.Games.PlatformId,
-                                     ShortName = lc.Games.ShortName,
-                                     Title = lc.Games.Title,
-                                     Description = lc.Games.Description,
-                                     Image = null
-                                 },
-                                 LibraryComponents = new LibraryComponent() {
-                                     GameId = lc.GameId,
-                                     GameLanguageId = lc.GameLanguageId,
-                                     IsDeleted = lc.IsDeleted,
-                                     IsExchangeable = lc.IsExchangeable,
-                                     LibraryComponentId = lc.LibraryComponentId,
-                                     LibraryId = lc.LibraryId,
-                                     Note = lc.Note,
-                                     StatusId = lc.StatusId
-                                 },
-                                 Status = lc.Status,
-                                 UserId = lc.Library.UserId
-                             });
+                                components.Add(
+                                    new LibraryComponentDto
+                                 {
+                                     GameLanguage = lc.GameLanguage,
+                                     Games = new Game()
+                                     {
+                                         GameId = lc.Games.GameId,
+                                         GenreId = lc.Games.GenreId,
+                                         Genre = lc.Games.Genre,
+                                         Platform = lc.Games.Platform,
+                                         PlatformId = lc.Games.PlatformId,
+                                         ShortName = lc.Games.ShortName,
+                                         Title = lc.Games.Title,
+                                         Description = lc.Games.Description,
+                                         Image = null
+                                     },
+                                     LibraryComponents = new LibraryComponent()
+                                     {
+                                         GameId = lc.GameId,
+                                         GameLanguageId = lc.GameLanguageId,
+                                         IsDeleted = lc.IsDeleted,
+                                         IsExchangeable = lc.IsExchangeable,
+                                         LibraryComponentId = lc.LibraryComponentId,
+                                         LibraryId = lc.LibraryId,
+                                         Note = lc.Note,
+                                         StatusId = lc.StatusId
+                                     },
+                                     Status = lc.Status,
+                                     UserId = lc.Library.UserId
+                                 });
+                            }
                          });                           
                     });
 

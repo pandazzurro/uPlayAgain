@@ -195,6 +195,7 @@
                 var _this = this;
                 _this.games = [];
                 _this.gameSrv = gameSrv;
+                _this.currentUser = userSrv.getCurrentUser().id;
 
                 _this.statuses = gameSrv.statuses;
                 _this.languages = gameSrv.languages;
@@ -215,7 +216,7 @@
                         for (i in success.libraryComponents) {
                             var g = success.libraryComponents[i];
 
-                            g.canEdit = _this.libraryOwner == userSrv.getCurrentUser().id;
+                            g.canEdit = _this.libraryOwner == _this.currentUser;
                             gameSrv.fillGameData(g);
                         }
 

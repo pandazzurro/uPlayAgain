@@ -80,7 +80,19 @@ namespace uPlayAgain.Controllers
 
                 db.Entry(userLogin).State = EntityState.Modified;
                 await db.SaveChangesAsync();
-                return Ok(userLogin);
+
+                UserResponse response = new UserResponse()
+                {
+                    Id = userLogin.Id,
+                    UserId = userLogin.UserId,
+                    Username = userLogin.UserName,
+                    Mail = userLogin.Email,
+                    PositionUser = userLogin.PositionUser,
+                    Image = userLogin.Image,
+                    LibrariesId = await db.Libraries.Where(x => x.UserId == userLogin.Id).Select(x => x.LibraryId).ToListAsync()
+                };
+
+                return Ok(response);
             }
             if (status == SignInStatus.Failure)
             {

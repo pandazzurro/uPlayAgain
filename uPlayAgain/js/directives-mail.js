@@ -105,8 +105,13 @@
                                         _this.transactions[i].proposal.userReceiving_ProposalStatus = newState;
 
                                     // Se annullo o rifiuto la proposta, o se entrambi hanno accettato, rimuovo tutto dalla lista di visualizzazione
-                                    if (newState == 2 || newState == 3 || (_this.transactions[i].proposal.userProponent_ProposalStatus == 1 && _this.transactions[i].proposal.userReceiving_ProposalStatus == 1)) {
+                                    if (newState == 2 || newState == 3) {
                                         _this.transactions.splice(i, 1);
+                                    }
+                                    if (_this.transactions[i].proposal.userProponent_ProposalStatus == 1 && _this.transactions[i].proposal.userReceiving_ProposalStatus == 1) {
+                                        _this.transactions.splice(i, 1);
+                                        // TODO: mandare un messaggio di accetazione della proposta!
+                                        // TODO: togliere i giochi dalle librerie o metterli (non scambiabili)
                                     }
                                 }
                             }
@@ -239,7 +244,7 @@
                         proposalText: _this.message.text,
                         proposalObject: _this.message.titolo,
                         proposalDate: new Date().toISOString(),
-                        direction: directionProposal(),
+                        direction: _this.directionProposal(),
                         transactionId: _this.currentTransaction.transactionId,
                         userLastChanges_Id: userSrv.getCurrentUser().id,
                         userProponent_ProposalStatus: 1, // L'utente che crea la proposta la accetta automaticamente.
@@ -646,6 +651,8 @@
                             .then(function (success) {
                                 // Rimuovo la transazione che ha avuto il feedback
                                 _this.pendingTransactions.splice(i, 1);
+
+                                //TODO: impostare conclusa la transazione se ho il feedback di entrambi!
                                 UIkit.notify('Hai votato con successo. Grazie!', { status: 'success', timeout: 5000 });
                             },
                             function (error) {

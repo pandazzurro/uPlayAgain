@@ -232,7 +232,6 @@
     <Content Include="js\directives-misc.js" />
     <Content Include="js\directives-user.js" />
     <Content Include="js\factories.js" />
-    <Content Include="js\loading.js" />
     <Content Include="js\mail-activation.js" />
     <Content Include="js\services.js" />
     <Content Include="js\templates.js" />

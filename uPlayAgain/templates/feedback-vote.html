@@ -7,71 +7,55 @@
         </div>
     </div>
     <div class="uk-table uk-table-condensed" ng-show="feedbackVote.hasFeedback()">
-            <div class="uk-accordion" data-uk-accordion="">
-                <div ng-repeat="transaction in feedbackVote.pendingTransactions">
-                    <h3 class="uk-accordion-title">
-                        Scambio di {{transaction.myItems.length + transaction.theirItems.length}} giochi con l'utente <user-link data-user='{{ transaction.userId }}'></user-link>
-                    </h3>
-                    <div class="uk-accordion-content">
-                        <table class="uk-table uk-table-condensed">
-                            <tbody>
-                                <!--Bottoni-->
-                                <tr>
-                                    <td>
-                                        <div class="uk-grid uk-grid-divider">
-                                            <div class="uk-width-1-1">
-                                                <button class="uk-button uk-button-success" ng-click="feedbackVote.AddFeedback(transaction.transactionId,1)"><span class="uk-icon-thumbs-up uk-icon-small" /></button>
-                                                <button class="uk-button uk-button-danger" ng-click="feedbackVote.AddFeedback(transaction.transactionId,-3)"><span class="uk-icon-thumbs-down uk-icon-small" /></button>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <!-- Messaggi proposta -->
-                                <tr>
-                                    <td>
-                                        <div class="uk-panel uk-panel-box uk-panel-box-primary">
-                                            <h3 class="uk-panel-title"><i class="uk-icon-envelope" />&nbsp;{{transaction.proposal.proposalObject}}</h3>
-                                            <span>{{transaction.proposal.proposalText}}</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <!--Componenti della proposta-->
-                                <tr>
-                                    <td>
-                                        <div class="uk-grid uk-grid-divider">
-                                            <div class="uk-width-2-4">
-                                                <ul class="uk-grid uk-text-center uk-grid-width-1-1 uk-grid-width-medium-1-2 uk-grid-width-large-1-3">
-                                                    <li ng-repeat="item in transaction.myItems" style="margin-bottom:5px">
-                                                        <article class="uk-comment uk-animation-shake">
-                                                            <header class="uk-comment-header">
-                                                                <img class="uk-comment-avatar" ng-src="data:image/gif;base64,{{item.game.gameData.image}}" alt="{{item.game.gameData.title}}" style="height:80px">
-                                                                <h4 class="uk-comment-title">{{item.game.gameData.title}}</h4>
-                                                                <div class="uk-comment-meta">{{item.game.gameData.language.description}} - {{item.game.gameData.status.description}}</div>
-                                                            </header>
-                                                        </article>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <div class="uk-width-2-4">
-                                                <ul class="uk-grid uk-text-center uk-grid-width-1-1 uk-grid-width-medium-1-2 uk-grid-width-large-1-3">
-                                                    <li ng-repeat="item in transaction.theirItems" style="margin-bottom:5px">
-                                                        <article class="uk-comment uk-animation-shake">
-                                                            <header class="uk-comment-header">
-                                                                <img class="uk-comment-avatar" ng-src="data:image/gif;base64,{{item.game.gameData.image}}" alt="{{item.game.gameData.title}}" style="height:80px">
-                                                                <h4 class="uk-comment-title">{{item.game.gameData.title}}</h4>
-                                                                <div class="uk-comment-meta">{{item.game.gameData.language.description}} - {{item.game.gameData.status.description}}</div>
-                                                            </header>
-                                                        </article>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+        <div class="uk-accordion" data-uk-accordion="">
+            <div ng-repeat="transaction in feedbackVote.pendingTransactions">
+                <h3 class="uk-accordion-title">
+                    Scambio di {{transaction.myItems.length + transaction.theirItems.length}} giochi con l'utente <user-link data-user='{{ transaction.userId }}'></user-link>
+                </h3>
+                <div class="uk-accordion-content">                        
+                    <!--Bottoni-->
+                    <div class="uk-grid uk-grid-divider">
+                        <div class="uk-width-1-1">
+                            <button class="uk-button uk-button-success" ng-click="feedbackVote.AddFeedback(transaction.transactionId,1)"><span class="uk-icon-thumbs-up uk-icon-small" /></button>
+                            <button class="uk-button uk-button-danger" ng-click="feedbackVote.AddFeedback(transaction.transactionId,-3)"><span class="uk-icon-thumbs-down uk-icon-small" /></button>
+                        </div>
+                    </div>                                    
+                    <!-- Messaggi proposta -->                                
+                    <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                        <h3 class="uk-panel-title"><i class="uk-icon-envelope" />&nbsp;{{transaction.proposal.proposalObject}}</h3>
+                        <span>{{transaction.proposal.proposalText}}</span>
+                    </div>                                    
+                    <!--Componenti della proposta-->                                
+                    <div class="uk-grid uk-grid-divider">
+                        <div class="uk-width-2-4">
+                            <ul class="uk-grid uk-text-center uk-grid-width-1-1 uk-grid-width-medium-1-2">
+                                <li ng-repeat="item in transaction.myItems" style="margin-bottom:5px">
+                                    <article class="uk-comment uk-animation-shake">
+                                        <header class="uk-comment-header">
+                                            <img class="uk-comment-avatar" ng-src="data:image/gif;base64,{{item.game.gameData.image}}" alt="{{item.game.gameData.title}}" style="height:80px">
+                                            <h4 class="uk-comment-title">{{item.game.gameData.title}}</h4>
+                                            <div class="uk-comment-meta">{{item.game.gameData.language.description}} - {{item.game.gameData.status.description}}</div>
+                                        </header>
+                                    </article>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="uk-width-2-4">
+                            <ul class="uk-grid uk-text-center uk-grid-width-1-1 uk-grid-width-medium-1-2">
+                                <li ng-repeat="item in transaction.theirItems" style="margin-bottom:5px">
+                                    <article class="uk-comment uk-animation-shake">
+                                        <header class="uk-comment-header">
+                                            <img class="uk-comment-avatar" ng-src="data:image/gif;base64,{{item.game.gameData.image}}" alt="{{item.game.gameData.title}}" style="height:80px">
+                                            <h4 class="uk-comment-title">{{item.game.gameData.title}}</h4>
+                                            <div class="uk-comment-meta">{{item.game.gameData.language.description}} - {{item.game.gameData.status.description}}</div>
+                                        </header>
+                                    </article>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 </form>

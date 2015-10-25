@@ -11,5 +11,6 @@ namespace uPlayAgain.Models
         public int Incoming;
         public int Outgoing;
         public int Transactions;
+        public int LibrariesComponents;
     }
 }

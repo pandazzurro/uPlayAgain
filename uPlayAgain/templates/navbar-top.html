@@ -38,7 +38,10 @@
                 <form-login id="loginPanel" class="uk-dropdown uk-dropdown-navbar uk-dropdown-width-2"></form-login>
             </li>
             <li class="uk-parent" ng-show="userCtrl.isLoggedIn()" data-uk-dropdown="{mode:'click'}">
-                <a href=""><img width="30" height="30" margin="3" data-ng-src="data:image/PNG;base64,{{userCtrl.getCurrentUser().image}}" /><!--<i class="fa fa-user"></i>--> {{ userCtrl.getCurrentUser().userName }} <i class="uk-icon-caret-down"></i></a>
+                <a href="">
+                    <img width="30" height="30" margin="3" ng-src="data:image/gif;base64,{{ userCtrl.getCurrentUser().image}}" />
+                    {{ userCtrl.getCurrentUser().userName }} <i class="uk-icon-caret-down"></i>
+                </a>
                 <div class="uk-dropdown uk-dropdown-navbar">
                     <a href="#/edit-register">Il mio profilo</a>
                     <hr>

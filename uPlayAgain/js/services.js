@@ -38,6 +38,7 @@
             gxcFct.user.login(queryParameters).$promise
               .then(function (userSuccess) {
                   user = userSuccess;
+                  user.LibraryId = user.librariesId[0];
 
                   _this.updateUserData();
               },
@@ -48,24 +49,15 @@
         };
 
         this.updateUserData = function () {
+            // TODO: usare i counter
+
             user.Games = 0;
             user.Messages = 0;
-            user.LibraryId = undefined;
-
-            gxcFct.library.byUser({ userId: user.userId }).$promise
-              .then(function (libSuccess) {
-                  user.LibraryId = libSuccess[0].libraries[0].libraryId;
-                  for (lc in libSuccess[0].libraries[0].libraryComponents) {
-                      user.Games++;
-                  }
-              },
-              function (error) {
-                  UIkit.notify('Si &egrave; verificato un errore nel recupero dei dati utente.', { status: 'warning', timeout: 5000 });
-              }); // library.byUser     
-
-            gxcFct.mail.byUser({ userId: user.userId }).$promise
-              .then(function (mailSuccess) {
-                  user.Messages = mailSuccess.incoming;
+            
+            gxcFct.mail.byUser({ userId: user.id }).$promise
+              .then(function (counterSuccess) {
+                  user.Messages = counterSuccess.incoming + counterSuccess.outgoing + counterSuccess.transactions;
+                  user.Games = counterSuccess.librariesComponents;
               },
               function (error) {
                   UIkit.notify('Si &egrave; verificato un errore nel recupero dei dati utente.', { status: 'warning', timeout: 5000 });
