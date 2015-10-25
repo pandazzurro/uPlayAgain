@@ -160,11 +160,8 @@
                     }
                 }
 
-                this.raiseOffer = function (tran) {
-                    // TODO: Inserire nel path l'id della proposta da annullare.
-                    $location.path('/newValue')
-                    // TODO: annullare la proposta e crearne una nuova. (la modifica dei dati viene fatta nella pagina di creazione della proposta)
-                    var a = tran;
+                this.raiseOffer = function (tran) {                    
+                    $location.path('#/mail/compose/' + tran.userId + '/' + tran.transactionId + '/' + tran.proposal.proposalId);
                 }
 
                 this.getMessages(_this.params.direction, _this.params.page);                
@@ -231,7 +228,7 @@
                 var _this = this;
                 _this.message = { myItems: [], hisItems: [] };
                 _this.hisUserId = undefined;
-
+                _this.isRaiseOffer = undefined;
 
                 var start = new Date();
                 var end = new Date();
@@ -295,6 +292,9 @@
                         }
                         else
                         {
+                            if (_this.isRaiseOffer) {
+                                // TODO: annulla la proposta precedente
+                            }
                             addProposal();
                         }
                     }
@@ -347,7 +347,7 @@
                     }
                 };
 
-                _this.recipientId = $routeParams.recipientId;
+                _this.recipientId = $routeParams.recipientId;                
 
                 // My Library Components
                 gxcFct.game.byUserWithComponent({ userId: userSrv.getCurrentUser().id }).$promise
@@ -368,7 +368,14 @@
                     });
                     _this.hisLibrary = game;
                     _this.hisUserId = _this.recipientId;
-                });                
+                });
+                
+                _this.transactionId = $routeParams.transactionId;
+                _this.proposalId = $routeParams.proposalId;
+                if (_this.transactionId != undefined && _this.proposalId != undefined) {
+                    _this.currentTransaction.transactionId = _this.transactionId;
+                    _this.isRaiseOffer = true;
+                }
             },
             controllerAs: 'mail'
         };

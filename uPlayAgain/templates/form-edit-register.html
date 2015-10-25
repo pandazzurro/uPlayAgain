@@ -5,38 +5,18 @@
         <legend>Modifica dati utente</legend>
           <div class="uk-grid">
             <div class="uk-width-1-2">
-              <input name="username" type="text" disabled placeholder="Username" ng-model="currentUser.userName" required ng-class="registrationForm.userName.$invalid && !registrationForm.username.$pristine ? 'uk-form-danger' : ''">
+              <input name="username" type="text" disabled placeholder="Username" ng-model="editUser.currentUser.userName" required ng-class="registrationForm.userName.$invalid && !registrationForm.username.$pristine ? 'uk-form-danger' : ''">
               <p ng-show="registrationForm.userName.$invalid && !registrationForm.username.$pristine" class="help-block">Campo obbligatorio.</p>
             </div>
           </div>
           <div class="uk-grid">
             <div class="uk-width-1-2">
-              <input name="email" type="email" disabled placeholder="Indirizzo email" ng-model="currentUser.email" required ng-class="registrationForm.username.$invalid && !registrationForm.username.$pristine ? 'uk-form-danger' : ''">
+              <input name="email" type="email" disabled placeholder="Indirizzo email" ng-model="editUser.currentUser.mail" required ng-class="registrationForm.username.$invalid && !registrationForm.username.$pristine ? 'uk-form-danger' : ''">
               <p ng-show="registrationForm.email.$invalid && !registrationForm.email.$pristine" class="help-block">
                 Non &egrave; un indirizzo email valido.
               </p>
-            </div>
-            <!--<div class="uk-width-1-2">
-              <input name="emailConfirm" type="email" placeholder="Conferma email" ng-model="newuser.params.confirmEmail" required>
-              <p ng-show="newuser.params.email != newuser.params.confirmEmail" class="help-block">
-                L'indirizzo email e l'indirizzo di conferma non coincidono.
-              </p>
-            </div>-->
+            </div>           
           </div>
-          <!--<div class="uk-grid">
-            <div class="uk-width-1-2">
-              <input name="password" type="password" placeholder="Password" ng-model="currentUser.password" required ng-minlength="8" ng-class="(registrationForm.username.$invalid && !registrationForm.username.$pristine) || registrationForm.password.$error.minlength ? 'uk-form-danger' : ''">
-              <p ng-show="registrationForm.password.$error.minlength" class="help-block">
-                La password deve essere composta da almeno 8 caratteri.
-              </p>
-            </div>
-            <div class="uk-width-1-2">
-              <input name="passwordConfirm" type="password" placeholder="Conferma password" ng-model="newuser.params.confirmPassword" required ng-minlength="8">
-              <p ng-show="newuser.params.password != newuser.params.confirmPassword" class="help-block">
-                La password e la password di conferma non coincidono.
-              </p>
-            </div>
-          </div>-->          
           <div class="uk-grid">
               <div class="uk-width-1-1">
                   <div>Seleziona una immagine: <input type="file" id="fileInput" /></div>
@@ -60,7 +40,7 @@
           </div>
           <div class="uk-grid">
             <div class="uk-width-1-1">
-              <button class="uk-button" ng-click="newuser.register()" ng-disabled="registrationForm.$invalid">Aggiorna</button>
+              <button class="uk-button" ng-click="editUser.register()" ng-disabled="registrationForm.$invalid">Aggiorna</button>
             </div>
         </div>
       </div>

@@ -155,20 +155,27 @@
                 var _this = this;
                 _this.params = {};
                 _this.TOSagreed = false;
-                $scope.currentUser = undefined;
+                _this.currentUser = userSrv.getCurrentUser();
 
                 // Recupero i dati dell'utente
                 var queryParameters = {
-                    userId: userSrv.getCurrentUser().userId
+                    userId: _this.currentUser.userId
                 };
                 gxcFct.user.get(queryParameters,
                 function (success) {
-                    $scope.currentUser = success;
-                    $scope.currentImage = "data:image/png;base64," + $scope.currentUser.image;
-                    $scope.currentUser.email = $scope.currentUser.mail;
-                    $scope.currentUser.userName = $scope.currentUser.username;
-
-                    var coords = $scope.currentUser.positionUser.geography.wellKnownText.replace('POINT (', '').replace(')', '').split(" ");
+                    _this.currentUser = success;
+                    $scope.currentImage = "data:image/png;base64," + _this.currentUser.image;
+                    _this.currentUser.email = _this.currentUser.mail;
+                    _this.currentUser.userName = _this.currentUser.username;
+                    
+                    var coords;
+                    if (_this.currentUser.positionUser != undefined) {
+                        coords = _this.currentUser.positionUser.geography.wellKnownText.replace('POINT (', '').replace(')', '').split(" ");
+                    }
+                    else{
+                        coords = [45.4300, 10.9880];                        
+                    }
+                    
 
                     $scope.map = {
                         center: {
@@ -232,11 +239,11 @@
                 $scope.searchbox = { template: 'searchbox.tpl.html', events: events };
                 /*search box*/
 
-                $scope.coordinateSelected = undefined;
+                _this.coordinateSelected = undefined;
                 $scope.$watchCollection("marker.coords", function (newVal, oldVal) {
                     if (_.isEqual(newVal, oldVal))
                         return;
-                    $scope.coordinateSelected = {
+                    _this.coordinateSelected = {
                         Geography: {
                             CoordinateSystemId: 4326,
                             WellKnownText: "POINT (" + $scope.marker.coords.latitude + " " + $scope.marker.coords.longitude + ")"
@@ -262,7 +269,7 @@
 
                 this.checkUsername = function () {
                     //verifica se esiste già un utente con questo nome
-                    gxcFct.user.checkUsername({ username: $scope.currentUser.userName },
+                    gxcFct.user.checkUsername({ username: _this.currentUser.userName },
                         function (success) { if(!success) UIkit.notify('Username già presente.', { status: 'error', timeout: 5000 });},
                         function (error) { UIkit.notify('Username già presente.', { status: 'error', timeout: 5000 }); }
                         );
@@ -273,19 +280,12 @@
                 };
 
                 this.register = function () {
-                    var userToSave = {
-                        image: $scope.currentCroppedImage.replace(/^data:image\/(png|jpg);base64,/, ""),
-                        id: $scope.currentUser.id,
-                        userId: $scope.currentUser.userId,
-                        positionUser: $scope.coordinateSelected,
-                        provider: $scope.currentUser.provider,
-                        userName: $scope.currentUser.userName,
-                        password: $scope.currentUser.password,
-                        confirmPassword: $scope.currentUser.confirmPassword,
-                        email: $scope.currentUser.email
-                    }
-                    
-                    gxcFct.user.update({ userId: $scope.currentUser.userId }, userToSave,
+                    var userToSave = _this.currentUser;
+                    userToSave.image = $scope.currentCroppedImage.replace(/^data:image\/(png|jpg);base64,/, "");                    
+                    userToSave.positionUser = _this.coordinateSelected;
+                    userToSave.email = _this.currentUser.email;
+                                        
+                    gxcFct.user.update({ userId: _this.currentUser.id }, userToSave,
                     function (success) {
                         UIkit.notify('Utente aggiornato. Ora puoi accedere alle funzionalit&agrave; del sito', { status: 'success', timeout: 5000 });
                         window.location = '#/';
@@ -295,7 +295,7 @@
                     });
                 };
             },
-            controllerAs: 'newuser'
+            controllerAs: 'editUser'
         };
     }]);
 

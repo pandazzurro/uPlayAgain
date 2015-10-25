@@ -119,41 +119,24 @@ namespace uPlayAgain.Controllers
 
         // PUT: api/Users/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutUser(int id, User user)
+        public async Task<IHttpActionResult> PutUser(string id, User user)
         {
-            if (id != user.UserId)
+            if (id != user.Id)
             {
                 return BadRequest();
             }
-            else
-            {
-                User userToSave = await db.Users.Where(p => p.UserId == id).FirstOrDefaultAsync();
-                userToSave.Image = user.Image;
-                userToSave.Email = user.Email;
-                userToSave.PasswordHash = user.PasswordHash;
-                userToSave.PositionUser = user.PositionUser;
-                userToSave.Provider = user.Provider;
-                userToSave.UserName = user.UserName;
-                db.Entry(userToSave).State = EntityState.Modified;
-            }
             
-            try
-            {
-                await db.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return StatusCode(HttpStatusCode.NoContent);
+            User userToSave = await _userManager.FindByIdAsync(user.Id);
+            if (string.Compare(userToSave.Email, user.Email) != 0 && ! string.IsNullOrEmpty(user.Email))
+                await _userManager.SetEmailAsync(user.Id, user.Email);
+            if(user.Image != null)
+                userToSave.Image = user.Image;
+            if(user.PositionUser != null)
+                userToSave.PositionUser = user.PositionUser;
+                        
+            await _userManager.UpdateAsync(userToSave);                
+            
+            return Ok();            
         }
 
         // DELETE: api/Users/5

@@ -79,6 +79,10 @@
                 pending: { url: app.webapi + '/api/feedbacks/pending/:userId', method: 'GET', isArray: true },
                 update: { url: app.webapi + '/api/feedbacks/:tranId', method: 'PUT', isArray: false }
             }),
+            counter: $resource(app.webapi, {}, {
+                byUser: { url: app.webapi + 'api/counter/byUser/:userId', method: 'GET', isArray: false }
+            }),
+
         }
     }]);
 })();

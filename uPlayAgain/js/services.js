@@ -54,7 +54,7 @@
             user.Games = 0;
             user.Messages = 0;
             
-            gxcFct.mail.byUser({ userId: user.id }).$promise
+            gxcFct.counter.byUser({ userId: user.id }).$promise
               .then(function (counterSuccess) {
                   user.Messages = counterSuccess.incoming + counterSuccess.outgoing + counterSuccess.transactions;
                   user.Games = counterSuccess.librariesComponents;
