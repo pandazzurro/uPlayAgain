@@ -161,7 +161,7 @@
                 }
 
                 this.raiseOffer = function (tran) {                    
-                    $location.path('#/mail/compose/' + tran.userId + '/' + tran.transactionId + '/' + tran.proposal.proposalId);
+                    $location.path('#/mail/compose/' + tran.userId + '/' + tran.proposal.proposalId);
                 }
 
                 this.getMessages(_this.params.direction, _this.params.page);                
