@@ -95,7 +95,7 @@ namespace uPlayAgain.Controllers
                     // Mostro tutte le proposte approvate da entrambi gli utenti e senza feedback da parte dell'utente corrente
                     .Where(
                         x => (x.LastProposals.UserProponent_ProposalStatus == ProposalStatus.Accettata && x.LastProposals.UserReceiving_ProposalStatus == ProposalStatus.Accettata) 
-                             && !x.Transaction.Feedbacks.Where(y => y.UserId == id).Any()
+                             && !x.Transaction.Feedbacks.Where(y => y.UserId != id).Any() //Feedback rilasciati DA me!
                     )
                     .ToListAsync();
 
@@ -108,6 +108,7 @@ namespace uPlayAgain.Controllers
 
                 result.Add(new TransactionDto()
                 {
+                    TransactionId = t.Transaction.TransactionId,
                     Proposal = t.LastProposals,
                     LastChange = t.LastProposals.DateStart,
                     UserOwnerId = t.Transaction.UserProponent_Id,

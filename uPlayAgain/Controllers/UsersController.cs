@@ -281,6 +281,7 @@ namespace uPlayAgain.Controllers
                     
                         result.Add(new TransactionDto()
                         {
+                            TransactionId = t.Transaction.TransactionId,
                             Proposal = t.LastProposals,
                             LastChange = t.LastProposals.DateStart,
                             UserOwnerId = t.Transaction.UserProponent_Id,

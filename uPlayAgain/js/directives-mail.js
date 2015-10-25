@@ -590,64 +590,42 @@
         };
     }]);
     
-    app.directive('feedbackVote', ['factories', 'user-service', function (gxcFct, userSrv) {
+    app.directive('feedbackVote', ['factories', 'user-service', 'games-service', function (gxcFct, userSrv, gameSrv) {
         return {
             restrict: 'E',
             templateUrl: 'templates/feedback-vote.html',
             controller: function ($routeParams) {
                 var _this = this;
                 _this.currentUserId = userSrv.getCurrentUser().id;
-                _this.currentTransactionToVote = [];                
-
+                _this.pendingTransactions = [];
+                _this.currentPage = 1;
+                
                 _this.GetPendingTransactionFeedback = function () {
-                    gxcFct.feedback.pending({ userId: userSrv.getCurrentUser().id }).$promise
-                    .then(function (success) {
-                        success.forEach(function (tran) {
-                            gxcFct.transaction.get({ tranId: tran }).$promise
-                            .then(function (successTran) {
-                                // Carico solo la proposta conclusa e i rispettivi componenti.
-                                for (i = successTran.proposals.length - 1; i >= 0; i--) {
-                                    // rimuovo le proposte non accettate da entrambi gli utenti
-                                    if (!(successTran.proposals[i].userReceiving_ProposalStatus == 1 && successTran.proposals[i].userProponent_ProposalStatus == 1)) {
-                                        successTran.proposals.splice(i, 1);
-                                    }
-                                    //Aggiungo i componenti alla proposta
-                                    else {
-                                        // 
-                                        _this.currentTransactionToVote.push(successTran);
-                                        gxcFct.proposal.get({ propId: successTran.proposals[i].proposalId }).$promise
-                                        .then(function (successComponents) {
-                                            // Aggancio la proposta con le componenti alla transazione
-                                            for (var i = 0; i < _this.currentTransactionToVote.length; i++) {                                                
-                                                if (_this.currentTransactionToVote[i].proposals[0].proposalId === successComponents.proposalId) {
-                                                    for (var j = 0; j < successComponents.length; j++) {
-                                                        if (successComponents[j].userOwnerId == _this.currentUserId) {
-                                                            _this.currentTransactionToVote[i].proposals[0].myItems.push(successComponents[j])
-                                                        }
-                                                        else
-                                                            _this.currentTransactionToVote[i].proposals[0].theirItems.push(successComponents[j])
-                                                    }
-                                                    //_this.currentTransactionToVote[i].proposals[0] = successComponents;
-                                                    break;
-                                                }
-                                            }
-                                        },
-                                        function (error) {
-                                            UIkit.notify('Errore lettura componenti della proposata', { status: 'success', timeout: 5000 });
-                                        });                                         
-                                    }
-                                }
 
-                                // TODO -> Caricare il feedback dell'utente presente nelle transazioni.                                
-                            },
-                            function (error) {
-                                UIkit.notify('Errore lettura transazioni da votare', { status: 'success', timeout: 5000 });
+                    var queryParameters = {
+                        userId: _this.currentUserId,
+                        page: _this.currentPage
+                    };
+
+                    gxcFct.feedback.pending(queryParameters).$promise
+                        .then(function (trnSuccess) {
+                            _this.pendingTransactions = trnSuccess;                            
+
+                            _this.pendingTransactions.forEach(function (tran) {
+                                tran.myItems.forEach(function (item) {
+                                    item.game = {};
+                                    item.game.gameId = item.gameId;
+                                    gameSrv.fillGameData(item.game);
+                                });
+
+                                tran.theirItems.forEach(function (item) {
+                                    item.game = {};
+                                    item.game.gameId = item.gameId;
+                                    gameSrv.fillGameData(item.game);
+                                })
                             });
+
                         });
-                    },
-                    function (error) {
-                        UIkit.notify('Errore lettura feedback da votare', { status: 'success', timeout: 5000 });
-                    });
                 }
                 
                 // Carico le transazioni da assegnare con un feedback all'avvio
@@ -656,25 +634,18 @@
                 _this.AddFeedback = function (transactionId, vote) {
                     // In caso di transazione positiva assegnare un +1, in caso di transazione negativa un -3
                     var tranFilter = undefined;
-                    for (i = 0; i < _this.currentTransactionToVote.length; i++) {
-                        if (_this.currentTransactionToVote[i].transactionId === transactionId) {
-                            // Reperisco l'utente corretto al quale rilasciare il feedback.
-                            var userToFeedback = undefined;
-                            if (_this.currentTransactionToVote[i].userProponent_Id != userSrv.getCurrentUser().id && _this.currentTransactionToVote[i].userReceiving_Id == userSrv.getCurrentUser().id)
-                                userToFeedback = _this.currentTransactionToVote[i].userProponent_Id;
-                            if (_this.currentTransactionToVote[i].userProponent_Id == userSrv.getCurrentUser().id && _this.currentTransactionToVote[i].userReceiving_Id != userSrv.getCurrentUser().id)
-                                userToFeedback = _this.currentTransactionToVote[i].userReceiving_Id;
-
-                            _this.Feedback = {
+                    for (i = _this.pendingTransactions.length - 1; i >= 0; i--) {
+                        if (_this.pendingTransactions[i].transactionId === transactionId) {                            
+                            var queryParameters = {
                                 transactionId: transactionId,
-                                userId: userToFeedback,
+                                userId: _this.pendingTransactions[i].userId, //userToFeedback
                                 rate: vote
                             };
 
-                            gxcFct.feedback.add(_this.Feedback).$promise
+                            gxcFct.feedback.add(queryParameters).$promise
                             .then(function (success) {
                                 // Rimuovo la transazione che ha avuto il feedback
-                                _this.currentTransactionToVote[i].splice(i, 1);
+                                _this.pendingTransactions.splice(i, 1);
                                 UIkit.notify('Hai votato con successo. Grazie!', { status: 'success', timeout: 5000 });
                             },
                             function (error) {
@@ -685,7 +656,13 @@
                     }
                     
                     
-                }                
+                }
+
+                _this.hasFeedback = function () {
+                    if (_this.pendingTransactions.length > 0)
+                        return true;
+                    return false;
+                }
             },
             controllerAs: 'feedbackVote'
         };

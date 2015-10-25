@@ -355,7 +355,7 @@
             scope: {
                 userId: '@user'
             },
-            template: '<a href=\'#/user/{{ userId }}\'>{{ link.username }} - ({{ link.ranking }}) su {{link.rankingCount}}</a>',
+            templateUrl: 'templates/user-link.html',            
             controller: function ($scope) {
                 var _this = this;
                 _this.username = '';

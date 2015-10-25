@@ -272,6 +272,7 @@
     <Content Include="templates\spedizioni-doc.html" />
     <Content Include="templates\test.html" />
     <Content Include="templates\test-transaction.html" />
+    <Content Include="templates\user-link.html" />
     <Content Include="templates\user-profile.html" />
     <Content Include="uikit\css\components\accordion.almost-flat.css" />
     <Content Include="uikit\css\components\accordion.almost-flat.min.css" />

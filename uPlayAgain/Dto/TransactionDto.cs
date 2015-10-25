@@ -11,6 +11,7 @@ namespace uPlayAgain.Dto
             MyItems = new HashSet<LibraryComponent>();
             TheirItems = new HashSet<LibraryComponent>();
         }
+        public int TransactionId { get; set; }
         public Proposal Proposal { get; set; }
         public string UserOwnerId { get; set; }
         public string UserId { get; set; }
