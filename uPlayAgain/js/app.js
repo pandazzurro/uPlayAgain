@@ -30,7 +30,7 @@
           .when('/mail', {
               redirectTo: '/mail/in/1'
           })
-          .when('/mail/compose/:recipientId', {
+          .when('/mail/compose/:recipientId/:proposalId?', {
               template: '<message-new data-exchange=\'0\'></message-new>'
           })
           .when('/mail/exchange/:gameId', {

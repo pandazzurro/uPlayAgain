@@ -30,20 +30,13 @@ namespace uPlayAgain.Controllers
         public async Task<IHttpActionResult> GetProposal(int id)
         {
             Proposal proposal = await db.Proposals
-                                        .Include(t => t.ProposalComponents)                                        
-                                        .Include(t => t.UserLastChanges)
+                                        .Include(x => x.Transaction)
                                         .Where(t => t.ProposalId == id)
                                         .SingleOrDefaultAsync();
             if (proposal == null)
             {
                 return NotFound();
             }
-            await db.Libraries.LoadAsync();
-            await db.LibraryComponents.LoadAsync();
-            await db.GameLanguages.LoadAsync();
-            await db.Games.LoadAsync();
-            await db.Genres.LoadAsync();
-            await db.Platforms.LoadAsync();
 
             return Ok(proposal);
         }

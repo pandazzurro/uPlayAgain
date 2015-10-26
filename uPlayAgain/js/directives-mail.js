@@ -1,7 +1,7 @@
 (function () {
     var app = angular.module('gxc.directives.mail', []);
 
-    app.directive('mailbox', ['factories', 'user-service', 'games-service', function (gxcFct, userSrv, gameSrv) {
+    app.directive('mailbox', ['factories', 'user-service', 'games-service', '$location', function (gxcFct, userSrv, gameSrv, $location) {
         return {
             restrict: 'E',
             templateUrl: 'templates/mail-mailbox.html',
@@ -161,8 +161,9 @@
                     }
                 }
 
-                this.raiseOffer = function (tran) {                    
-                    $location.path('#/mail/compose/' + tran.userId + '/' + tran.proposal.proposalId);
+                this.raiseOffer = function (tran) {
+                    var newLocation = '/mail/compose/' + tran.userId + '/' + tran.proposal.proposalId;
+                    $location.path(newLocation);
                 }
 
                 this.getMessages(_this.params.direction, _this.params.page);
@@ -242,6 +243,11 @@
                 _this.message = { myItems: [], hisItems: [] };
                 _this.hisUserId = undefined;
                 _this.isRaiseOffer = undefined;
+                _this.recipientId = $routeParams.recipientId;
+                _this.proposalId = $routeParams.proposalId;
+                if (_this.proposalId != undefined) {
+                    _this.isRaiseOffer = true;
+                }
 
                 var start = new Date();
                 var end = new Date();
@@ -305,10 +311,22 @@
                         }
                         else
                         {
-                            if (_this.isRaiseOffer) {
-                                // TODO: annulla la proposta precedente
+                            if (_this.isRaiseOffer) {                                
+                                gxcFct.proposal.get({ propId: _this.proposalId }).$promise
+                                .then(function (proposal) {
+                                   if (userSrv.getCurrentUser().id == proposal.transaction.userProponent_Id)
+                                       proposal.userProponent_ProposalStatus = 3; // annullata
+                                   else
+                                       proposal.userReceiving_ProposalStatus = 3; // annullata
+
+                                   gxcFct.proposal.update({ propId: _this.proposalId }, proposal,
+                                       function (success) {
+                                           addProposal();
+                                       });
+                               });
                             }
-                            addProposal();
+                            else
+                                addProposal();
                         }
                     }
                     else {
@@ -359,9 +377,7 @@
                         _this.message.hisItems.splice(i, 1);
                     }
                 };
-
-                _this.recipientId = $routeParams.recipientId;                
-
+                
                 // My Library Components
                 gxcFct.game.byUserWithComponent({ userId: userSrv.getCurrentUser().id }).$promise
                 .then(function (gamesIds) {
@@ -381,14 +397,9 @@
                     });
                     _this.hisLibrary = game;
                     _this.hisUserId = _this.recipientId;
-                });
-                
-                _this.transactionId = $routeParams.transactionId;
-                _this.proposalId = $routeParams.proposalId;
-                if (_this.transactionId != undefined && _this.proposalId != undefined) {
-                    _this.currentTransaction.transactionId = _this.transactionId;
-                    _this.isRaiseOffer = true;
-                }
+                });             
+                                                
+               
             },
             controllerAs: 'mail'
         };
