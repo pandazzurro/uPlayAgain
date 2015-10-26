@@ -47,16 +47,21 @@
                   user = {};
               });
         };
+        this.getCounterMessages = function (reload) {           
+            return user.Messages;
+        }
 
         this.updateUserData = function () {
-            // TODO: usare i counter
-
             user.Games = 0;
-            user.Messages = 0;
+            user.Messages = {};
             
-            gxcFct.counter.byUser({ userId: user.id }).$promise
-              .then(function (counterSuccess) {
-                  user.Messages = counterSuccess.incoming + counterSuccess.outgoing + counterSuccess.transactions;
+            return gxcFct.counter.byUser({ userId: user.id }).$promise
+              .then(function (counterSuccess) {                  
+                  user.Messages.In = counterSuccess.incoming;
+                  user.Messages.Out = counterSuccess.outgoing;
+                  user.Messages.Trn = counterSuccess.transactions;
+                  user.Messages.All = user.Messages.In + user.Messages.Out + user.Messages.Trn;
+
                   user.Games = counterSuccess.librariesComponents;
               },
               function (error) {

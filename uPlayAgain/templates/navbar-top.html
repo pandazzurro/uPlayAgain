@@ -27,8 +27,8 @@
             </li>
             <li>
                 <a href="#/mail" class="uk-navbar-nav-subtitle">
-                    <i class="fa fa-envelope-o fa-status-{{ userCtrl.getCurrentUser().Messages > 0 ? 'warn' : 'ok' }}"></i> Messaggi
-                    <div>hai {{ userCtrl.getCurrentUser().Messages }} messaggi da leggere</div>
+                    <i class="fa fa-envelope-o fa-status-{{ userCtrl.getCurrentUser().Messages.All > 0 ? 'warn' : 'ok' }}"></i> Messaggi
+                    <div>hai {{ userCtrl.getCurrentUser().Messages.All }} messaggi da leggere</div>
                 </a>
             </li>
         </ul>

@@ -13,6 +13,7 @@
                 _this.messagesIncoming = [];
                 _this.messagesOutgoing = [];
                 _this.transactions = [];
+                _this.mustLoadMessageCounter = true;
                 _this.messagesCount = { in: 0, out: 0, trn: 0 };
                 _this.currentPage = 1;
                 _this.showTransactions = false;
@@ -164,7 +165,19 @@
                     $location.path('#/mail/compose/' + tran.userId + '/' + tran.proposal.proposalId);
                 }
 
-                this.getMessages(_this.params.direction, _this.params.page);                
+                this.getMessages(_this.params.direction, _this.params.page);
+                
+                this.loadCounter = function () {
+                    userSrv.updateUserData()
+                    .then(function () {
+                        var counterSuccess = userSrv.getCounterMessages(true);
+                        _this.messagesCount.in = counterSuccess.In;
+                        _this.messagesCount.out = counterSuccess.Out;
+                        _this.messagesCount.trn = counterSuccess.Trn;
+                    });
+                }
+
+                this.loadCounter();                
             },
             controllerAs: 'mailbox'
         }
