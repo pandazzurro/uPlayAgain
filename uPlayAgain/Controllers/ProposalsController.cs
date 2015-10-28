@@ -88,6 +88,7 @@ namespace uPlayAgain.Controllers
 
             db.Proposals.Add(proposal);
             db.LibraryComponents.Load();
+            db.Transactions.Load();
             db.Users.Load();
             try
             {

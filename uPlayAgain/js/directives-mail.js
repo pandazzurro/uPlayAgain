@@ -124,7 +124,7 @@
                                             UIkit.notify('Scambio concluso. Messaggio inviato all\"altro utente.', { status: 'success', timeout: 5000 });
                                             // TODO: togliere i giochi dalle librerie o metterli (non scambiabili)
                                             var myLibrary = userSrv.getCurrentUser().LibraryId;
-                                            var theirLibrary = tran.myItems[0].libraryId; // TODO: fare una GET o passarla all'oggetto di transazione.
+                                            var theirLibrary = tran.theirLibraryId;
 
                                             tran.myItems.forEach(function (item) {
                                                 item.IsExchangeable = false;
@@ -175,7 +175,7 @@
 
                 this.canRaise = function (tran) {
                     // Can Raise
-                    if (tran.userOwnerId != _this.currentUserId)
+                    if ((tran.userOwnerId != _this.currentUserId && tran.direction) || (tran.userOwnerId == _this.currentUserId && !tran.direction))                    
                         return true;
                     // Can Cancel
                     return false;
@@ -287,8 +287,12 @@
                 _this.isRaiseOffer = undefined;
                 _this.recipientId = $routeParams.recipientId;
                 _this.proposalId = $routeParams.proposalId;
+                _this.userProponent_ProposalStatus = 1; // L'utente che crea la proposta la accetta automaticamente.
+                _this.userReceiving_ProposalStatus = 0; // da approvare
+                _this.directionProposal = true;
                 if (_this.proposalId != undefined) {
                     _this.isRaiseOffer = true;
+                    _this.currentTransaction = {}; // setto la transazione, poi la recupero
                 }
 
                 var start = new Date();
@@ -302,11 +306,11 @@
                         proposalText: _this.message.text,
                         proposalObject: _this.message.titolo,
                         proposalDate: new Date().toISOString(),
-                        direction: _this.directionProposal(),
+                        direction: _this.directionProposal,
                         transactionId: _this.currentTransaction.transactionId,
                         userLastChanges_Id: userSrv.getCurrentUser().id,
-                        userProponent_ProposalStatus: 1, // L'utente che crea la proposta la accetta automaticamente.
-                        userReceiving_ProposalStatus: 0, // da approvare
+                        userProponent_ProposalStatus: _this.userProponent_ProposalStatus,
+                        userReceiving_ProposalStatus: _this.userReceiving_ProposalStatus,
                         proposalComponents: []
                     };
 
@@ -331,10 +335,6 @@
                     });
                 }
 
-                this.directionProposal = function () {
-                    // TODO: Se è un rilancio di una transazione e se non solo l'utente owner, la direzione è false!
-                    return true;
-                }
 
                 this.send = function () {
                     if (_this.exchange)
@@ -363,6 +363,12 @@
 
                                    gxcFct.proposal.update({ propId: _this.proposalId }, proposal,
                                        function (success) {
+                                           _this.currentTransaction.transactionId = success.transactionId;
+                                           _this.directionProposal = !success.direction;
+                                           if (!_this.directionProposal) {
+                                               _this.userProponent_ProposalStatus = 0; // da approvare
+                                               _this.userReceiving_ProposalStatus = 1; // L'utente che crea la proposta la accetta automaticamente.
+                                           }
                                            addProposal();
                                        });
                                });

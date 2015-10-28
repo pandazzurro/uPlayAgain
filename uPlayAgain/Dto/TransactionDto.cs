@@ -12,7 +12,9 @@ namespace uPlayAgain.Dto
             TheirItems = new HashSet<LibraryComponent>();
         }
         public int TransactionId { get; set; }
+        public int TheirLibraryId { get; set; }
         public Proposal Proposal { get; set; }
+        public bool Direction { get; set; }        
         public string UserOwnerId { get; set; }
         public string UserId { get; set; }
         public DateTimeOffset LastChange { get; set; }

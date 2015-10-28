@@ -271,13 +271,14 @@ namespace uPlayAgain.Controllers
                     })
                     // Mostro tutte le proposte in attesa di approvazione dall'altro utente e le proposta non annullate dall'utente corrente.
                     .Where(
-                        x => (x.LastProposals.UserProponent_ProposalStatus == ProposalStatus.Accettata && x.LastProposals.UserReceiving_ProposalStatus == ProposalStatus.DaApprovare)
+                        x => (x.LastProposals.UserProponent_ProposalStatus == ProposalStatus.Accettata && x.LastProposals.UserReceiving_ProposalStatus == ProposalStatus.DaApprovare) ||
+                        (x.LastProposals.UserProponent_ProposalStatus == ProposalStatus.DaApprovare && x.LastProposals.UserReceiving_ProposalStatus == ProposalStatus.Accettata)
                     )
                     .ToListAsync();
                      
             trans.ForEach(t =>
                     {
-                        bool isProponent = (t.Transaction.UserProponent_Id == id);
+                        bool isProponent = (t.Transaction.UserProponent_Id == id) ;
 
                         List<LibraryComponent> myComponents = t.Components.Where(c => c.UserId == id).Select(x => x.LibraryComponents).ToList();
                         List<LibraryComponent> theirComponents = t.Components.Where(c => c.UserId != id).Select(x => x.LibraryComponents).ToList();
@@ -285,9 +286,11 @@ namespace uPlayAgain.Controllers
                         result.Add(new TransactionDto()
                         {
                             TransactionId = t.Transaction.TransactionId,
+                            TheirLibraryId = db.Libraries.Where(p => p.UserId == (isProponent ? t.Transaction.UserReceiving_Id : t.Transaction.UserProponent_Id)).First().LibraryId,
                             Proposal = t.LastProposals,
                             LastChange = t.LastProposals.DateStart,
                             UserOwnerId = t.Transaction.UserProponent_Id,
+                            Direction = t.LastProposals.Direction,
                             UserId = isProponent ? t.Transaction.UserReceiving_Id : t.Transaction.UserProponent_Id,
                             MyStatus = isProponent ? t.LastProposals.UserProponent_ProposalStatus : t.LastProposals.UserReceiving_ProposalStatus,
                             TheirStatus = isProponent ? t.LastProposals.UserReceiving_ProposalStatus : t.LastProposals.UserProponent_ProposalStatus,

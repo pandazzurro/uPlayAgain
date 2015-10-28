@@ -91,7 +91,7 @@ namespace uPlayAgain.Controllers
 
             trans.ForEach(t =>
             {
-                bool isProponent = (t.Transaction.UserProponent_Id == id);
+                bool isProponent = (t.Transaction.UserProponent_Id == id && t.LastProposals.Direction);
 
                 List<LibraryComponent> myComponents = t.Components.Where(c => c.UserId == id).Select(x => x.LibraryComponents).ToList();
                 List<LibraryComponent> theirComponents = t.Components.Where(c => c.UserId != id).Select(x => x.LibraryComponents).ToList();
