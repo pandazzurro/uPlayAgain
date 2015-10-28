@@ -12,6 +12,7 @@
             mail: $resource(app.webapi, {}, {
                 byUser: { url: app.webapi + '/api/messages/byUser/:userId', method: 'GET', isArray: false },
                 get: { url: app.webapi + '/api/messages/:messageId', method: 'GET', isArray: false },
+                update: { url: app.webapi + '/api/messages/:messageId', method: 'PUT', isArray: false },
                 send: { url: app.webapi + '/api/messages', method: 'POST', isArray: false },
                 incoming: { url: app.webapi + 'api/messages/byUser/:userId/incoming/:page', method: 'GET', isArray: true, params: { userId: '@userId', page: '@page' } },
                 outgoing: { url: app.webapi + 'api/messages/byUser/:userId/outgoing/:page', method: 'GET', isArray: true, params: { userId: '@userId', page: '@page' } },
@@ -42,7 +43,7 @@
                 add: { url: app.webapi + '/api/librarycomponents', method: 'POST', isArray: false },
                 remove: { url: app.webapi + '/api/librarycomponents/:componentId', method: 'DELETE', isArray: false },
                 update: { url: app.webapi + '/api/librarycomponents/:componentId', method: 'PUT', isArray: false },
-            }),
+            }),            
             user: $resource(app.webapi, {}, {
                 get: { url: app.webapi + '/api/users/:userId', method: 'GET', isArray: false },
                 checkUsername: { url: app.webapi + '/api/users/Exists/:username', method: 'GET', isArray: false },

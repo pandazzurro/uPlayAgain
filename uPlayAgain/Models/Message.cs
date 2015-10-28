@@ -11,7 +11,8 @@ namespace uPlayAgain.Models
         public int MessageId { get; set; }
         public string MessageText { get; set; }
         public DateTimeOffset MessageDate { get; set; }
-        public bool IsAlreadyRead { get; set; }
+        public bool IsAlreadyReadProponent { get; set; }
+        public bool IsAlreadyReadReceiving { get; set; }
         public string MessageObject { get; set; }
 
 

@@ -185,9 +185,9 @@ namespace uPlayAgain.Controllers
         [ResponseType(typeof(MessageCountResponse))]
         public async Task<IHttpActionResult> GetMessages(string id)
         {
-            IQueryable<Message> incoming = db.Messages.Where(m => m.UserReceiving_Id == id && !m.IsAlreadyRead);
+            IQueryable<Message> incoming = db.Messages.Where(m => m.UserReceiving_Id == id && !m.IsAlreadyReadReceiving);
 
-            IQueryable<Message> outgoing = db.Messages.Where(m => m.UserProponent_Id == id && !m.IsAlreadyRead);
+            IQueryable<Message> outgoing = db.Messages.Where(m => m.UserProponent_Id == id && !m.IsAlreadyReadProponent);
 
             int resultTran = await db.Transactions
                                      .Where(t => t.UserProponent_Id == id || t.UserReceiving_Id == id)

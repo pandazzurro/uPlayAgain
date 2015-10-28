@@ -18,7 +18,7 @@
             <table class="uk-table uk-table-condensed" ng-show="!mailbox.showTransactions">
                 <thead>
                     <tr>
-                        <th></th>
+                        <th>Letto</th>
                         <th>Data</th>
                         <th>Titolo</th>
                         <th>{{ mailbox.params.direction == 'in' ? 'Mittente' : 'Destinatario' }}</th>
@@ -31,10 +31,13 @@
                 </tfoot>
                 <tbody>
                     <tr class="message" ng-repeat="mail in mailbox.messages" ng-mouseover="mailbox.hoverIn(mail)" ng-mouseleave="mailbox.hoverOut(mail)" ng-class="mail.hovered ? 'hover': ''" ng-click="mailbox.open(mail)">
-                        <td><i class="fa fa-heart"></i></td>
+                        <td><span class="uk-icon-small" ng-class="mailbox.isAlreadyReadMail(mail) ? 'uk-icon-eye' : 'uk-icon-eye-slash'"></span></td>
                         <td>{{ mail.messageDate | date: 'dd-MM-yyyy HH:mm'}}</td>
                         <td>{{ mail.messageObject }}</td>
-                        <td><user-link data-user='{{ mail.userProponent_Id }}'></user-link></td>
+                        <td>
+                            <span ng-show="mailbox.params.direction == 'in'"><user-link data-user='{{ mail.userProponent_Id }}'></user-link></span>
+                            <span ng-show="mailbox.params.direction != 'in'"><user-link data-user='{{ mail.userReceiving_Id }}'></user-link></span>
+                        </td>
                     </tr>
                 </tbody>
             </table>

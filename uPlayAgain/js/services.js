@@ -78,6 +78,7 @@
             gxcFct.user.logout(queryParameters).$promise
               .then(function (userSuccess) {
                   user = userSuccess;
+                  $location.path('/');
               },
               function (error) {
                   UIkit.notify('Errore di logout', { status: 'warning', timeout: 5000 });

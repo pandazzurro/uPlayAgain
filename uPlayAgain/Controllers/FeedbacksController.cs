@@ -60,16 +60,6 @@ namespace uPlayAgain.Controllers
 
         // GET: api/Feedbacks/5
         [Route("api/Feedbacks/Pending/{id}")]
-        //[ResponseType(typeof(int))]
-        //public IQueryable<int> GetTransactionFeedbacksPendings(string userId)
-        //{
-        //    return db.Transactions
-        //              Cerco tutte le transazioni dove sono Proponente o Ricevente e NON ho nessun feedback associato
-        //             .Where(p => (p.UserProponent_Id == userId || p.UserReceiving_Id == userId)
-        //                 && (!p.Feedbacks.Where(x => x.UserId == userId).Any() || !p.Feedbacks.Any())
-        //                 )
-        //             .Select(p => p.TransactionId);
-        //}
         [ResponseType(typeof(List<TransactionDto>))]
         public async Task<IHttpActionResult> GetTransactionFeedbacksPendings(string id)
         {

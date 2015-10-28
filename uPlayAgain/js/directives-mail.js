@@ -10,8 +10,8 @@
 
                 _this.params = $routeParams;
                 _this.messages = [];
-                _this.messagesIncoming = [];
-                _this.messagesOutgoing = [];
+                //_this.messagesIncoming = [];
+                //_this.messagesOutgoing = [];
                 _this.transactions = [];
                 _this.mustLoadMessageCounter = true;
                 _this.messagesCount = { in: 0, out: 0, trn: 0 };
@@ -54,8 +54,8 @@
                     }else   if (direction === 'in') {
                                 gxcFct.mail.incoming(queryParameters).$promise
                                 .then(function (mailSuccess) {
-                                    _this.messagesIncoming = mailSuccess;
-                                    if (_this.messagesIncoming.length > 0) {                                        
+                                    _this.messages = mailSuccess;
+                                    if (_this.messages.length > 0) {                                        
                                         _this.messagesCount.in = mailSuccess.length;
                                     }
                                 });
@@ -63,7 +63,7 @@
                             else {
                                 gxcFct.mail.outgoing(queryParameters).$promise
                                .then(function (mailSuccess) {
-                                   _this.messagesOutgoing = mailSuccess;                                   
+                                   _this.messages = mailSuccess;
                                    _this.messagesCount.in = mailSuccess.length;
                                });
                             }
@@ -80,7 +80,7 @@
                 }
 
                 this.open = function (mail) {
-                    $location.path('#/mail/message/' + mail.messageId);
+                    $location.path('/mail/message/' + mail.messageId);
                 }
                 
                 this.changeMyTranStatus = function (tran, newState) {                    
@@ -110,9 +110,50 @@
                                         _this.transactions.splice(i, 1);
                                     }
                                     if (_this.transactions[i].proposal.userProponent_ProposalStatus == 1 && _this.transactions[i].proposal.userReceiving_ProposalStatus == 1) {
-                                        _this.transactions.splice(i, 1);
-                                        // TODO: mandare un messaggio di accetazione della proposta!
-                                        // TODO: togliere i giochi dalle librerie o metterli (non scambiabili)
+                                        _this.transactions.splice(i, 1);                                        
+                                        var queryParams = {
+                                            messageText: "Ciao, abbiamo il piacere di informarti che lo scambio è avvenuto con successo. Ora puoi accordarti sulle modalità di trasferimento del gioco. Rispondi al messaggio, accordatevi sulla modalità di scambio. Grazie",
+                                            messageObject: "Scambio concluso con successo",
+                                            messageDate: new Date().toISOString(),
+                                            userProponent_Id: _this.currentUserId,
+                                            userReceiving_Id: tran.userId
+                                        };
+                                        
+                                        gxcFct.mail.send(queryParams).$promise
+                                        .then(function (success) {
+                                            UIkit.notify('Scambio concluso. Messaggio inviato all\"altro utente.', { status: 'success', timeout: 5000 });
+                                            // TODO: togliere i giochi dalle librerie o metterli (non scambiabili)
+                                            var myLibrary = userSrv.getCurrentUser().LibraryId;
+                                            var theirLibrary = tran.myItems[0].libraryId; // TODO: fare una GET o passarla all'oggetto di transazione.
+
+                                            tran.myItems.forEach(function (item) {
+                                                item.IsExchangeable = false;
+                                                item.libraryId = theirLibrary;
+                                                item.isDeleted = false;
+
+                                                gxcFct.library.update({ componentId: item.libraryComponentId }, item, function () {
+
+                                                });
+                                            });
+
+                                            tran.theirItems.forEach(function (item) {
+                                                item.IsExchangeable = false;
+                                                item.libraryId = myLibrary;
+                                                item.isDeleted = false;
+
+                                                gxcFct.library.update({ componentId: item.libraryComponentId }, item, function () {
+
+                                                });
+                                            });
+
+
+                                            $location.path('/mail/in/1');
+                                        },
+                                        function (error) {
+                                            UIkit.notify('Si &egrave; verificato un errore nell\'operazione. Si prega di riprovare', { status: 'warning', timeout: 5000 });
+                                        });
+
+                                        
                                     }
                                 }
                             }
@@ -178,6 +219,13 @@
                     });
                 }
 
+                this.isAlreadyReadMail = function (message) {
+                    if ((message.userReceiving_Id == _this.currentUserId && message.isAlreadyReadReceiving) ||
+                        (message.userProponent_Id == _this.currentUserId && message.isAlreadyReadProponent))
+                        return true;
+                    return false;
+                }
+
                 this.loadCounter();                
             },
             controllerAs: 'mailbox'
@@ -192,16 +240,9 @@
                 var _this = this;
                 _this.message = {};
                 _this.transactions = {};
+                _this.msgId = $routeParams.messageId;
 
                 this.reply = function () {
-
-                };
-
-                this.toggleImportant = function () {
-
-                };
-
-                this.archive = function () {
 
                 };
 
@@ -210,13 +251,10 @@
                 };
 
                 this.backToMailbox = function () {
-                    window.location = '#/mail/in/1';
+                    $location.path('/mail/in/1');
                 };
 
-                //_this.message = gxcFct.mail.get(
-                _this.msgId = $routeParams;
-
-                gxcFct.mail.get({ messageId: $routeParams.messageId }).$promise
+                gxcFct.mail.get({ messageId: _this.msgId }).$promise
                   .then(function (success) {
                       _this.message = success;
                       _this.message.sender = gxcFct.user.byId({ userId: success.userProponent_Id });
@@ -224,7 +262,11 @@
                       .then(function (receiverSuccess) {
                           _this.message.receiver = receiverSuccess;
                           _this.message.isIncoming = receiverSuccess.id == userSrv.getCurrentUser().id;
-                      });
+
+                          _this.message.isAlreadyReadReceiving = _this.message.isIncoming || _this.message.isAlreadyReadReceiving;
+                          _this.message.isAlreadyReadProponent = !_this.message.isIncoming || _this.message.isAlreadyReadProponent;
+                          gxcFct.mail.update({ messageId: _this.msgId }, _this.message, function () { }, function () { });
+                      });                      
                   });               
             },
             controllerAs: 'mail'
@@ -341,7 +383,7 @@
                         gxcFct.mail.send(queryParams).$promise
                         .then(function (success) {
                             UIkit.notify('Messaggio inviato', { status: 'success', timeout: 5000 });
-                            window.location = '#/mail/in/1';
+                            $location.path('/mail/in/1');
                         },
                         function (error) {
                             UIkit.notify('Si &egrave; verificato un errore nell\'operazione. Si prega di riprovare', { status: 'warning', timeout: 5000 });
@@ -405,227 +447,6 @@
         };
     }]);
 
-    app.directive('testTransaction', ['factories', 'user-service', 'games-service', function (gxcFct, userSrv, gameSrv) {
-        return {
-            restrict: 'E',
-            //scope: {                
-            //},
-            templateUrl: 'templates/test-transaction.html',
-            controller: function ($routeParams, $scope) {
-                var _this = this;
-                _this.transactionStatus = ['Aperta', 'InAttesa', 'Conclusa'];
-                _this.proposalStatus = ['DaApprovare','Accettata','Rifiutata'];
-                _this.userReceiving_Id = 'b692ce4a-f114-473d-a754-1e30173fb4cd'; //alessandro.pilati
-                _this.selectedLibraryGames = []; // Array di giochi presenti nella libreria dell'utente che riceve la proposta.
-                _this.proposalText = 'Ciao sono il testo della proposta';
-                _this.proposalObject = 'Ciao sono l\'oggetto della proposta';
-
-                var currentDate = new Date();
-                var futureDate = new Date(); //Aggiungere 1 anno
-
-                // Oggetto contenente una proposta
-                _this.currentProposal = [{
-                    dateStart: currentDate.toISOString(),
-                    dateEnd: futureDate.toISOString(),
-                    direction: true, //la transazione iniziale ha sempre il verso PROPONENTE -> RICEVENTE
-                    proposalText: _this.proposalText,
-                    proposalObject: _this.proposalObject,
-                    transactionId: undefined, // La transazione all'inizio non è ancora stata creata
-                    userLastChanges_Id: 'b692ce4a-f114-473d-a754-1e30173fb4cb', //userSrv.getCurrentUser().id, // utente Proponente
-                    userProponent_ProposalStatus: _this.proposalStatus[1], // Stato della proposta corrente per l'utente proponente. Se la propone ovviamente significa che l'accetta
-                    userReceiving_ProposalStatus: _this.proposalStatus[0], // Stato della proposta corrente per l'utente ricevente
-                    proposalComponents: []
-                }];
-
-                /*
-                Carica dei dati di esempio. In questo caso aggiungo alla proposta tutti i giochi della mia libreria.
-                */
-                $scope.LoadData = function () {
-                    // Carico dei componenti nella proposta di scambio. 
-                    // I giochi verranno selezionati dall'utente Proponente. 
-                    // I giochi selezionati saranno presenti nella libreria dell'utente ricevente e nella libreria dell'utente proponente.
-
-                    // TODO: sistemare la libreria di lettura!
-                    gxcFct.library.get({ libraryId: userSrv.getCurrentUser().LibraryId }).$promise
-                    .then(function (librarySuccess) {
-                        for (i in librarySuccess.libraryComponents) {
-                            var g = librarySuccess.libraryComponents[i];
-                            _this.selectedLibraryGames.push({libraryComponentId: g.libraryComponentId});
-                        }
-
-                        // Aggiunta dei componenti alla proposta di scambio
-                        _this.currentProposal[0].proposalComponents = _this.selectedLibraryGames;
-                    });
-
-                }
-
-                $scope.createInitialProposal = function () {
-                    var queryParams = {
-                        userProponent_Id: userSrv.getCurrentUser().id,
-                        userReceiving_Id: _this.userReceiving_Id,
-                        transactionStatus: _this.transactionStatus[0],
-                        feedbacks: undefined,
-                        proposals: _this.currentProposal
-                    };
-
-                    gxcFct.transaction.add(queryParams).$promise
-                    .then(function (success) {
-                        UIkit.notify('Transazione creata', { status: 'success', timeout: 5000 });
-                    },
-                    function (error) {
-                        UIkit.notify('Errore creazione transazione', { status: 'success', timeout: 5000 });
-                    });
-                };
-
-                /*
-                Carica tutte le transazioni per un utente.
-                Da studiare:
-                1) Quando considerare una transazione conclusa? Usiamo le date o il campo TransactionStatus?
-                2) Servono ancora le date della transazione? Oppure le usiamo per stabilire la durata temporale (DataStar -> Inizio transazione; DataEnd -> Transazione conclusa/annullata)
-                2b) Servono ancora le date della proposte? Oppure le usiamo per stabilire la durata temporale (DataStar -> Inizio proposta; DataEnd -> Proposta conclusa/annullata)
-                3) Una volta che la transazione è conclusa si potrà generare il feedback.
-                4) Una volta che la transazione è annullata NON si potrà generare nessun feedback.
-                */
-                $scope.LoadTransactionByUser = function () {
-                    var queryParameters = {
-                        userId: userSrv.getCurrentUser().userId,
-                    };
-                    gxcFct.transaction.byUser(queryParameters).$promise
-                      .then(function (transSuccess) {
-                          _this.tranProponent = transSuccess[0].transactionsProponent;
-                          _this.tranReceiving = transSuccess[0].transactionsReceiving;
-                      }); // transaction.byUser    
-                }
-
-                /*
-                Aggiungo una nuova proposta alla transazione già creata in precedenza.
-                Questa funzione serve per:
-                1) Aggiungere una nuova proposta alla transazione attuale
-                */
-                $scope.AddProposal = function () {
-                    var newProposal = _this.currentProposal[0];
-                    // Prelevo una transazione a caso da quelle ricevute
-                    newProposal.transactionId = _this.tranReceiving[0].transactionId;
-                    // metto un pò di dati casuali
-                    newProposal.proposalComponents = [_this.currentProposal[0].proposalComponents[1]];
-                    newProposal.proposalText = 'Rilancio';
-                    newProposal.proposalObject = 'Oggetto del rilancio';
-                    newProposal.userLastChanges_Id = userSrv.getCurrentUser().id;
-                    newProposal.direction = false; // Rilancio del ricevente
-                    newProposal.userProponent_ProposalStatus = _this.proposalStatus[0], // Stato della proposta corrente per l'utente proponente.
-                    newProposal.userReceiving_ProposalStatus = _this.proposalStatus[1], // Stato della proposta corrente per l'utente ricevente. Se la propone ovviamente significa che l'accetta
-
-                    gxcFct.proposal.add(newProposal).$promise
-                    .then(function (success) {
-                        UIkit.notify('Proposta creata', { status: 'success', timeout: 5000 });
-                    },
-                    function (error) {
-                        UIkit.notify('Errore creazione Proposta', { status: 'success', timeout: 5000 });
-                    });
-                }
-
-
-                /*
-                Aggiornamento della proposta
-                */
-                $scope.UpdateProposal = function () {
-
-                    var randomProposalId = _this.tranReceiving[0].proposals[0].proposalId;
-
-                    gxcFct.proposal.get({ propId: randomProposalId }).$promise
-                   .then(function (success) {
-                       var oldProposal = success;
-                       oldProposal.proposalObject = 'ProposataAggiornata';
-
-                       gxcFct.proposal.update({ propId: randomProposalId }, oldProposal,
-                        function (success) {
-                            UIkit.notify('Utente aggiornato. Ora puoi accedere alle funzionalit&agrave; del sito', { status: 'success', timeout: 5000 });
-                            window.location = '#/';
-                        },
-                        function (error) {
-                            UIkit.notify('Si &egrave; verificato un errore durante la registrazione. Ci dispiace per l\'inconveniente e ti chiediamo di riprovare più tardi.', { status: 'error', timeout: 5000 });
-                        });
-                   },
-                   function (error) {
-                       UIkit.notify('Si &egrave; verificato un errore nell\'operazione. Si prega di riprovare', { status: 'warning', timeout: 5000 });
-                   });
-
-                    
-                    
-                }
-
-
-
-
-
-
-
-
-
-
-
-
-                /*Sezione feedback*/
-                _this.Feedback = {
-                    transactionId: undefined,
-                    userId: undefined,
-                    rate: undefined
-                };
-                // In caso di transazione positiva assegnare un +1, in caso di transazione negativa un -3
-                _this.RateVote = [1,-3];
-
-                $scope.AddFeedback = function () {
-                    // Prelevo una transazione a caso da quelle ricevute
-                    _this.Feedback.transactionId = _this.tranReceiving[0].transactionId;
-                    // Prelevo l'utente corrente o l'utente destinatario della transazione
-                    _this.Feedback.userId = _this.tranReceiving[0].userReceiving_Id;
-                    _this.Feedback.rate = _this.RateVote[0];
-
-                    gxcFct.feedback.add(_this.Feedback).$promise
-                    .then(function (success) {
-                        UIkit.notify('Feedback creato', { status: 'success', timeout: 5000 });
-                    },
-                    function (error) {
-                        UIkit.notify('Errore creazione Feedback', { status: 'success', timeout: 5000 });
-                    });
-
-                }
-
-                $scope.GetRate = function () {
-                    // Ritorno il rate dell'utente corrente
-                    var queryParameters = {
-                        userId: userSrv.getCurrentUser().id,
-                    };
-
-                    gxcFct.feedback.rate(queryParameters).$promise
-                    .then(function (success) {
-                        UIkit.notify('Feedback rate: ' + success.rate + "% su " + success.counter + "feedback ricevuto", { status: 'success', timeout: 5000 });
-                    },
-                    function (error) {
-                        UIkit.notify('Errore rate Feedback', { status: 'success', timeout: 5000 });
-                    });
-                }
-                
-                // Ritorna tutti gli ID delle transazioni senza feedback per l'utente
-                $scope.GetPendingTransactionFeedback = function () {
-                    // Ritorno il rate dell'utente corrente
-                    var queryParameters = {
-                        userId: 'b692ce4a-f114-473d-a754-1e30173fb4cb'//userSrv.getCurrentUser().id,
-                    };
-
-                    gxcFct.feedback.pending(queryParameters).$promise
-                    .then(function (success) {
-                        UIkit.notify('Feedback pending: ' + success, { status: 'success', timeout: 5000 });
-                    },
-                    function (error) {
-                        UIkit.notify('Errore pending Feedback', { status: 'success', timeout: 5000 });
-                    });
-                }
-            },
-            controllerAs: 'testTransaction'
-        };
-    }]);
-    
     app.directive('feedbackVote', ['factories', 'user-service', 'games-service', function (gxcFct, userSrv, gameSrv) {
         return {
             restrict: 'E',

@@ -235,7 +235,6 @@
     <Content Include="js\mail-activation.js" />
     <Content Include="js\services.js" />
     <Content Include="js\templates.js" />
-    <Content Include="js\test.js" />
     <Content Include="mail-activation.html" />
     <Content Include="MailTemplate\template.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -269,8 +268,6 @@
     <Content Include="templates\product-tabs.html" />
     <Content Include="templates\regolamento.html" />
     <Content Include="templates\spedizioni-doc.html" />
-    <Content Include="templates\test.html" />
-    <Content Include="templates\test-transaction.html" />
     <Content Include="templates\user-link.html" />
     <Content Include="templates\user-profile.html" />
     <Content Include="uikit\css\components\accordion.almost-flat.css" />

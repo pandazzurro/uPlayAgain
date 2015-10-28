@@ -8,12 +8,12 @@
                 <button class="uk-button" data-uk-tooltip title="Rispondi">
                     <i class="fa fa-reply"></i>
                 </button>
-                <button class="uk-button" data-uk-tooltip title="Marca come importante">
+                <!--<button class="uk-button" data-uk-tooltip title="Marca come importante">
                     <i class="fa fa-heart-o"></i>
                 </button>
                 <button class="uk-button" data-uk-tooltip title="Archivia">
                     <i class="fa fa-archive"></i>
-                </button>
+                </button>-->
             </div>
             <div class="uk-button-group">
                 <button class="uk-button uk-button-danger" data-uk-tooltip title="Segnala all'ammistratore">
@@ -26,7 +26,7 @@
         </div>
     </div>
     <div class="uk-grid small-margin">
-        <h5 class="uk-width-1-2">Inviato {{mail.message.isIncoming ? 'da ' + mail.message.sender.userName : 'a ' + mail.message.receiver.userName}} </h5>
+        <h5 class="uk-width-1-2">Inviato {{mail.message.isIncoming ? 'da ' + mail.message.sender.username : 'a ' + mail.message.receiver.username}}</h5>
         <h5 class="uk-width-1-2 uk-text-right">{{ mail.message.messageDate | date: 'dd-MM-yyyy HH:mm'}}</h5>
     </div>
 </div>
@@ -34,27 +34,3 @@
 <div class="uk-panel uk-panel-box">
     {{ mail.message.messageText }}
 </div>
-&nbsp;
-<form class="uk-form" ng-show="mail.hasTransaction">
-    <div class="uk-grid" data-uk-grid-match>
-        <div class="uk-width-2-5">
-            <fieldset>
-                <legend class="uk-text-right">Dare</legend>
-            </fieldset>
-            <div class="uk-panel uk-panel-box">
-                Fifa 2015 (xbox)
-            </div>
-        </div>
-        <div class="uk-width-1-5 uk-text-center">
-            <i class="fa fa-2x fa-exchange"></i>
-        </div>
-        <div class="uk-width-2-5">
-            <fieldset>
-                <legend>Avere</legend>
-            </fieldset>
-            <div class="uk-panel uk-panel-box">
-                Neverwinter Nights 2 (pc)
-            </div>
-        </div>
-    </div>
-</form>

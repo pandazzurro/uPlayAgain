@@ -64,7 +64,7 @@ namespace uPlayAgain.Controllers
             }
             int resultMessage = await db.Messages
                                      .Include(t => t.UserReceiving)
-                                     .Where(t => t.UserReceiving.UserId == id && t.IsAlreadyRead == false)
+                                     .Where(t => t.UserReceiving.UserId == id && t.IsAlreadyReadReceiving == false)
                                      .CountAsync();
                         
             int resultTran = await db.Transactions
@@ -138,9 +138,9 @@ namespace uPlayAgain.Controllers
 
         public async Task<IHttpActionResult> GetCounter(string id)
         {
-            IQueryable<Message> incoming = db.Messages.Where(m => m.UserReceiving_Id == id && !m.IsAlreadyRead);
+            IQueryable<Message> incoming = db.Messages.Where(m => m.UserReceiving_Id == id && !m.IsAlreadyReadReceiving);
 
-            IQueryable<Message> outgoing = db.Messages.Where(m => m.UserProponent_Id == id && !m.IsAlreadyRead);
+            IQueryable<Message> outgoing = db.Messages.Where(m => m.UserProponent_Id == id && !m.IsAlreadyReadProponent);
 
             int resultTran = await db.Transactions
                                      .Where(t => t.UserProponent_Id == id || t.UserReceiving_Id == id)

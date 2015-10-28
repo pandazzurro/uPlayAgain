@@ -80,10 +80,7 @@
           })
           .when('/contattaci', {
               templateUrl: 'templates/contattaci.html'
-          })
-          .when('/test-transaction', {
-              template: '<test-transaction></test-transaction>'
-          })
+          })         
           .when('/', {
               templateUrl: 'templates/home.html'
           })
@@ -115,7 +112,6 @@
                 next.$$route.originalPath != "/feedback" &&
                 next.$$route.originalPath != "/come-funziona" &&
                 next.$$route.originalPath != "/contattaci" &&
-                next.$$route.originalPath != "/test-transaction" &&
                 !userSrv.isLoggedIn()) {
                 $location.path("/");
             }
