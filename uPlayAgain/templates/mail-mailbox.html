@@ -3,7 +3,7 @@
         <legend>Mailbox</legend>
     </fieldset>
     <div class="uk-grid nomargin">
-        <ul class="uk-tab uk-tab-left uk-width-medium-1-6" data-uk-tab>
+        <ul class="uk-nav uk-width-medium-1-6">
             <li ng-class="mailbox.params.direction==='in' ? 'uk-active' : ''">
                 <a href="#/mail/in/1"><i class="fa fa-sign-in"></i> Ricevuti({{ mailbox.messagesCount.in }})</a>
             </li>
@@ -43,7 +43,7 @@
             </table>
             <!-- disegno le transazioni. Per ogni transazione ho una sola proposta attiva -->
             <div class="uk-table uk-table-condensed" ng-show="mailbox.showTransactions">
-                <div class="uk-accordion" data-uk-accordion="">
+                <div class="uk-accordion" data-uk-accordion="{showfirst: false}">
                     <div ng-repeat="transaction in mailbox.transactions">
                         <h3 class="uk-accordion-title">
                             Scambio di {{transaction.myItems.length + transaction.theirItems.length}} giochi con l'utente <user-link data-user='{{ transaction.userId }}'></user-link>
