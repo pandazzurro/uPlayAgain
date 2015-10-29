@@ -20,55 +20,56 @@
                 _this.currentUserId = userSrv.getCurrentUser().id;
 
                 this.getMessages = function (direction, page) {
-                    var queryParameters = {
-                        userId: _this.currentUserId,
-                        page: page
-                    };
-                    //var incoming = (direction === 'in');
-                    _this.showTransactions = (direction === 'transaction');
-                    _this.messagesCount.trn = 0;
+                	var queryParameters = {
+                		userId: _this.currentUserId,
+                		page: page
+                	};
+                	//var incoming = (direction === 'in');
+                	_this.showTransactions = (direction === 'transaction');
+                	_this.messagesCount.trn = 0;
 
-                    _this.messages = [];
-                    _this.transactions = [];
+                	_this.messages = [];
+                	_this.transactions = [];
 
-                    if (direction === 'transaction') {
-                        gxcFct.mail.transactions(queryParameters).$promise
+                	if (direction === 'transaction') {
+                		gxcFct.mail.transactions(queryParameters).$promise
                         .then(function (trnSuccess) {
-                            _this.transactions = trnSuccess;
-                            _this.messagesCount.trn = _this.transactions.length;
-                            _this.transactions.forEach(function (tran) {
-                                tran.myItems.forEach(function (item) {
-                                    item.game = {};
-                                    item.game.gameId = item.gameId;                                    
-                                    gameSrv.fillGameData(item.game);
-                                });
+                        	_this.transactions = trnSuccess;
+                        	_this.messagesCount.trn = _this.transactions.length;
+                        	_this.transactions.forEach(function (tran) {
+                        		tran.myItems.forEach(function (item) {
+                        			item.game = {};
+                        			item.game.gameId = item.gameId;
+                        			gameSrv.fillGameData(item.game);
+                        		});
 
-                                tran.theirItems.forEach(function (item) {
-                                    item.game = {};
-                                    item.game.gameId = item.gameId;
-                                    gameSrv.fillGameData(item.game);
-                                })
-                            });
-
+                        		tran.theirItems.forEach(function (item) {
+                        			item.game = {};
+                        			item.game.gameId = item.gameId;
+                        			gameSrv.fillGameData(item.game);
+                        		})
+                        	});
+                        	//UIkit.accordion(UIkit.$('#accordion'), { showfirst: 'false' });
                         });
-                    }else   if (direction === 'in') {
-                                gxcFct.mail.incoming(queryParameters).$promise
-                                .then(function (mailSuccess) {
-                                    _this.messages = mailSuccess;
-                                    if (_this.messages.length > 0) {                                        
-                                        _this.messagesCount.in = mailSuccess.length;
-                                    }
-                                });
-                            }
-                            else {
-                                gxcFct.mail.outgoing(queryParameters).$promise
-                               .then(function (mailSuccess) {
-                                   _this.messages = mailSuccess;
-                                   _this.messagesCount.in = mailSuccess.length;
-                               });
-                            }
-                    
-                    _this.currentPage = page;
+                	}
+                	else if (direction === 'in') {
+                		gxcFct.mail.incoming(queryParameters).$promise
+						.then(function (mailSuccess) {
+							_this.messages = mailSuccess;
+							if (_this.messages.length > 0) {
+								_this.messagesCount.in = mailSuccess.length;
+							}
+						});
+                	}
+                	else { //direction === out
+                		gxcFct.mail.outgoing(queryParameters).$promise
+					   .then(function (mailSuccess) {
+					   	_this.messages = mailSuccess;
+					   	_this.messagesCount.in = mailSuccess.length;
+					   });
+                	}
+
+                	_this.currentPage = page;
                 };
 
                 this.hoverIn = function (mail) {
