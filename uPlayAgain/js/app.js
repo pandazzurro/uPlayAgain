@@ -3,7 +3,7 @@
     var app = angular.module('gxc', ['gxc.factories', 'gxc.services',
         'gxc.directives.games', 'gxc.directives.mail', 'gxc.directives.misc', 'gxc.directives.user',
         'gxc.templates', 'ngRoute', 'ngResource', 'ngCookies', 'ngImgCrop',
-        'angular-loading-bar',
+        'angular-loading-bar', 'angular-svg-round-progress',
         'uiGmapgoogle-maps']);
 
     // http://stackoverflow.com/questions/20506360/angular-repeat-span-n-times

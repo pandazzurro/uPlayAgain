@@ -43,7 +43,7 @@
             </table>
             <!-- disegno le transazioni. Per ogni transazione ho una sola proposta attiva -->
             <div class="uk-table uk-table-condensed" ng-show="mailbox.showTransactions">
-                <div class="uk-accordion" data-uk-accordion="{showfirst: false}">
+                <div class="uk-accordion" data-uk-accordion="{showfirst: true}">
                     <div ng-repeat="transaction in mailbox.transactions">
                         <h3 class="uk-accordion-title">
                             Scambio di {{transaction.myItems.length + transaction.theirItems.length}} giochi con l'utente <user-link data-user='{{ transaction.userId }}'></user-link>

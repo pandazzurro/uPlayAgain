@@ -373,7 +373,8 @@
                 .then(function (success) {
                     _this.username = success.username;
                     _this.ranking = success.feedbackAvg;
-                    _this.rankingCount = success.feedbackCount;
+                    _this.rankingPercentage = _this.ranking * 100;
+                    _this.rankingCount = success.feedbackCount;                    
                     _this.mail = success.mail;
                     _this.image = success.image;
                     _this.positionUser = success.positionUser

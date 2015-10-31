@@ -1,4 +1,25 @@
 ﻿<a href="#/user/{{ userId }}">
-    <img class="uk-border-radius" ng-src="data:image/gif;base64,{{link.image}}" width="30" height="30" />
-    {{ link.username }} - ({{ link.ranking }}) su {{link.rankingCount}}
+    <div>
+        <div style="display:inline">
+            <img class="uk-border-radius" ng-src="data:image/gif;base64,{{link.image}}" width="30" height="30" />
+        </div>
+        <div style="display:inline">
+            <div round-progress
+                 max="100"
+                 current="link.rankingPercentage"
+                 color="#ff8400"
+                 bgcolor="#b3c7dd"
+                 radius="25"
+                 stroke="10"
+                 semi="true"
+                 rounded="false"
+                 clockwise="true"
+                 responsive="false"
+                 duration="800"
+                 animation="easeInOutQuart" style="display:inline; margin:5px; top:8px;"></div>
+        </div>
+        <div style="display:block">
+            {{ link.username }} <small>- {{link.rankingPercentage}}% su {{link.rankingCount}} scambi </small>
+        </div>
+    </div>
 </a>
