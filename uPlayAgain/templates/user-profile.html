@@ -1,63 +1,57 @@
-<form name="registrationForm" class="uk-form" novalidate>
-    <fieldset data-uk-margin>
-        <div class="uk-grid">
-            <div class="uk-width-1-2 uk-container-center">
+<div class="uk-grid">
+    <div class="uk-width-1-1 uk-container-center">
+        <form class="uk-form uk-form-horizontal">
+            <fieldset>
                 <legend>Profilo utente</legend>
-                <div class="uk-grid">
-                    <div class="uk-width-1-2">
-                        <div class="uk-grid uk-grid-small">
-                            <div class="uk-width-1-2">Nome utente</div>
-                            <div class="uk-width-1-2">{{ profile.user.username }} - <img class="uk-comment-avatar" ng-src="data:image/gif;base64,{{profile.user.image}}" alt="userIcon" height="80"/></div>
-                        </div>
-                        <div class="uk-grid uk-grid-small">
-                            <div class="uk-width-1-2">Mail</div>
-                            <div class="uk-width-1-2">{{ profile.user.mail }}</div>
-                        </div>
-                        <div class="uk-grid uk-grid-small">
-                            <div class="uk-width-1-2">Ultimo accesso</div>
-                            <div class="uk-width-1-2">{{ profile.user.lastLogin | date: 'dd-MM-yyyy HH:mm'}}</div>
-                        </div>
-                        <div class="uk-grid uk-grid-small">
-                            <div class="uk-width-1-2">Giochi in libreria</div>
-                            <div class="uk-width-1-2">{{ profile.user.gameInLibrary}}</div>
-                        </div>
-                        <div class="uk-grid uk-grid-small">
-                            <div class="uk-width-1-2">Feedback</div>
-                            <div class="uk-width-1-2"> {{profile.user.FeedbackAvg}} </div>
-                        </div>
-                        <div class="uk-grid uk-grid-small">
-                            <div class="uk-width-1-2 uk-text-right"><small>Totali</small></div>
-                            <div class="uk-width-1-2">{{profile.user.FeedbackCount}} </div>
-                        </div>
-                        <!--<div class="uk-grid uk-grid-small">
-                            <div class="uk-width-1-2 uk-text-right"><small>Ultimo mese</small></div>
-                            <div class="uk-width-1-2">+X -Y</div>
-                        </div>-->
-                        <!--<div class="uk-grid uk-grid-small">
-                            <div class="uk-width-1-2">Ultimo scambio eseguito</div>
-                            <div class="uk-width-1-2"></div>
-                        </div>-->
-                        <div class="uk-width-1-1">
-                            <div class="map_canvas">
-                                <ui-gmap-google-map center="map.center" zoom="map.zoom" draggable="false" options="options">
-                                    <ui-gmap-marker coords="marker.coords" options="marker.options" idkey="marker.id"></ui-gmap-marker>
-                                </ui-gmap-google-map>
+                <div class="uk-form-row uk-form-horizontal">
+                    <div class="uk-form-label">Nome utente</div>
+                    <div class="uk-form-controls-condensed">
+                        <div class="uk-grid">
+                            <div class="uk-width-2-10">
+                                {{ profile.user.username }}
+                            </div>
+                            <div class="uk-width-8-10">
+                                <img class="uk-comment-avatar" ng-src="data:image/gif;base64,{{profile.user.image}}" alt="userIcon" height="40" />
                             </div>
                         </div>
-                        <div class="uk-grid uk-grid-divider"></div>
-                        <div class="uk-width-1-1">
-                            <button class="uk-button" ng-click="profile.sendMessage()">
-                                <i class="fa fa-envelope-o"></i> Invia messaggio
-                            </button>
+                    </div>
+                </div>               
+                <div class="uk-form-row">
+                    <div class="uk-form-label">Giochi in libreria</div>
+                    <div class="uk-form-controls-condensed">{{ profile.user.gameInLibrary}}</div>
+                </div>
+                <div class="uk-form-row">
+                    <div class="uk-form-label">Ultimo accesso</div>
+                    <div class="uk-form-controls-condensed">{{ profile.user.lastLogin | date: 'dd-MM-yyyy HH:mm'}}</div>
+                </div>
+                <div class="uk-form-row">
+                    <div class="uk-form-label">Feedback</div>
+                    <div class="uk-form-controls-condensed">{{profile.user.FeedbackAvg}}</div>
+                </div>
+                <div class="uk-form-row">
+                    <div class="uk-form-label">Totali</div>
+                    <div class="uk-form-controls-condensed">{{profile.user.FeedbackCount}}</div>
+                </div>
+                <div class="uk-form-row">
+                    <div class="uk-form-label">Posizione</div>
+                    <div class="uk-form-controls">
+                        <div class="map_canvas">
+                            <ui-gmap-google-map center="map.center" zoom="map.zoom" draggable="false" options="options">
+                                <ui-gmap-marker coords="marker.coords" options="marker.options" idkey="marker.id"></ui-gmap-marker>
+                            </ui-gmap-google-map>
                         </div>
-                    </div>
+                    </div>                            
                 </div>
-                <div class="uk-grid">
-                    <div class="uk-width-1-1">
-
-                    </div>
-                </div>
+            </fieldset>
+        </form>
+        <div class="uk-grid uk-grid-divider"></div>
+        <div class="uk-grid">
+            <div class="uk-container-center">
+                <button class="uk-button" ng-click="profile.sendMessage()">
+                    <i class="uk-icon-envelope-o"></i> Invia messaggio
+                </button>
             </div>
         </div>
-    </fieldset>
-</form>
+        <div class="uk-grid uk-grid-divider"></div>
+    </div>
+</div>
