@@ -10,6 +10,8 @@
     <link rel="stylesheet" type="text/css" href="uikit/css/components/notify.gradient.min.css" />-->
     <link rel="stylesheet" type="text/css" href="uikit/css/uikit.css" />
     <link rel="stylesheet" type="text/css" href="uikit/css/components/accordion.css" />
+    <link rel="stylesheet" type="text/css" href="uikit/css/components/sticky.min.css" />
+    <link rel="stylesheet" type="text/css" href="uikit/css/components/form-password.min.css" />
 
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <link rel="stylesheet" type="text/css" href="css/ng-img-crop.css" />
@@ -20,24 +22,29 @@
 </head>
 
 <body ng-controller="UserController as userCtrl" data-uk-observe>
-	<!--  Store Header  -->
-	<navbar-top></navbar-top>
-	<navbar-side></navbar-side>
-	<div class="content uk-grid" style="min-height:500px">
-		<div class="uk-width-medium-1-10">
-			<navbar-ads></navbar-ads>
-		</div>
-		<div class="uk-width-medium-8-10 uk-width-small-1-1">
-			<div ng-view></div>
-		</div>
-		<div class="uk-width-medium-1-10">
-			<navbar-ads></navbar-ads>
-		</div>
-	</div>
-	<div class="uk-block uk-block-primary footer">
-		<navbar-footer></navbar-footer>
-	</div>
-	<div class="modal-loading"></div>
+    <div class="wrapper">
+        <!--  Store Header  -->
+        <navbar-top></navbar-top>
+        <navbar-side></navbar-side>
+        <!-- Content -->
+        <div class="content uk-grid" style="min-height:500px">
+            <div class="uk-width-medium-1-10">
+                <navbar-ads></navbar-ads>
+            </div>
+            <div class="uk-width-medium-8-10 uk-width-small-1-1">
+                <div ng-view></div>
+            </div>
+            <div class="uk-width-medium-1-10 uk-hidden-small uk-hidden-touch">
+                <navbar-ads></navbar-ads>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="uk-block-primary footer uk-responsive-height">
+            <navbar-footer></navbar-footer>
+        </div>
+        <div class="uk-clearfix"></div>
+        <div class="modal-loading"></div>
+    </div>
 	<!-- javascript -->
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>

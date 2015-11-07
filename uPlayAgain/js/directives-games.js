@@ -91,6 +91,10 @@
                         _this.detailsUser = success;
                     });
                 };
+
+                this.sendProposal = function (game, detailsUser) {
+
+                }
             },
             controllerAs: 'search'
         };

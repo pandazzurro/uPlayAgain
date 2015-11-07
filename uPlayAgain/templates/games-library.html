@@ -6,7 +6,8 @@
                 <h4 class="uk-comment-title">{{game.gameData.title}}</h4>
                 <div class="uk-comment-meta">{{game.gameData.language.description}} - {{game.gameData.status.description}}</div>
                 <div class="uk-text-right uk-text-bottom">
-                    <div class="uk-button-group" ng-show="{{game.canEdit}}">
+                    <i ng-show="game.isExchangeable" class="uk-icon-exchange uk-icon-spin"></i>
+                    <div class="uk-button-group" ng-show="{{game.canEdit}}">                        
                         <button class="uk-button" data-uk-tooltip title="Modifica" ng-click="library.editGame(game)">
                             <i class="fa fa-pencil"></i>
                         </button>

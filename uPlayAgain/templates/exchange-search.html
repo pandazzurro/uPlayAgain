@@ -100,13 +100,48 @@
 <div id="details" class="uk-modal">
     <div class="uk-modal-dialog">
         <a class="uk-modal-close uk-close"></a>
-        {{search.details.game.title}} <span class="{{ search.getPlatformById(search.details.game.platform.platformId).class }}"></span> {{ search.getPlatformById(search.details.game.platform.platformId).name }}
-        Gioco di {{ search.detailsUser.userName }}
-        Distanza {{ search.round(search.details.distance) }} km
-        Lingua {{search.details.gameLanguage.description}}
-        Stato {{search.details.status.description}}
-        <button class="uk-button" ng-click="search.sendProposal(search.details.game)">
-            <i class="fa fa-envelope-o"></i> Invia messaggio
-        </button>
+        <div class="uk-grid">
+            <div class="uk-width-1-4">
+                <img class="uk-comment-avatar" ng-src="data:image/gif;base64,{{search.details.game.image}}" alt="{{search.details.game.title}}" style="max-height: 250px;max-width: 200px;">
+            </div>
+            <div class="uk-width-3-4">
+                <form class="uk-form uk-form-horizontal">
+                    <fieldset>
+                        <legend>Dettagli del gioco</legend>
+                        <div class="uk-form-row">
+                            <div class="uk-form-label">Gioco:</div>
+                            <div class="uk-form-controls">{{search.details.game.title}} </div>
+                        </div>
+                        <div class="uk-form-row">
+                            <div class="uk-form-label">Piattaforma:</div>
+                            <div class="uk-form-controls"><span style="display:inline" class="{{ search.getPlatformById(search.details.game.platform.platformId).class }}"></span></div>
+                        </div>
+                        <div class="uk-form-row">
+                            <div class="uk-form-label">Proprietario:</div>
+                            <div class="uk-form-controls">{{ search.detailsUser.username }}</div>
+                        </div>
+                        <div class="uk-form-row">
+                            <div class="uk-form-label">Distanza:</div>
+                            <div class="uk-form-controls">{{ search.round(search.details.distance) }} km</div>
+                        </div>
+                        <div class="uk-form-row">
+                            <div class="uk-form-label">Lingua:</div>
+                            <div class="uk-form-controls">{{search.details.gameLanguage.description}}</div>
+                        </div>
+                        <div class="uk-form-row">
+                            <div class="uk-form-label">Stato:</div>
+                            <div class="uk-form-controls">{{search.details.status.description}}</div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+        <div class="uk-grid">
+            <div class="uk-container-center">
+                <button class="uk-button" ng-click="search.sendProposal(search.details.game, search.detailsUser)">
+                    <i class="fa fa-envelope-o"></i> Invia messaggio
+                </button>
+            </div>
+        </div>
     </div>
 </div>
