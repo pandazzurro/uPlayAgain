@@ -6,11 +6,6 @@ body {
     height: 100%;
 }
 
-div.content {
-    padding-top: 50px;
-    margin: 0 10px;
-}
-
 form-login .uk-grid ~ .uk-grid {
     margin-top: 5px !important;
 }
@@ -181,6 +176,7 @@ div.footer {
 
 div.content {
     padding-bottom: 200px;
+    padding-top: 50px;
 }
 
 div.wrapper {
