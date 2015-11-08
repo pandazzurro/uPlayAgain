@@ -14,6 +14,7 @@
       <h5 class="uk-width-5-6"><input type="text" placeholder="Titolo" ng-model="mail.message.titolo" class="uk-width-1-1"></h5>
     </div>
   </div>
+  <div class="uk-panel-space"></div>
   &nbsp;
   <div class="uk-panel uk-panel-box">
     <textarea placeholder="Testo del messaggio" class="uk-width-1-1" rows="6" ng-model="mail.message.text"></textarea>
@@ -76,7 +77,7 @@
     </div>
     <div class="uk-grid uk-grid-divider"></div>
     <div class="uk-text-center">
-        <button class="uk-button uk-button-primary" ng-click="mail.send()">
+        <button class="uk-button uk-button-primary" ng-disabled="mail.disableSend()" ng-click="mail.send()">
             <i class="uk-icon-envelope-o"></i> Invia messaggio
         </button>
     </div>

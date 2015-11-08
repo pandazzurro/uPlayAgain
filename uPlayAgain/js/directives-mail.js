@@ -427,6 +427,14 @@
                         _this.message.hisItems.splice(i, 1);
                     }
                 };
+
+                this.disableSend = function () {
+                    if (_this.exchange && _this.message.myItems.length > 0 && _this.message.hisItems.length > 0)
+                        return false;
+                    if (!_this.exchange)
+                        return false;
+                    return true;
+                }
                 
                 // My Library Components
                 gxcFct.game.byUserWithComponent({ userId: userSrv.getCurrentUser().id }).$promise
