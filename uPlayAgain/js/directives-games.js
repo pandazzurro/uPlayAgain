@@ -1,7 +1,7 @@
 (function () {
     var app = angular.module('gxc.directives.games', []);
 
-    app.directive('exchangeSearch', ['factories', 'user-service', 'games-service', function (gxcFct, userSrv, gamesSrv) {
+    app.directive('exchangeSearch', ['factories', 'user-service', 'games-service', '$location', function (gxcFct, userSrv, gamesSrv, $location) {
         return {
             restrict: 'E',
             templateUrl: 'templates/exchange-search.html',
@@ -92,8 +92,9 @@
                     });
                 };
 
-                this.sendProposal = function (game, detailsUser) {
-
+                this.sendProposal = function (details) {
+                    var newLocation = '/mail/compose/' + details.user.id + '//' + details.libraryComponent.libraryComponentId;
+                    $location.path(newLocation);
                 }
             },
             controllerAs: 'search'

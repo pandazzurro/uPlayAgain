@@ -288,6 +288,7 @@
                 _this.isRaiseOffer = undefined;
                 _this.recipientId = $routeParams.recipientId;
                 _this.proposalId = $routeParams.proposalId;
+                _this.libraryComponentId = $routeParams.libraryComponentId;
                 _this.userProponent_ProposalStatus = 1; // L'utente che crea la proposta la accetta automaticamente.
                 _this.userReceiving_ProposalStatus = 0; // da approvare
                 _this.directionProposal = true;
@@ -446,6 +447,15 @@
                     });
                     _this.hisLibrary = game;
                     _this.hisUserId = _this.recipientId;
+
+                    if (_this.libraryComponentId != undefined) {
+                        _this.exchange = true;
+                        gamesIds.forEach(function (item) {
+                            if (item.libraryComponents.libraryComponentId == _this.libraryComponentId)
+                                _this.message.hisItems.push(item);
+                        });
+                        
+                    }
                 });             
                                                 
                

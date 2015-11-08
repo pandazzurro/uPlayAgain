@@ -46,7 +46,7 @@
           .when('/mail', {
               redirectTo: '/mail/in/1'
           })
-          .when('/mail/compose/:recipientId/:proposalId?', {
+          .when('/mail/compose/:recipientId/:proposalId?/:libraryComponentId?', {
               template: '<message-new data-exchange=\'0\'></message-new>'
           })
           .when('/mail/exchange/:gameId', {

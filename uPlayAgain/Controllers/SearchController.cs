@@ -55,6 +55,7 @@ namespace uPlayAgain.Controllers
                           Platform = x.Game.Platform,
                           Game = x.Game,
                           User = x.User,
+                          LibraryComponent = x.LibraryComponent.LibraryComponents,
                           Distance = (x.User.PositionUser.Distance(position) / 1000)
                       });
 
