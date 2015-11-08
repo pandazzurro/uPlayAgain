@@ -477,6 +477,7 @@
     <Compile Include="AuthRepository.cs" />
     <Compile Include="BaseProxy.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AlertAdminController.cs" />
     <Compile Include="Controllers\CounterController.cs" />
     <Compile Include="Controllers\FeedbacksController.cs" />
     <Compile Include="Controllers\GameImportController.cs" />

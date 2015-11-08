@@ -233,7 +233,7 @@
         }
     }]);
 
-    app.directive('message', ['factories', 'user-service', function (gxcFct, userSrv) {
+    app.directive('message', ['factories', 'user-service', '$location', function (gxcFct, userSrv, $location) {
         return {
             restrict: 'E',
             templateUrl: 'templates/mail-message.html',
@@ -254,6 +254,21 @@
                 this.backToMailbox = function () {
                     $location.path('/mail/in/1');
                 };
+
+                this.reply = function (message) {
+                    var newLocation = '/mail/compose/' + message.sender.id;
+                    $location.path(newLocation);
+                }
+
+                this.alertAdmin = function (message) {
+                    var messageToSend = "Mittente: " + message.sender.id + ' - ' + message.sender.username + '\n' +
+                        "Ricevente: " + message.receiver.id + ' - ' + message.receiver.username + '\n' +
+                        message.messageObject + '\n' + message.messageText;
+                    gxcFct.alertAdmin.send({ message: messageToSend }).$promise
+                    .then(function (success) {
+                        UIkit.notify('L\' amministratore del sito è stato avvertito. Prenderà provvedimenti al più presto!', { status: 'success', timeout: 5000 });
+                    })
+                }
 
                 gxcFct.mail.get({ messageId: _this.msgId }).$promise
                   .then(function (success) {

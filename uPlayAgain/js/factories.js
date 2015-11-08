@@ -83,7 +83,9 @@
             counter: $resource(app.webapi, {}, {
                 byUser: { url: app.webapi + 'api/counter/byUser/:userId', method: 'GET', isArray: false }
             }),
-
+            alertAdmin: $resource(app.webapi, {}, {
+                send: { url: app.webapi + 'api/alertAdmin', method: 'POST', isArray: false }
+            }),
         }
     }]);
 })();
