@@ -242,6 +242,7 @@
                 _this.message = {};
                 _this.transactions = {};
                 _this.msgId = $routeParams.messageId;
+                _this.segnalazione = "";
 
                 this.reply = function () {
 
@@ -263,7 +264,8 @@
                 this.alertAdmin = function (message) {
                     var messageToSend = "Mittente: " + message.sender.id + ' - ' + message.sender.username + '\n' +
                         "Ricevente: " + message.receiver.id + ' - ' + message.receiver.username + '\n' +
-                        message.messageObject + '\n' + message.messageText;
+                        message.messageObject + '\n' + message.messageText + '\n\n\n' +
+                        "Ulteriori note: " + _this.segnalazione;
                     gxcFct.alertAdmin.send({ message: messageToSend }).$promise
                     .then(function (success) {
                         UIkit.notify('L\' amministratore del sito è stato avvertito. Prenderà provvedimenti al più presto!', { status: 'success', timeout: 5000 });

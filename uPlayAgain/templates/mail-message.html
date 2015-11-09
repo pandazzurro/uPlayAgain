@@ -10,8 +10,8 @@
                 </button>                
             </div>
             <div class="uk-button-group">
-                <button class="uk-button uk-button-danger" data-uk-tooltip title="Segnala all'ammistratore" ng-click="mail.alertAdmin(mail.message)">
-                    <i class="fa fa-exclamation-triangle"></i>
+                <button class="uk-button uk-button-danger" data-uk-tooltip title="Segnala all'ammistratore">
+                    <a href="#alertModal" data-uk-modal><i class="fa fa-exclamation-triangle"></i></a>
                 </button>
                 <button class="uk-button" data-uk-tooltip title="Torna all'elenco" ng-click="mail.backToMailbox()">
                     <i class="fa fa-envelope-o"></i>
@@ -27,4 +27,29 @@
 &nbsp;
 <div class="uk-panel uk-panel-box">
     {{ mail.message.messageText }}
+</div>
+
+
+<div id="alertModal" class="uk-modal">
+    <div class="uk-modal-dialog">
+        <a class="uk-modal-close uk-close"></a>        
+        <form class="uk-form uk-form-horizontal">
+            <fieldset>
+                <legend>Segnala</legend>
+                <div class="uk-form-row">
+                    <div class="uk-form-label">Note:</div>
+                    <div class="uk-form-controls">
+                        <textarea placeholder="Testo del messaggio" class="uk-width-1-1" rows="6" ng-model="mail.segnalazione"></textarea>
+                    </div>
+                </div>               
+            </fieldset>
+        </form>
+        <div class="uk-grid uk-panel-space">
+            <div class="uk-container-center">
+                <button class="uk-button" ng-click="mail.alertAdmin(mail.message)">
+                    <i class="uk-icon-envelope-o"></i> Segnala
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
