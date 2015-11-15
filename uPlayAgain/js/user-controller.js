@@ -61,11 +61,7 @@ app.controller('UserController', ['$scope', '$cookies', 'user-service', 'authSer
         $scope.loginData.userName = $scope.username,
         $scope.loginData.password = $scope.password;
         authService.login($scope.loginData).then(function (response) {
-            // Faccio login sul DB e recupero le informazioni utente
-            //userSrv.login($scope.username, $scope.password);   
-
-            // Redirect verso una pagina particolare?
-            //$location.path('/orders');
+            // Redirect verso una pagina particolare?            
         },
          function (err) {
              $scope.message = err.error_description;
@@ -73,10 +69,7 @@ app.controller('UserController', ['$scope', '$cookies', 'user-service', 'authSer
     };
 
     this.logout = function () {
-        userSrv.logout($scope.username, $scope.password);
-
-        $scope.username = '';
-        $scope.password = '';
+        authService.logOut();
     };
 
     this.isLoggedIn = function () {

@@ -139,7 +139,8 @@ http://stackoverflow.com/questions/11541695/redirecting-to-a-certain-route-based
 app.run(['$rootScope', '$location', 'user-service', function ($rootScope, $location, userSrv) {
     // register listener to watch route changes
     $rootScope.$on("$routeChangeStart", function (event, next, current) {
-        if (next.$$route.originalPath != "/register" &&
+        if ((next.$$route === undefined) ||
+            next.$$route.originalPath != "/register" &&
             next.$$route.originalPath != "/regolamento" &&
             next.$$route.originalPath != "/spedizioni" &&
             next.$$route.originalPath != "/feedback" &&
