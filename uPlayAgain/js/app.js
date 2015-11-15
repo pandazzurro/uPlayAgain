@@ -117,7 +117,7 @@ app.config(function (uiGmapGoogleMapApiProvider) {
 });
 
 /*Login*/
-var serviceBase = 'http://localhost/';
+var serviceBase = window.location.origin + window.location.pathname;
 app.constant('ngAuthSettings', {
     apiServiceBaseUri: serviceBase,
     clientId: 'ngAuthApp'
