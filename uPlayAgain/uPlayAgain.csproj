@@ -503,6 +503,7 @@
     <Compile Include="Converters\BitmapConverter.cs" />
     <Compile Include="Converters\DbGeographyConverter.cs" />
     <Compile Include="CustomBodyModelValidator.cs" />
+    <Compile Include="Dto\GameImageDto.cs" />
     <Compile Include="Dto\LibraryComponentDto.cs" />
     <Compile Include="Dto\SearchGame.cs" />
     <Compile Include="Entities\Client.cs" />

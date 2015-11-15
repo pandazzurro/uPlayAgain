@@ -125,6 +125,7 @@ app.service('games-service', ['factories', function (gxcFct) {
     this.languages = gxcFct.language.query();
     this.statuses = gxcFct.status.query();
     this.distances = [5, 10, 20, 50, 100];
+    this.gameLargeImages = [];
 
     var _this = this;
 
@@ -199,6 +200,24 @@ app.service('games-service', ['factories', function (gxcFct) {
                 game.gameData.librayId = game.librayId;
             });
     };
+
+    this.loadImage = function (gameId) {
+        _this.gameLargeImages.forEach(function (g) {
+            if (g.gameId == gameId) {
+                return g.largeImage;
+            }
+        });
+
+        return gxcFct.game.largeImage({ gameId: gameId },
+        function (gameSuccess) {
+            _this.gameLargeImages.push({
+                gameId: gameId,
+                largeImage: gameSuccess.image
+            });
+
+            return gameSuccess.image;
+        });
+    }
 
     this.searchGames = function (params) {
         return gxcFct.game.query(params).$promise;

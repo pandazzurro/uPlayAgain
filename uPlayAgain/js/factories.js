@@ -35,7 +35,8 @@
                 get: { url: app.webapi + '/api/games/:gameId', method: 'GET', isArray: false },
                 byUser: { url: app.webapi + '/api/games/byUser/:userId', method: 'GET', isArray: true, params: { userId: '@userId' } },                
                 search: { url: app.webapi + '/api/search', method: 'GET', isArray: false },
-                byUserWithComponent: { url: app.webapi + '/api/GameExchangeable/ByUser/:userId', method: 'GET', isArray: true, params: { userId: '@userId' } }
+                byUserWithComponent: { url: app.webapi + '/api/GameExchangeable/ByUser/:userId', method: 'GET', isArray: true, params: { userId: '@userId' } },
+                largeImage: { url: app.webapi + '/api/games/image/:gameId', method: 'GET', isArray: false }
             }),
             library: $resource(app.webapi, {}, {
                 byUser: { url: app.webapi + '/api/libraries/byUser/:userId', method: 'GET', isArray: true, params: { userId: '@userId' } },

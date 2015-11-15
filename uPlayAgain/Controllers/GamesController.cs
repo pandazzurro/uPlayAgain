@@ -6,6 +6,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
+using uPlayAgain.Dto;
 using uPlayAgain.Models;
 
 namespace uPlayAgain.Controllers
@@ -56,7 +57,7 @@ namespace uPlayAgain.Controllers
                 return NotFound();
             }
 
-            return Ok(game.Image);
+            return Ok(new GameImageDto() { Image = game.Image });
         }
 
         // PUT: api/Games/5

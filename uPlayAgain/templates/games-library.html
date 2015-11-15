@@ -2,7 +2,8 @@
     <li ng-repeat="game in library.games" style="margin-bottom:5px">
         <article class="uk-comment uk-animation-shake">
             <header class="uk-comment-header">
-                <img class="uk-comment-avatar" ng-src="data:image/gif;base64,{{game.gameData.image}}" alt="{{game.gameData.title}}" style="height:80px">
+                <img class="uk-comment-avatar" ng-src="data:image/gif;base64,{{game.gameData.image}}" alt="{{game.gameData.title}}" style="height:80px" 
+                     ng-click="library.loadImage(game.gameData.gameId)" data-uk-tooltip title="Clicca per ingrandire" data-uk-modal="{target:'#gameImage'}">
                 <h4 class="uk-comment-title">{{game.gameData.title}}</h4>
                 <div class="uk-comment-meta">{{game.gameData.language.description}} - {{game.gameData.status.description}}</div>
                 <div class="uk-text-right uk-text-bottom">
@@ -110,5 +111,14 @@
                 </div>
             </fieldset>
         </form>
+    </div>
+</div>
+
+
+
+<div id="gameImage" class="uk-modal">
+    <div class="uk-modal-dialog uk-modal-dialog-lightbox">
+        <a class="uk-modal-close uk-close uk-close-alt"></a>
+        <img class="uk-align-center imageLightBox" ng-src="data:image/gif;base64,{{library.selectedImage}}" alt="">
     </div>
 </div>
