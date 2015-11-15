@@ -61,10 +61,13 @@ app.controller('UserController', ['$scope', '$cookies', 'user-service', 'authSer
         $scope.loginData.userName = $scope.username,
         $scope.loginData.password = $scope.password;
         authService.login($scope.loginData).then(function (response) {
-            // Redirect verso una pagina particolare?            
+            // Redirect verso una pagina particolare?
+            UIkit.notify('Benvenuto ' + response.userName, { status: 'success', timeout: 1500 });
         },
          function (err) {
              $scope.message = err.error_description;
+             console.log($scope.message);
+             UIkit.notify('Username o password non corretti', { status: 'danger', timeout: 5000 });
          });
     };
 
