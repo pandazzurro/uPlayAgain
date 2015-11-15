@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity.EntityFramework;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
@@ -138,25 +139,40 @@ namespace uPlayAgain.Controllers
             
             return Ok();            
         }
-
-        // DELETE: api/Users/5
-        [ResponseType(typeof(User))]
-        public async Task<IHttpActionResult> DeleteUser(int id)
+        
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("api/Users/Load/{id}")]
+        public async Task<IHttpActionResult> Load(string id)
         {
-            User user = db.Users.Find(id);
-            if (user == null)
+            // Verifica mail abilitata
+            User userLogin = await _userManager.FindByIdAsync(id);
+            if (userLogin != null)
             {
-                return NotFound();
+                if (!await _userManager.IsEmailConfirmedAsync(userLogin.Id))
+                {
+                    return BadRequest("L'utente non ha ancora confermato l'indirizzo mail. Il login non può essere effettuato");
+                }
             }
 
-            db.Users.Remove(user);
-            db.Libraries.Where(t => t.UserId == user.Id).ToList().ForEach(lib =>
-            {
-                db.Libraries.Remove(lib);
-            });            
+            if (userLogin.LastLogin == DateTimeOffset.MinValue || userLogin.LastLogin < DateTimeOffset.Now)
+                userLogin.LastLogin = DateTimeOffset.Now;
+
+            db.Entry(userLogin).State = EntityState.Modified;
             await db.SaveChangesAsync();
 
-            return Ok(user);
+            UserResponse response = new UserResponse()
+            {
+                Id = userLogin.Id,
+                UserId = userLogin.UserId,
+                Username = userLogin.UserName,
+                Mail = userLogin.Email,
+                PositionUser = userLogin.PositionUser,
+                Image = userLogin.Image,
+                LibrariesId = await db.Libraries.Where(x => x.UserId == userLogin.Id).Select(x => x.LibraryId).ToListAsync()
+            };
+
+            return Ok(response);            
         }
 
         #region CheckUser

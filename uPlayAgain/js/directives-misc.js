@@ -1,5 +1,5 @@
-(function () {
-    var app = angular.module('gxc.directives.misc', []);
+//(function () {
+    //var app = angular.module('gxc.directives.misc', []);
 
     app.directive('regolamento', ['factories', function (gxcFct) {
         return {
@@ -31,4 +31,4 @@
             templateUrl: 'templates/contattaci.html'
         };
     }]);
-})();
+//})();

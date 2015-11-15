@@ -103,8 +103,10 @@ namespace uPlayAgain
         }
         public async Task<User> FindUser(string userName, string password)
         {
-            User user = await _userManager.FindAsync(userName, password);            
-            return user;
+            User user = await _userManager.FindAsync(userName, password);
+            if(_userManager.IsEmailConfirmed(user.Id))
+                return user;
+            return null;
         }
 
         public async Task<User> FindByIdAsync(string userId)

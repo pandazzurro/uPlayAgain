@@ -66,7 +66,27 @@ namespace uPlayAgain.Controllers
                     return BadRequest("L'utente non ha ancora confermato l'indirizzo mail. Il login non può essere effettuato");
                 }
             }
-            
+
+            if (userLogin.LastLogin == DateTimeOffset.MinValue || userLogin.LastLogin < DateTimeOffset.Now)
+                userLogin.LastLogin = DateTimeOffset.Now;
+
+            db.Entry(userLogin).State = EntityState.Modified;
+            await db.SaveChangesAsync();
+
+            UserResponse response = new UserResponse()
+            {
+                Id = userLogin.Id,
+                UserId = userLogin.UserId,
+                Username = userLogin.UserName,
+                Mail = userLogin.Email,
+                PositionUser = userLogin.PositionUser,
+                Image = userLogin.Image,
+                LibrariesId = await db.Libraries.Where(x => x.UserId == userLogin.Id).Select(x => x.LibraryId).ToListAsync()
+            };
+
+            return Ok(response);
+
+            /*
             // Login effettivo
             SignInStatus status = await _signInManager.PasswordSignInAsync(user.Username, user.Password, false, true);
             if (status == SignInStatus.LockedOut)
@@ -109,16 +129,17 @@ namespace uPlayAgain.Controllers
             }
 
             return NotFound();
+            */
         }
 
         
-        private async Task SignInAsync(User user, bool isPersistent)
-        {
-            Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
-            Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            ClaimsIdentity identity = await _userManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
-            Authentication.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, identity);
-        }
+        //private async Task SignInAsync(User user, bool isPersistent)
+        //{
+        //    Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
+        //    Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+        //    ClaimsIdentity identity = await _userManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
+        //    Authentication.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, identity);
+        //}
 
         [AllowAnonymous]
         [Route("Logout")]

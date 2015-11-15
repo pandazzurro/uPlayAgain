@@ -1,5 +1,5 @@
-(function () {
-    var app = angular.module('gxc.directives.user', []);
+//(function () {
+//    var app = angular.module('gxc.directives.user', []);
 
     app.directive('formRegister', ['factories', function (gxcFct) {
         return {
@@ -383,4 +383,4 @@
             controllerAs: 'link'
         };
     }]);
-})();
+//})();

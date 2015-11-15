@@ -74,41 +74,41 @@ namespace uPlayAgain
 
             app.UseCookieAuthentication(option);
             //AntiForgeryConfig.UniqueClaimTypeIdentifier = ClaimTypes.NameIdentifier;
-            
+
             //use a cookie to temporarily store information about a user logging in with a third party login provider
-            //app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
-            //OAuthBearerOptions = new OAuthBearerAuthenticationOptions();
+            app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
+            OAuthBearerOptions = new OAuthBearerAuthenticationOptions();
 
-            //OAuthAuthorizationServerOptions OAuthServerOptions = new OAuthAuthorizationServerOptions() {            
-            //    AllowInsecureHttp = true,
-            //    TokenEndpointPath = new PathString("/token"),
-            //    AccessTokenExpireTimeSpan = TimeSpan.FromMinutes(30),
-            //    Provider = new SimpleAuthorizationServerProvider(),
-            //    RefreshTokenProvider = new SimpleRefreshTokenProvider()
-            //};
+            OAuthAuthorizationServerOptions OAuthServerOptions = new OAuthAuthorizationServerOptions()
+            {
+                AllowInsecureHttp = true,
+                TokenEndpointPath = new PathString("/token"),
+                AccessTokenExpireTimeSpan = TimeSpan.FromMinutes(30),
+                Provider = new SimpleAuthorizationServerProvider(),
+                RefreshTokenProvider = new SimpleRefreshTokenProvider()
+            };
 
-            //// Token Generation
-            //app.UseOAuthAuthorizationServer(OAuthServerOptions);
-            //app.UseOAuthBearerAuthentication(OAuthBearerOptions);
+            // Token Generation
+            app.UseOAuthAuthorizationServer(OAuthServerOptions);
+            app.UseOAuthBearerAuthentication(OAuthBearerOptions);
 
-            ////Configure Google External Login
-            //googleAuthOptions = new GoogleOAuth2AuthenticationOptions()
-            //{
-            //    ClientId = "xxxxxx",
-            //    ClientSecret = "xxxxxx",
-            //    Provider = new GoogleAuthProvider()
-            //};
-            //app.UseGoogleAuthentication(googleAuthOptions);
+            //Configure Google External Login
+            googleAuthOptions = new GoogleOAuth2AuthenticationOptions()
+            {
+                ClientId = "xxxxxx",
+                ClientSecret = "xxxxxx",
+                Provider = new GoogleAuthProvider()
+            };
+            app.UseGoogleAuthentication(googleAuthOptions);
 
-            ////Configure Facebook External Login
-            //facebookAuthOptions = new FacebookAuthenticationOptions()
-            //{
-            //    AppId = "xxxxxx",
-            //    AppSecret = "xxxxxx",
-            //    Provider = new FacebookAuthProvider()
-            //};
-            //app.UseFacebookAuthentication(facebookAuthOptions);
-
+            //Configure Facebook External Login
+            facebookAuthOptions = new FacebookAuthenticationOptions()
+            {
+                AppId = "xxxxxx",
+                AppSecret = "xxxxxx",
+                Provider = new FacebookAuthProvider()
+            };
+            app.UseFacebookAuthentication(facebookAuthOptions);
 
             // Register disposable OwinContext
             app.CreatePerOwinContext<OwinContextDisposal>((o, c) => new OwinContextDisposal(c));

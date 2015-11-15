@@ -1,5 +1,5 @@
-(function () {
-    var app = angular.module('gxc.directives.mail', []);
+//(function () {
+//    var app = angular.module('gxc.directives.mail', []);
 
     app.directive('mailbox', ['factories', 'user-service', 'games-service', '$location', function (gxcFct, userSrv, gameSrv, $location) {
         return {
@@ -568,4 +568,4 @@
             controllerAs: 'feedbackVote'
         };
     }]);
-})();
+//})();

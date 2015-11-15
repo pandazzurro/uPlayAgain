@@ -1,5 +1,5 @@
-(function() {
-  var app = angular.module('gxc.templates', []);
+//(function() {
+//  var app = angular.module('gxc.templates', []);
 
   app.directive('navbarTop', function() {
     return {
@@ -43,4 +43,4 @@
     };
   });
 
-})();
+//})();

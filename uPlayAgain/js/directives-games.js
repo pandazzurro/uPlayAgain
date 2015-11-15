@@ -1,5 +1,5 @@
-(function () {
-    var app = angular.module('gxc.directives.games', []);
+//(function () {
+//    var app = angular.module('gxc.directives.games', []);
 
     app.directive('exchangeSearch', ['factories', 'user-service', 'games-service', '$location', function (gxcFct, userSrv, gamesSrv, $location) {
         return {
@@ -296,4 +296,4 @@
             controllerAs: 'library'
         };
     }]);
-})();
+//})();

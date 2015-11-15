@@ -1,5 +1,5 @@
-(function () {
-    var app = angular.module('gxc.factories', ['ngResource']);
+//(function () {
+//    var app = angular.module('gxc.factories', ['ngResource']);
 
     app.webapi = "";
 
@@ -49,6 +49,7 @@
                 checkUsername: { url: app.webapi + '/api/users/Exists/:username', method: 'GET', isArray: false },
                 byId: { url: app.webapi + '/api/users/identity/:userId', method: 'GET', isArray: false },
                 profile: { url: app.webapi + '/api/users/profile/:userId', method: 'GET', isArray: false },
+                load: { url: app.webapi + '/api/users/load/:id', method: 'GET', isArray: false },
                 login: { url: app.webapi + '/api/account/login', method: 'POST', isArray: false },
                 logout: { url: app.webapi + '/api/account/logout', method: 'POST', isArray: false },
                 register: { url: app.webapi + '/api/account/register', method: 'POST', isArray: true },
@@ -88,4 +89,4 @@
             }),
         }
     }]);
-})();
+//})();

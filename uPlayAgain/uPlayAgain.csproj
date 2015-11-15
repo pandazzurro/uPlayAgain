@@ -220,6 +220,7 @@
     <Content Include="js\core\angular-google-maps-street-view.min.js" />
     <Content Include="js\core\angular-google-maps.js" />
     <Content Include="js\core\angular-google-maps.min.js" />
+    <Content Include="js\core\angular-local-storage.min.js" />
     <Content Include="js\core\angular-mocks.js" />
     <Content Include="js\core\angular.js" />
     <Content Include="js\core\angular.min.js" />
@@ -233,8 +234,12 @@
     <Content Include="js\directives-user.js" />
     <Content Include="js\factories.js" />
     <Content Include="js\mail-activation.js" />
-    <Content Include="js\services.js" />
+    <Content Include="js\services\authInterceptorService.js" />
+    <Content Include="js\services\authService.js" />
+    <Content Include="js\services\baseServices.js" />
+    <Content Include="js\services\tokensManagerService.js" />
     <Content Include="js\templates.js" />
+    <Content Include="js\user-controller.js" />
     <Content Include="mail-activation.html" />
     <Content Include="MailTemplate\template.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -490,6 +495,7 @@
     <Compile Include="Controllers\PlatformsController.cs" />
     <Compile Include="Controllers\ProposalComponentsController.cs" />
     <Compile Include="Controllers\ProposalsController.cs" />
+    <Compile Include="Controllers\RefreshTokensController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\StatusController.cs" />
     <Compile Include="Controllers\TransactionsController.cs" />
