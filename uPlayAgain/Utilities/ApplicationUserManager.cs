@@ -21,10 +21,14 @@ namespace uPlayAgain.Utilities
         }
 
         public ApplicationUserManager(IUserStore<User> store) : base(store)
-        {   
+        {
             // Configure validation logic for usernames
-            UserValidator = new UserValidator<User>(this) { AllowOnlyAlphanumericUserNames = false, RequireUniqueEmail = true };
-
+            UserValidator = new UserValidator<User>(this)
+            {   
+                AllowOnlyAlphanumericUserNames = false,                
+                RequireUniqueEmail = true
+            };
+            
             // Configure validation logic for passwords
             PasswordValidator = new PasswordValidator
             {

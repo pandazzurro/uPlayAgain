@@ -47,90 +47,90 @@ namespace uPlayAgain.Controllers
             _signInManager = new SignInManager<User, string>(_userManager, Authentication);
         }
 
-        // POST api/Account/Login
-        [AllowAnonymous]
-        [Route("Login")]
-        public async Task<IHttpActionResult> Login(UserLogin user)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //// POST api/Account/Login
+        //[AllowAnonymous]
+        //[Route("Login")]
+        //public async Task<IHttpActionResult> Login(UserLogin user)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            // Verifica mail abilitata
-            User userLogin = await _userManager.FindAsync(user.Username, user.Password);
-            if (userLogin != null)
-            {
-                if (!await _userManager.IsEmailConfirmedAsync(userLogin.Id))
-                {
-                    return BadRequest("L'utente non ha ancora confermato l'indirizzo mail. Il login non può essere effettuato");
-                }
-            }
+        //    // Verifica mail abilitata
+        //    User userLogin = await _userManager.FindAsync(user.Username, user.Password);
+        //    if (userLogin != null)
+        //    {
+        //        if (!await _userManager.IsEmailConfirmedAsync(userLogin.Id))
+        //        {
+        //            return BadRequest("L'utente non ha ancora confermato l'indirizzo mail. Il login non può essere effettuato");
+        //        }
+        //    }
 
-            if (userLogin.LastLogin == DateTimeOffset.MinValue || userLogin.LastLogin < DateTimeOffset.Now)
-                userLogin.LastLogin = DateTimeOffset.Now;
+        //    if (userLogin.LastLogin == DateTimeOffset.MinValue || userLogin.LastLogin < DateTimeOffset.Now)
+        //        userLogin.LastLogin = DateTimeOffset.Now;
 
-            db.Entry(userLogin).State = EntityState.Modified;
-            await db.SaveChangesAsync();
+        //    db.Entry(userLogin).State = EntityState.Modified;
+        //    await db.SaveChangesAsync();
 
-            UserResponse response = new UserResponse()
-            {
-                Id = userLogin.Id,
-                UserId = userLogin.UserId,
-                Username = userLogin.UserName,
-                Mail = userLogin.Email,
-                PositionUser = userLogin.PositionUser,
-                Image = userLogin.Image,
-                LibrariesId = await db.Libraries.Where(x => x.UserId == userLogin.Id).Select(x => x.LibraryId).ToListAsync()
-            };
+        //    UserResponse response = new UserResponse()
+        //    {
+        //        Id = userLogin.Id,
+        //        UserId = userLogin.UserId,
+        //        Username = userLogin.UserName,
+        //        Mail = userLogin.Email,
+        //        PositionUser = userLogin.PositionUser,
+        //        Image = userLogin.Image,
+        //        LibrariesId = await db.Libraries.Where(x => x.UserId == userLogin.Id).Select(x => x.LibraryId).ToListAsync()
+        //    };
 
-            return Ok(response);
+        //    return Ok(response);
 
-            /*
-            // Login effettivo
-            SignInStatus status = await _signInManager.PasswordSignInAsync(user.Username, user.Password, false, true);
-            if (status == SignInStatus.LockedOut)
-                return BadRequest("L'utente risulta bloccato");
-            if (status == SignInStatus.Success)
-            {
-                await SignInAsync(userLogin, false);
+        //    /*
+        //    // Login effettivo
+        //    SignInStatus status = await _signInManager.PasswordSignInAsync(user.Username, user.Password, false, true);
+        //    if (status == SignInStatus.LockedOut)
+        //        return BadRequest("L'utente risulta bloccato");
+        //    if (status == SignInStatus.Success)
+        //    {
+        //        await SignInAsync(userLogin, false);
                 
-                if (userLogin.LastLogin == DateTimeOffset.MinValue || userLogin.LastLogin < DateTimeOffset.Now)
-                    userLogin.LastLogin = DateTimeOffset.Now;
+        //        if (userLogin.LastLogin == DateTimeOffset.MinValue || userLogin.LastLogin < DateTimeOffset.Now)
+        //            userLogin.LastLogin = DateTimeOffset.Now;
 
-                db.Entry(userLogin).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+        //        db.Entry(userLogin).State = EntityState.Modified;
+        //        await db.SaveChangesAsync();
 
-                UserResponse response = new UserResponse()
-                {
-                    Id = userLogin.Id,
-                    UserId = userLogin.UserId,
-                    Username = userLogin.UserName,
-                    Mail = userLogin.Email,
-                    PositionUser = userLogin.PositionUser,
-                    Image = userLogin.Image,
-                    LibrariesId = await db.Libraries.Where(x => x.UserId == userLogin.Id).Select(x => x.LibraryId).ToListAsync()
-                };
+        //        UserResponse response = new UserResponse()
+        //        {
+        //            Id = userLogin.Id,
+        //            UserId = userLogin.UserId,
+        //            Username = userLogin.UserName,
+        //            Mail = userLogin.Email,
+        //            PositionUser = userLogin.PositionUser,
+        //            Image = userLogin.Image,
+        //            LibrariesId = await db.Libraries.Where(x => x.UserId == userLogin.Id).Select(x => x.LibraryId).ToListAsync()
+        //        };
 
-                return Ok(response);
-            }
-            if (status == SignInStatus.Failure)
-            {
-                return BadRequest("Login errato");
-            }
-            if (status == SignInStatus.RequiresVerification)
-            {
-                // TODO: redirect sulla pagina di rigenerazione del token
-                //string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                //var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                //await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                //return RedirectToAction("ForgotPasswordConfirmation", "Account");
-                return BadRequest("L'utente non ha ancora confermato l'indirizzo mail. Il login non può essere effettuato");
-            }
+        //        return Ok(response);
+        //    }
+        //    if (status == SignInStatus.Failure)
+        //    {
+        //        return BadRequest("Login errato");
+        //    }
+        //    if (status == SignInStatus.RequiresVerification)
+        //    {
+        //        // TODO: redirect sulla pagina di rigenerazione del token
+        //        //string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+        //        //var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+        //        //await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
+        //        //return RedirectToAction("ForgotPasswordConfirmation", "Account");
+        //        return BadRequest("L'utente non ha ancora confermato l'indirizzo mail. Il login non può essere effettuato");
+        //    }
 
-            return NotFound();
-            */
-        }
+        //    return NotFound();
+        //    */
+        //}
 
         
         //private async Task SignInAsync(User user, bool isPersistent)
@@ -141,32 +141,32 @@ namespace uPlayAgain.Controllers
         //    Authentication.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, identity);
         //}
 
-        [AllowAnonymous]
-        [Route("Logout")]
-        public async Task<IHttpActionResult> Logout(UserLogin user)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //[AllowAnonymous]
+        //[Route("Logout")]
+        //public async Task<IHttpActionResult> Logout(UserLogin user)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            User userLogOut = await _userManager.FindAsync(user.Username, user.Password);
-            if (userLogOut != null)
-            {
-                // LogOut
-                await SignOutAsync(userLogOut);
-                return Ok();
-            }
-            return BadRequest("Utente non esistente");
-        }
+        //    User userLogOut = await _userManager.FindAsync(user.Username, user.Password);
+        //    if (userLogOut != null)
+        //    {
+        //        // LogOut
+        //        await SignOutAsync(userLogOut);
+        //        return Ok();
+        //    }
+        //    return BadRequest("Utente non esistente");
+        //}
 
-        private async Task SignOutAsync(User user)
-        {
-            await Task.Run(() => {
-                Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
-                Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            });
-        }
+        //private async Task SignOutAsync(User user)
+        //{
+        //    await Task.Run(() => {
+        //        Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
+        //        Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+        //    });
+        //}
 
         [HttpGet]
         [Route("ValidateMail/{userId}/{token}")]

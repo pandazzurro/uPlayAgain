@@ -1,5 +1,6 @@
 /// <reference path="services/baseServices.js" />
 /// <reference path="app.js" />
+/// <reference path="factories.js" />
 
 app.directive('exchangeSearch', ['factories', 'user-service', 'games-service', '$location', function (gxcFct, userSrv, gamesSrv, $location) {
     return {
@@ -259,6 +260,7 @@ app.directive('gamesLibrary', ['factories', 'user-service', 'games-service', fun
             }
 
             this.loadImage = function (gameId) {
+                _this.selectedImage = "";
                 gameSrv.loadImage(gameId).$promise
                 .then(function (success) {
                     _this.selectedImage = success.image;
@@ -301,5 +303,28 @@ app.directive('gamesLibrary', ['factories', 'user-service', 'games-service', fun
             getGames(userSrv.getCurrentUser().LibraryId);
         },
         controllerAs: 'library'
+    };
+}]);
+
+app.directive('gamesLast', ['factories', 'games-service', function (gxcFct, gamesSrv) {
+    return {
+        restrict: 'E',
+        templateUrl: 'templates/game-last.html',
+        controller: function () {
+            var _this = this;
+            _this.games = [];
+            _this.lastGameNumber = 10;
+
+            this.loadLastGame = function () {
+                var lastGameNumber = 10;
+                gxcFct.game.last({ gameCount: _this.lastGameNumber }).$promise
+                .then(function (success) {
+                    _this.games = success;
+                });
+            }
+            
+            _this.loadLastGame();
+        },
+        controllerAs: 'gamesLast'
     };
 }]);

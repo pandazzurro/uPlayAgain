@@ -21,7 +21,7 @@ namespace uPlayAgain.Controllers
             return db.Games;
         }
 
-        [Route("api/Game/Last/{number:int}")]
+        [Route("api/Games/Last/{number:int}")]
         [ResponseType(typeof(Game))]
         public IQueryable<Game> GetLastGame(int number)
         {

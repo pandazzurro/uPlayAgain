@@ -241,6 +241,8 @@
     <Content Include="js\templates.js" />
     <Content Include="js\user-controller.js" />
     <Content Include="mail-activation.html" />
+    <Content Include="mail-reset-password.html" />
+    <Content Include="MailTemplate\resetPassword.html" />
     <Content Include="MailTemplate\template.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -255,6 +257,7 @@
     <Content Include="templates\form-login.html" />
     <Content Include="templates\form-edit-register.html" />
     <Content Include="templates\form-register.html" />
+    <Content Include="templates\game-last.html" />
     <Content Include="templates\games-library.html" />
     <Content Include="templates\games-search.html" />
     <Content Include="templates\home.html" />

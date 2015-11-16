@@ -119,6 +119,7 @@
 <div id="gameImage" class="uk-modal">
     <div class="uk-modal-dialog uk-modal-dialog-lightbox">
         <a class="uk-modal-close uk-close uk-close-alt"></a>
-        <img class="uk-align-center imageLightBox" ng-src="data:image/gif;base64,{{library.selectedImage}}" alt="">
+        <div class="uk-modal-spinner" ng-hide="library.selectedImage != ''"></div>
+        <img class="uk-align-center imageLightBox" ng-src="data:image/gif;base64,{{library.selectedImage}}" alt="" ng-show="library.selectedImage != ''">
     </div>
 </div>

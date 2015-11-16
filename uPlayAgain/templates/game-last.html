@@ -1,0 +1,10 @@
+﻿<div class="uk-slidenav-position" data-uk-slideshow="{animation: 'scale'}">
+    <ul class="uk-slideshow" ng-repeat="game in gamesLast.games">
+        <li><img ng-src="data:image/gif;base64,{{game.image}}" alt="{{game.title}}"/></li>
+    </ul>
+    <a href="" class="uk-slidenav uk-slidenav-contrast uk-slidenav-previous" data-uk-slideshow-item="previous"></a>
+    <a href="" class="uk-slidenav uk-slidenav-contrast uk-slidenav-next" data-uk-slideshow-item="next"></a>
+    <ul class="uk-dotnav uk-dotnav-contrast uk-position-bottom uk-flex-center" ng-repeat="game in gamesLast.games">
+        <li data-uk-slideshow-item="{{$index}}"><a href=""></a></li>
+    </ul>
+</div>

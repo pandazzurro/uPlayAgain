@@ -46,7 +46,7 @@ namespace uPlayAgain
             
             try
             {
-                result = await _userManager.CreateAsync(user, login.Password);
+                result = await _userManager.CreateAsync(user, login.Password);                
                 if (result.Succeeded)
                 {
                     string token = await _userManager.GenerateEmailConfirmationTokenAsync(user.Id);
@@ -101,12 +101,53 @@ namespace uPlayAgain
             IdentityResult result = await _userManager.ConfirmEmailAsync(userId, token);
             return result.Errors.ToList();
         }
+
+        [AllowAnonymous]
+        public async Task GeneratePasswordResetTokenAsync(string email)
+        {
+            User user = await _userManager.FindByEmailAsync(email);
+            if (user != null)
+            {
+                string token = await _userManager.GeneratePasswordResetTokenAsync(user.Id);
+                string encode = HttpServerUtility.UrlTokenEncode(Encoding.UTF8.GetBytes(token));
+                // Settare il callback url che abilita l'utente.
+                Uri callbackUrl = new Uri(String.Format("{0}/mail-reset-password.html?userId={1}&token={2}", HttpContext.Current.Request.Url.AbsoluteUri.Replace(HttpContext.Current.Request.Url.AbsolutePath.ToString(), ""), user.Id, encode));
+
+                // Caricare il testo della mail e riempire i dati
+                string mailText = File.ReadAllText(HttpContext.Current.Server.MapPath("~/MailTemplate/resetPassword.html"));
+                mailText = mailText.Replace("{URL}", callbackUrl.ToString());
+                mailText = mailText.Replace("{USER}", user.UserName);
+                mailText = mailText.Replace("{USERPIC}", Convert.ToBase64String(user.Image));
+
+                await _userManager.SendEmailAsync(user.Id, "UplayAgain ti da il benvenuto. Conferma la tua password!", mailText);
+            }
+        }
+
+        [AllowAnonymous]        
+        public async Task ResetPasswordByToken(string userId, string token, string newPassword)
+        {
+            try
+            {
+                User u = await _userManager.FindByIdAsync(userId);
+                if(u != null)
+                {
+                    await _userManager.ResetPasswordAsync(u.Id, token, newPassword);
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex);
+            }            
+        }
         public async Task<User> FindUser(string userName, string password)
         {
             User user = await _userManager.FindAsync(userName, password);
-            if(user != null && _userManager.IsEmailConfirmed(user.Id))
-                return user;
             return null;
+        }
+
+        public async Task<bool> IsEmailConfirmedAsync(string userId)
+        {
+            return await _userManager.IsEmailConfirmedAsync(userId);
         }
 
         public async Task<User> FindByIdAsync(string userId)
