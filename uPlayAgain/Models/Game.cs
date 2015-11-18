@@ -24,27 +24,30 @@ namespace uPlayAgain.Models
         public DateTimeOffset RegistrationDate { get; set; }
 
         [JsonIgnore]
-        public byte[] Image { get; set; }
+        public byte[] Image {get; set;}
         
-        [JsonProperty(PropertyName = "Image", DefaultValueHandling = DefaultValueHandling.Include)]
-        [JsonConverter(typeof(BitmapConverter))]
-        public Image Thumb
-        {
-            get
-            {
-                if(Image != null)
-                {
-                    using (var ms = new MemoryStream(Image))
-                    {
-                        Image img = System.Drawing.Image.FromStream(ms);
-                        int fixedWidth = 100;
-                        double widthPercentage = (double)fixedWidth / (double)img.Width;
-                        return img.GetThumbnailImage(fixedWidth, (int)(img.Height * widthPercentage), () => false, IntPtr.Zero);
-                    }
-                }
-                return null;
-            }
-        }
+        //[JsonProperty(PropertyName = "Image", DefaultValueHandling = DefaultValueHandling.Include)]
+        //[JsonConverter(typeof(BitmapConverter))]
+        //public Image Thumb
+        //{
+        //    get
+        //    {
+        //        if(Image != null)
+        //        {
+        //            using (var ms = new MemoryStream(Image))
+        //            {
+        //                Image img = System.Drawing.Image.FromStream(ms);                        
+        //                int fixedWidth = 65;
+        //                double widthPercentage = (double)fixedWidth / (double)img.Width;
+        //                return img.GetThumbnailImage(fixedWidth, (int)(img.Height * widthPercentage), () => false, IntPtr.Zero);
+        //            }
+        //        }
+        //        return null;
+        //    }
+        //}
+
+        //public byte[] _imageThumb { get; set; }
+        public byte[] ImageThumb { get; set; }
 
         // Foreign key
         public string GenreId { get; set; }
@@ -53,5 +56,22 @@ namespace uPlayAgain.Models
         public string PlatformId { get; set; }
         [ForeignKey("PlatformId")]
         public virtual Platform Platform { get; set; }
+
+        public byte[] Resize()
+        {
+            if (Image != null)
+            {
+                using (var ms = new MemoryStream(Image))
+                {
+                    Image img = System.Drawing.Image.FromStream(ms);
+                    int fixedWidth = 65;
+                    double widthPercentage = (double)fixedWidth / (double)img.Width;
+                    img = img.GetThumbnailImage(fixedWidth, (int)(img.Height * widthPercentage), () => false, IntPtr.Zero);
+                    ImageConverter converter = new ImageConverter();
+                    return (byte[])converter.ConvertTo(img, typeof(byte[]));
+                }
+            }
+            return null;
+        }
     }
 }

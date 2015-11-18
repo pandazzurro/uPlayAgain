@@ -102,7 +102,8 @@
         <a class="uk-modal-close uk-close"></a>
         <div class="uk-grid">
             <div class="uk-width-1-4">
-                <img class="uk-comment-avatar" ng-src="data:image/gif;base64,{{search.details.game.image}}" alt="{{search.details.game.title}}" style="max-height: 250px;max-width: 200px;">
+                <img class="uk-comment-avatar" ng-src="data:image/gif;base64,{{search.details.game.image}}" alt="{{search.details.game.title}}" style="max-height: 250px;max-width: 200px;" 
+                     ng-click="search.loadImage(search.details.game.gameId)" data-uk-tooltip title="Clicca per ingrandire" data-uk-modal="{target:'#gameImage'}">
             </div>
             <div class="uk-width-3-4">
                 <form class="uk-form uk-form-horizontal">
@@ -143,5 +144,13 @@
                 </button>
             </div>
         </div>
+    </div>
+</div>
+
+<div id="gameImage" class="uk-modal">
+    <div class="uk-modal-dialog" ng-class="search.selectedImage != '' ? 'uk-modal-dialog-lightbox' : ''">
+        <a class="uk-modal-close uk-close uk-close-alt"></a>
+        <div class="uk-modal-spinner" ng-hide="search.selectedImage != ''"></div>
+        <img class="uk-align-center imageLightBox" ng-src="data:image/gif;base64,{{search.selectedImage}}" alt="" ng-show="search.selectedImage != ''">
     </div>
 </div>

@@ -87,7 +87,7 @@ namespace uPlayAgain.Providers
                     context.SetError("invalid_grant", "The user name or password is incorrect.");
                     return;
                 }
-                if (user != null && await _repo.IsEmailConfirmedAsync(user.Id))
+                if (user != null && !await _repo.IsEmailConfirmedAsync(user.Id))
                 {
                     context.SetError("invalid_mail_confirm", "The user not confirm mail.");
                     return;

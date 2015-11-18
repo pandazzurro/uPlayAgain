@@ -33,7 +33,6 @@ namespace uPlayAgain.Converters
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             Bitmap bitmap = (Bitmap)value;
-
             ImageConverter converter = new ImageConverter();
             writer.WriteValue((byte[])converter.ConvertTo(bitmap, typeof(byte[])));
         }
@@ -63,6 +62,5 @@ namespace uPlayAgain.Converters
             else
                 return System.Drawing.Imaging.ImageFormat.Wmf;
         }
-
     }
 }

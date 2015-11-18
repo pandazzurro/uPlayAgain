@@ -10,8 +10,6 @@
 
                 _this.params = $routeParams;
                 _this.messages = [];
-                //_this.messagesIncoming = [];
-                //_this.messagesOutgoing = [];
                 _this.transactions = [];
                 _this.mustLoadMessageCounter = true;
                 _this.messagesCount = { in: 0, out: 0, trn: 0 };
@@ -23,8 +21,7 @@
                 	var queryParameters = {
                 		userId: _this.currentUserId,
                 		page: page
-                	};
-                	//var incoming = (direction === 'in');
+                	};                	
                 	_this.showTransactions = (direction === 'transaction');
                 	_this.messagesCount.trn = 0;
 
@@ -48,8 +45,7 @@
                         			item.game.gameId = item.gameId;
                         			gameSrv.fillGameData(item.game);
                         		})
-                        	});
-                        	//UIkit.accordion(UIkit.$('#accordion'), { showfirst: 'false' });
+                        	});                      
                         });
                 	}
                 	else if (direction === 'in') {
@@ -109,52 +105,72 @@
                                     // Se annullo o rifiuto la proposta, o se entrambi hanno accettato, rimuovo tutto dalla lista di visualizzazione
                                     if (newState == 2 || newState == 3) {
                                         _this.transactions.splice(i, 1);
+                                        // rifiuto
+                                        if (newState == 2) {
+                                            userSrv.getInfoUser(tran.userId)
+                                            .then(function (userToChangeInfo) {
+                                                var queryParams = {
+                                                    messageText: "Ciao, Lo scambio da te proposto con l'utente " + userToChangeInfo.username + " è stato rifiutato.",
+                                                    messageObject: "Scambio rifiutato",
+                                                    messageDate: new Date().toISOString(),
+                                                    userProponent_Id: _this.currentUserId,
+                                                    userReceiving_Id: tran.userId
+                                                };
+
+                                                gxcFct.mail.send(queryParams).$promise
+                                                .then(function (success) {
+                                                    UIkit.notify('Scambio rifiutato. Messaggio inviato a: ' + userToChangeInfo.username, { status: 'success', timeout: 5000 });
+                                                });
+                                            });
+                                        }
+                                        // annullo : non faccio nulla?
                                     }
-                                    if (_this.transactions[i].proposal.userProponent_ProposalStatus == 1 && _this.transactions[i].proposal.userReceiving_ProposalStatus == 1) {
-                                        _this.transactions.splice(i, 1);                                        
-                                        var queryParams = {
-                                            messageText: "Ciao, abbiamo il piacere di informarti che lo scambio è avvenuto con successo. Ora puoi accordarti sulle modalità di trasferimento del gioco. Rispondi al messaggio, accordatevi sulla modalità di scambio. Grazie",
-                                            messageObject: "Scambio concluso con successo",
-                                            messageDate: new Date().toISOString(),
-                                            userProponent_Id: _this.currentUserId,
-                                            userReceiving_Id: tran.userId
-                                        };
+                                    else    if (_this.transactions[i].proposal.userProponent_ProposalStatus == 1 && _this.transactions[i].proposal.userReceiving_ProposalStatus == 1) {
+                                            _this.transactions.splice(i, 1);                                        
+                                            var queryParams = {
+                                                messageText: "Ciao, abbiamo il piacere di informarti che lo scambio è avvenuto con successo. Ora puoi accordarti sulle modalità di trasferimento del gioco. Rispondi al messaggio, accordatevi sulla modalità di scambio. Grazie",
+                                                messageObject: "Scambio concluso con successo",
+                                                messageDate: new Date().toISOString(),
+                                                userProponent_Id: _this.currentUserId,
+                                                userReceiving_Id: tran.userId
+                                            };
                                         
-                                        gxcFct.mail.send(queryParams).$promise
-                                        .then(function (success) {
-                                            UIkit.notify('Scambio concluso. Messaggio inviato all\"altro utente.', { status: 'success', timeout: 5000 });
-                                            // TODO: togliere i giochi dalle librerie o metterli (non scambiabili)
-                                            var myLibrary = userSrv.getCurrentUser().LibraryId;
-                                            var theirLibrary = tran.theirLibraryId;
-
-                                            tran.myItems.forEach(function (item) {
-                                                item.IsExchangeable = false;
-                                                item.libraryId = theirLibrary;
-                                                item.isDeleted = false;
-
-                                                gxcFct.library.update({ componentId: item.libraryComponentId }, item, function () {
-
+                                            gxcFct.mail.send(queryParams).$promise
+                                            .then(function (success) {
+                                                userSrv.getInfoUser(tran.userId)
+                                                .then(function (userToChangeInfo) {
+                                                    UIkit.notify('Scambio concluso. Messaggio inviato a: ' + userToChangeInfo.username, { status: 'success', timeout: 5000 });
                                                 });
-                                            });
+                                                
+                                                var myLibrary = userSrv.getCurrentUser().LibraryId;
+                                                var theirLibrary = tran.theirLibraryId;
 
-                                            tran.theirItems.forEach(function (item) {
-                                                item.IsExchangeable = false;
-                                                item.libraryId = myLibrary;
-                                                item.isDeleted = false;
+                                                tran.myItems.forEach(function (item) {
+                                                    item.IsExchangeable = false;
+                                                    item.libraryId = theirLibrary;
+                                                    item.isDeleted = false;
 
-                                                gxcFct.library.update({ componentId: item.libraryComponentId }, item, function () {
+                                                    gxcFct.library.update({ componentId: item.libraryComponentId }, item, function () {
 
+                                                    });
                                                 });
-                                            });
+
+                                                tran.theirItems.forEach(function (item) {
+                                                    item.IsExchangeable = false;
+                                                    item.libraryId = myLibrary;
+                                                    item.isDeleted = false;
+
+                                                    gxcFct.library.update({ componentId: item.libraryComponentId }, item, function () {
+
+                                                    });
+                                                });
 
 
-                                            $location.path('/mail/in/1');
-                                        },
-                                        function (error) {
-                                            UIkit.notify('Si &egrave; verificato un errore nell\'operazione. Si prega di riprovare', { status: 'warning', timeout: 5000 });
-                                        });
-
-                                        
+                                                $location.path('/mail/in/1');
+                                            },
+                                            function (error) {
+                                                UIkit.notify('Si &egrave; verificato un errore nell\'operazione. Si prega di riprovare', { status: 'warning', timeout: 5000 });
+                                            });                                        
                                     }
                                 }
                             }
@@ -298,7 +314,7 @@
                 exchange: '@exchange'
             },
             templateUrl: 'templates/mail-message-new.html',
-            controller: function ($scope, $routeParams) {
+            controller: function ($scope, $routeParams, $location) {
                 var _this = this;
                 _this.message = { myItems: [], hisItems: [] };
                 _this.hisUserId = undefined;

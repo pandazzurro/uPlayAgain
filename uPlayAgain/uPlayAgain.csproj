@@ -246,9 +246,6 @@
     <Content Include="MailTemplate\template.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="partials\games.html" />
-    <Content Include="partials\mailbox.html" />
-    <Content Include="partials\message.html" />
     <Content Include="templates\come-funziona-doc.html" />
     <Content Include="templates\contattaci.html" />
     <Content Include="templates\exchange-search.html" />
@@ -506,6 +503,7 @@
     <Compile Include="Converters\BitmapConverter.cs" />
     <Compile Include="Converters\DbGeographyConverter.cs" />
     <Compile Include="CustomBodyModelValidator.cs" />
+    <Compile Include="Dto\GameDto.cs" />
     <Compile Include="Dto\GameImageDto.cs" />
     <Compile Include="Dto\LibraryComponentDto.cs" />
     <Compile Include="Dto\SearchGame.cs" />

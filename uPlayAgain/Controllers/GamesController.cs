@@ -21,6 +21,17 @@ namespace uPlayAgain.Controllers
             return db.Games;
         }
 
+        [Route("api/Games/Resize")]        
+        public async Task GetResize()
+        {
+            foreach (Game g in db.Games.Where(x => x.ImageThumb == null))
+            {
+                g.ImageThumb = g.Resize();
+                db.Entry(g).State = EntityState.Modified;
+            }
+            await db.SaveChangesAsync();
+        }
+
         [Route("api/Games/Last/{number:int}")]
         [ResponseType(typeof(Game))]
         public IQueryable<Game> GetLastGame(int number)
@@ -32,10 +43,21 @@ namespace uPlayAgain.Controllers
         }
 
         // GET: api/Games/5
-        [ResponseType(typeof(Game))]
+        [ResponseType(typeof(GameDto))]
         public async Task<IHttpActionResult> GetGame(int id)
         {
-            Game game = await db.Games.FindAsync(id);
+            GameDto game = await db.Games.Where(x => x.GameId == id).Select(x => new GameDto()
+            {
+                Description= x.Description,
+                GameId = x.GameId,                
+                GenreId = x.GenreId,
+                Image = x.ImageThumb,
+                ImportId = x.ImportId,                
+                PlatformId = x.PlatformId,
+                ShortName = x.ShortName,
+                RegistrationDate = x.RegistrationDate,
+                Title = x.Title
+            }).SingleOrDefaultAsync();
 
             if (game == null)
             {

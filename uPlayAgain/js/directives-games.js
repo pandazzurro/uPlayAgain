@@ -2,7 +2,7 @@
 /// <reference path="app.js" />
 /// <reference path="factories.js" />
 
-app.directive('exchangeSearch', ['factories', 'user-service', 'games-service', '$location', function (gxcFct, userSrv, gamesSrv, $location) {
+app.directive('exchangeSearch', ['factories', 'user-service', 'games-service', '$location', function (gxcFct, userSrv, gameSrv, $location) {
     return {
         restrict: 'E',
         templateUrl: 'templates/exchange-search.html',
@@ -13,9 +13,9 @@ app.directive('exchangeSearch', ['factories', 'user-service', 'games-service', '
             _this.PLATFORMS_ALL = "Tutte";
             _this.DISTANCES_ALL = "Nessun limite";
 
-            _this.genres = gamesSrv.genres;
-            _this.platforms = gamesSrv.platforms;
-            _this.distances = gamesSrv.distances;
+            _this.genres = gameSrv.genres;
+            _this.platforms = gameSrv.platforms;
+            _this.distances = gameSrv.distances;
 
             _this.searchPerformed = false;
             _this.params = {};
@@ -97,12 +97,20 @@ app.directive('exchangeSearch', ['factories', 'user-service', 'games-service', '
                 var newLocation = '/mail/compose/' + details.user.id + '//' + details.libraryComponent.libraryComponentId;
                 $location.path(newLocation);
             }
+
+            this.loadImage = function (gameId) {
+                _this.selectedImage = "";
+                gameSrv.loadImage(gameId)
+                .then(function (success) {
+                    _this.selectedImage = success;
+                })
+            }
         },
         controllerAs: 'search'
     };
 }]);
 
-app.directive('gamesSearch', ['factories', 'user-service', 'games-service', function (gxcFct, userSrv, gamesSrv) {
+app.directive('gamesSearch', ['factories', 'user-service', 'games-service', function (gxcFct, userSrv, gameSrv) {
     return {
         restrict: 'E',
         templateUrl: 'templates/games-search.html',
@@ -112,8 +120,8 @@ app.directive('gamesSearch', ['factories', 'user-service', 'games-service', func
             _this.GENRES_ALL = "Tutti";
             _this.PLATFORMS_ALL = "Tutte";
 
-            _this.genres = gamesSrv.genres;
-            _this.platforms = gamesSrv.platforms;
+            _this.genres = gameSrv.genres;
+            _this.platforms = gameSrv.platforms;
 
             _this.searchPerformed = false;
             _this.params = {};
@@ -261,9 +269,9 @@ app.directive('gamesLibrary', ['factories', 'user-service', 'games-service', fun
 
             this.loadImage = function (gameId) {
                 _this.selectedImage = "";
-                gameSrv.loadImage(gameId).$promise
+                gameSrv.loadImage(gameId)
                 .then(function (success) {
-                    _this.selectedImage = success.image;
+                    _this.selectedImage = success;
                 })
             }
 
@@ -306,7 +314,7 @@ app.directive('gamesLibrary', ['factories', 'user-service', 'games-service', fun
     };
 }]);
 
-app.directive('gamesLast', ['factories', 'games-service', function (gxcFct, gamesSrv) {
+app.directive('gamesLast', ['factories', 'games-service', function (gxcFct, gameSrv) {
     return {
         restrict: 'E',
         templateUrl: 'templates/game-last.html',

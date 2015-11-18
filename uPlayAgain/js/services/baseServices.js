@@ -77,7 +77,8 @@ app.service('user-service', ['factories', function (gxcFct) {
                 user.Messages.In = counterSuccess.incoming;
                 user.Messages.Out = counterSuccess.outgoing;
                 user.Messages.Trn = counterSuccess.transactions;
-                user.Messages.All = user.Messages.In + user.Messages.Out + user.Messages.Trn;
+                // Modifica: viene richiesto il conteggio solo dei messaggi in ingresso e transazioni
+                user.Messages.All = user.Messages.In + /*user.Messages.Out +*/ user.Messages.Trn;
 
                 user.Games = counterSuccess.librariesComponents;
             },
@@ -114,18 +115,23 @@ app.service('user-service', ['factories', function (gxcFct) {
     this.isFirsReadData = function () {        
         return isFirsReadData;
     }
+
+    this.getInfoUser = function (userId) {
+        return gxcFct.user.profile({ userId: userId }).$promise
+    }
 }]);
 
 /**
 * Games service
 **/
-app.service('games-service', ['factories', function (gxcFct) {
+app.service('games-service', ['factories', '$q', function (gxcFct, $q) {
     this.genres = gxcFct.genre.query();
     this.platforms = gxcFct.platform.query();
     this.languages = gxcFct.language.query();
     this.statuses = gxcFct.status.query();
     this.distances = [5, 10, 20, 50, 100];
     this.gameLargeImages = [];
+    this.gameDataStored = [];
 
     var _this = this;
 
@@ -202,21 +208,29 @@ app.service('games-service', ['factories', function (gxcFct) {
     };
 
     this.loadImage = function (gameId) {
+        var result = undefined;
+        var deferred = $q.defer();
+
         _this.gameLargeImages.forEach(function (g) {
-            if (g.gameId == gameId) {
-                return g.largeImage;
+            if (result === undefined && g.gameId == gameId) {
+                result = g.largeImage;
             }
         });
-
-        return gxcFct.game.largeImage({ gameId: gameId },
-        function (gameSuccess) {
-            _this.gameLargeImages.push({
-                gameId: gameId,
-                largeImage: gameSuccess.image
+        if (result != undefined) {
+            deferred.resolve(result);            
+        }
+        else {
+            gxcFct.game.largeImage({ gameId: gameId }).$promise
+            .then(function (gameSuccess) {
+                _this.gameLargeImages.push({
+                    gameId: gameId,
+                    largeImage: gameSuccess.image
+                });
+                result = gameSuccess.image;
+                deferred.resolve(result);                    
             });
-
-            return gameSuccess.image;
-        });
+        }
+        return deferred.promise;
     }
 
     this.searchGames = function (params) {
