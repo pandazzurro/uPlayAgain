@@ -33,13 +33,19 @@ namespace uPlayAgain.Controllers
         }
 
         [Route("api/Games/Last/{number:int}")]
-        [ResponseType(typeof(Game))]
-        public IQueryable<Game> GetLastGame(int number)
+        public IQueryable GetLastGame(int number)
         {
             return db.Games
                      .OrderByDescending(t => t.RegistrationDate)
                      .Include(t => t.Platform)
-                     .Include(t => t.Genre);
+                     .Include(t => t.Genre)
+                     .Take(number)
+                     .Select( x => 
+                        new
+                        {
+                            Image = x.Image,
+                            Title = x.Title
+                        });
         }
 
         // GET: api/Games/5
@@ -125,8 +131,11 @@ namespace uPlayAgain.Controllers
             {
                 return BadRequest(ModelState);
             }
-            
+
+            // Calcolo le immagini thum
+            if(game.Image != null) game.ImageThumb = game.Resize();
             db.Games.Add(await CheckGenrePlatform(game));
+
             await db.SaveChangesAsync();
             
             return CreatedAtRoute("DefaultApi", new { id = game.GameId }, game);

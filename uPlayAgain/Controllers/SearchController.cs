@@ -39,7 +39,7 @@ namespace uPlayAgain.Controllers
                           lc => lc.LibraryComponents.GameId,
                           g => g.GameId,
                           (lc, g) => new { LibraryComponent = lc, Game = g, g.Genre, g.Platform, lc.User, lc.Library })
-                      //Gioco scambiabile e non cancellato
+                      //Gioco scambiabile e non cancellati
                       .Where(l => l.LibraryComponent.LibraryComponents.IsExchangeable && !l.LibraryComponent.LibraryComponents.IsDeleted)
 
                       .Where(u => u.User.UserId != userId)
@@ -53,7 +53,18 @@ namespace uPlayAgain.Controllers
                           GameLanguage = x.LibraryComponent.LibraryComponents.GameLanguage,
                           Genre = x.Game.Genre, 
                           Platform = x.Game.Platform,
-                          Game = x.Game,
+                          Game = new GameDto()
+                          {
+                              Description = x.Game.Description,
+                              GameId = x.Game.GameId,
+                              GenreId = x.Game.GenreId,
+                              Image = x.Game.ImageThumb,
+                              ImportId = x.Game.ImportId,
+                              PlatformId = x.Game.PlatformId,
+                              ShortName = x.Game.ShortName,
+                              RegistrationDate = x.Game.RegistrationDate,
+                              Title = x.Game.Title
+                          },
                           User = x.User,
                           LibraryComponent = x.LibraryComponent.LibraryComponents,
                           Distance = (x.User.PositionUser.Distance(position) / 1000)

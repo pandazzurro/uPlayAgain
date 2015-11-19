@@ -22,34 +22,10 @@ namespace uPlayAgain.Models
         [JsonProperty(Required = Required.AllowNull)]
         public int? ImportId { get; set; }
         public DateTimeOffset RegistrationDate { get; set; }
-
         [JsonIgnore]
-        public byte[] Image {get; set;}
-        
-        //[JsonProperty(PropertyName = "Image", DefaultValueHandling = DefaultValueHandling.Include)]
-        //[JsonConverter(typeof(BitmapConverter))]
-        //public Image Thumb
-        //{
-        //    get
-        //    {
-        //        if(Image != null)
-        //        {
-        //            using (var ms = new MemoryStream(Image))
-        //            {
-        //                Image img = System.Drawing.Image.FromStream(ms);                        
-        //                int fixedWidth = 65;
-        //                double widthPercentage = (double)fixedWidth / (double)img.Width;
-        //                return img.GetThumbnailImage(fixedWidth, (int)(img.Height * widthPercentage), () => false, IntPtr.Zero);
-        //            }
-        //        }
-        //        return null;
-        //    }
-        //}
-
-        //public byte[] _imageThumb { get; set; }
+        public byte[] Image {get; set;}       
         public byte[] ImageThumb { get; set; }
 
-        // Foreign key
         public string GenreId { get; set; }
         [ForeignKey("GenreId")]
         public virtual Genre Genre { get; set; }

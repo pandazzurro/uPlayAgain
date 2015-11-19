@@ -9,7 +9,7 @@ namespace uPlayAgain.Dto
         public virtual GameLanguage GameLanguage { get; set; }
         public virtual Genre Genre { get; set; }
         public virtual Platform Platform { get; set; }
-        public virtual Game Game { get; set; }
+        public virtual GameDto Game { get; set; }
         public virtual User User { get; set; }
         public virtual LibraryComponent LibraryComponent { get; set; }
         public virtual double? Distance { get; set; }                

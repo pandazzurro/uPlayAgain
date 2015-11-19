@@ -500,7 +500,6 @@
     <Compile Include="Controllers\StatusController.cs" />
     <Compile Include="Controllers\TransactionsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
-    <Compile Include="Converters\BitmapConverter.cs" />
     <Compile Include="Converters\DbGeographyConverter.cs" />
     <Compile Include="CustomBodyModelValidator.cs" />
     <Compile Include="Dto\GameDto.cs" />
