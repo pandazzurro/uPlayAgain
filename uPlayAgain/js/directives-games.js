@@ -6,7 +6,7 @@ app.directive('exchangeSearch', ['factories', 'user-service', 'games-service', '
     return {
         restrict: 'E',
         templateUrl: 'templates/exchange-search.html',
-        controller: function () {
+        controller: function ($cookies) {
             var _this = this;
 
             _this.GENRES_ALL = "Tutti";
@@ -18,8 +18,12 @@ app.directive('exchangeSearch', ['factories', 'user-service', 'games-service', '
             _this.distances = gameSrv.distances;
 
             _this.searchPerformed = false;
-            _this.params = {};
             _this.results = [];
+            _this.searchParameter = {};
+            if ($cookies.getObject('exchangeSearch') === undefined)
+                _this.params = {};
+            else
+                _this.params = $cookies.getObject('exchangeSearch');
 
             this.setGenre = function (genre) {
                 _this.params.genre = genre;
@@ -68,7 +72,7 @@ app.directive('exchangeSearch', ['factories', 'user-service', 'games-service', '
             };
 
             this.startSearch = function () {
-                _this.results = [];
+                _this.results = [];                
 
                 var queryParameters = {
                     userId: userSrv.getCurrentUser().userId,
@@ -79,6 +83,8 @@ app.directive('exchangeSearch', ['factories', 'user-service', 'games-service', '
                     skip: 0,
                     take: 10000
                 };
+
+                $cookies.putObject('exchangeSearch', _this.params);
 
                 _this.results = gxcFct.game.search(queryParameters, function (success) {
                     _this.searchPerformed = true;
@@ -126,6 +132,8 @@ app.directive('gamesSearch', ['factories', 'user-service', 'games-service', func
             _this.searchPerformed = false;
             _this.params = {};
             _this.results = [];
+            _this.addingGame = undefined;
+            _this.gameSrv = gameSrv;
 
             this.setGenre = function (genre) {
                 _this.params.genre = genre;
@@ -179,23 +187,77 @@ app.directive('gamesSearch', ['factories', 'user-service', 'games-service', func
                 });
             }
 
-            this.addToLibrary = function (game) {
+            this.setStatus = function (status) {
+                _this.addingGame.gameData.status = status;
+            };
+
+            this.setLanguage = function (language) {
+                _this.addingGame.gameData.language = language;
+            };
+
+            this.getRemainingChars = function () {
+                var result = 200;
+
+                if (_this.addingGame !== undefined && _this.addingGame.gameData.note !== undefined && _this.addingGame.gameData.note != null) {
+                    result = 200 - _this.addingGame.gameData.note.length;
+                }
+
+                return result;
+            }
+
+            this.populateAddGame = function (game) {
+                _this.addingGame = { gameData : {} };
+                _this.addingGame.gameData.isExchangeable = true;
+                _this.addingGame.gameData = game;
+                _this.addingGame.gameData.language = { gameLanguageId: 1, description: "Italiano" };
+                _this.addingGame.gameData.status = { statusId: 1, description: "Eccellente" };
+            }
+
+            this.toggleTrade = function () {
+                _this.addingGame.gameData.isExchangeable = !_this.addingGame.gameData.isExchangeable;
+            };
+
+            this.addToLibrary = function () {
+                var game = _this.addingGame.gameData;
+
                 var queryParameters = {
                     LibraryId: userSrv.getCurrentUser().LibraryId,
                     GameId: game.gameId,
-                    GameLanguageId: 3, //per ora fisso
-                    StatusId: 1
+                    StatusId: game.status.statusId,
+                    IsExchangeable: game.isExchangeable,
+                    GameLanguageId: game.language.gameLanguageId,
+                    Note: game.note
                 };
 
                 gxcFct.library.add(queryParameters).$promise
                   .then(function (success) {
+                      _this.invertModal("gameAdd");
                       userSrv.updateUserData();
-                      UIkit.notify(game.title + ' &grave; stato aggiunto alla libreria', { status: 'success', timeout: 5000 });
+                      UIkit.notify(game.title + ' è stato aggiunto alla libreria', { status: 'success', timeout: 5000 });
                   },
                   function (error) {
-                      UIkit.notify('Si &egrave; verificato un errore nell\'operazione. Si prega di riprovare', { status: 'warning', timeout: 5000 });
+                      UIkit.notify('Si è verificato un errore nell\'operazione. Si prega di riprovare', { status: 'warning', timeout: 5000 });
                   });
             }
+
+            this.loadImage = function (gameId) {
+                _this.selectedImage = "";
+                gameSrv.loadImage(gameId)
+                .then(function (success) {
+                    _this.selectedImage = success;
+                })
+            }
+
+            this.invertModal = function (modalId) {
+                var modal = UIkit.modal("#" + modalId);
+
+                if (modal.isActive()) {
+                    modal.hide();
+                } else {
+                    modal.show();
+                }
+            }
+            
         },
         controllerAs: 'search'
     };

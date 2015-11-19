@@ -1,13 +1,6 @@
-//(function () {
-//    var app = angular.module('gxc.factories', ['ngResource']);
+app.webapi = "";
 
-    app.webapi = "";
-
-    /**
-     * Mail factory
-     **/
-    //var mailService = angular.module('gxcServices', [ 'ngResource' ]);
-    app.factory('factories', ['$resource', function ($resource) {
+app.factory('factories', ['$resource', function ($resource) {
         return {
             mail: $resource(app.webapi, {}, {
                 byUser: { url: app.webapi + '/api/messages/byUser/:userId', method: 'GET', isArray: false },
@@ -91,4 +84,3 @@
             }),
         }
     }]);
-//})();

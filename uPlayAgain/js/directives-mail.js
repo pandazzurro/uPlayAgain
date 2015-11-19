@@ -365,6 +365,8 @@
                     gxcFct.proposal.add(queryParams).$promise
                     .then(function(success){
                         UIkit.notify('Nuovo scambio creato', { status: 'success', timeout: 5000 });
+                        // mando l'utente in pagina di ricerca
+                        $location.path('/exchange');
                     }, function (reason) {
                         UIkit.notify('Errore in creazione scambio.', { status: 'success', timeout: 5000 });
                     });
