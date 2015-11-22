@@ -237,7 +237,12 @@ app.directive('mailbox', ['factories', 'user-service', 'games-service', '$locati
             }
 
             this.massiveUnReadMail = function () {
-                angular.forEach(_this.messages, function (message) {
+                var lastIndexToUnRead = -1;
+                angular.forEach(_this.messages, function (message, index) {
+                    if (message.checkUnRead)
+                        lastIndexToUnRead = index;
+                });
+                angular.forEach(_this.messages, function (message, index) {
                     if (message.checkUnRead) {
                         if (message.userReceiving_Id == _this.currentUserId)
                             message.isAlreadyReadReceiving = false;
@@ -245,7 +250,12 @@ app.directive('mailbox', ['factories', 'user-service', 'games-service', '$locati
                         if (message.userProponent_Id == _this.currentUserId)
                             message.isAlreadyReadProponent = false;
 
-                        gxcFct.mail.update({ messageId: message.messageId }, message, function () { }, function () { });
+                        gxcFct.mail.update({ messageId: message.messageId }, message, function () {
+                            if (index == lastIndexToUnRead) {
+                                _this.getMessages(_this.params.direction, _this.params.page);
+                                _this.loadCounter();
+                            }
+                        }, function () { });
                     }
                 });
                 _this.getMessages(_this.params.direction, _this.params.page);
@@ -254,7 +264,13 @@ app.directive('mailbox', ['factories', 'user-service', 'games-service', '$locati
             }
 
             this.massiveReadMail = function () {
-                angular.forEach(_this.messages, function (message) {
+                var lastIndexToRead = -1;
+                angular.forEach(_this.messages, function (message, index) {
+                    if (message.checkRead)
+                        lastIndexToRead = index;
+                });
+
+                angular.forEach(_this.messages, function (message, index) {
                     if (message.checkRead) {
                         if (message.userReceiving_Id == _this.currentUserId)
                             message.isAlreadyReadReceiving = true;
@@ -262,7 +278,12 @@ app.directive('mailbox', ['factories', 'user-service', 'games-service', '$locati
                         if (message.userProponent_Id == _this.currentUserId)
                             message.isAlreadyReadProponent = true;
 
-                        gxcFct.mail.update({ messageId: message.messageId }, message, function () { }, function () { });
+                        gxcFct.mail.update({ messageId: message.messageId }, message, function () {
+                            if (index == lastIndexToRead) {
+                                _this.getMessages(_this.params.direction, _this.params.page);
+                                _this.loadCounter();
+                            }
+                        }, function () { });
                     }
                 });
                 _this.getMessages(_this.params.direction, _this.params.page);
@@ -272,7 +293,12 @@ app.directive('mailbox', ['factories', 'user-service', 'games-service', '$locati
 
             this.massiveDeleteMail = function () {
                 UIkit.modal.confirm("Sei sicuro di rimuovere i messaggi selezionati?", function () {
-                    angular.forEach(_this.messages, function (message) {
+                    var lastIndexToDelete = -1;
+                    angular.forEach(_this.messages, function (message, index) {
+                        if (message.checkDelete)
+                            lastIndexToDelete = index;
+                    });
+                    angular.forEach(_this.messages, function (message, index) {
                         if (message.checkDelete) {
                             if (message.userReceiving_Id == _this.currentUserId) {
                                 message.isAlreadyDeleteReceiving = true;
@@ -284,15 +310,20 @@ app.directive('mailbox', ['factories', 'user-service', 'games-service', '$locati
                                 message.isAlreadyReadProponent = true;
                             }   
 
-                            gxcFct.mail.update({ messageId: message.messageId }, message, function () { }, function () { });
+                            gxcFct.mail.update({ messageId: message.messageId }, message, function ()
+                            {
+                                if (index == lastIndexToDelete) {
+                                    _this.getMessages(_this.params.direction, _this.params.page);
+                                    _this.loadCounter();
+                                }
+                            }, function () { });
                         }
                     });
-                    _this.getMessages(_this.params.direction, _this.params.page);
-                    _this.loadCounter();
                     UIkit.notify('Aggiornati i messaggi rimossi', { status: 'success', timeout: 5000 });
                 });
             }
 
+            //init
             _this.getMessages(_this.params.direction, _this.params.page);
             _this.loadCounter();
         },
