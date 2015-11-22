@@ -64,7 +64,7 @@
                 <div class="uk-accordion" data-uk-accordion="{showfirst: true}">
                     <div ng-repeat="transaction in mailbox.transactions">
                         <h3 class="uk-accordion-title">
-                            Scambio di {{transaction.myItems.length + transaction.theirItems.length}} giochi con l'utente <user-link data-user='{{ transaction.userId }}'></user-link>
+                            <user-link data-user='{{ transaction.userId }}'></user-link>
                         </h3>
                         <div class="uk-accordion-content">
                             <!--Bottoni-->
