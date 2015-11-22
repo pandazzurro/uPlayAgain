@@ -88,6 +88,10 @@ app.directive('exchangeSearch', ['factories', 'user-service', 'games-service', '
 
                 _this.results = gxcFct.game.search(queryParameters, function (success) {
                     _this.searchPerformed = true;
+                    angular.forEach(success.searchGame, function (value) {
+                        if (value.game.image == undefined || value.game.image == "" || value.game.image == null)
+                            value.game.image = gameSrv.getDefaultImage();
+                    });
                 });
             };
 
@@ -233,7 +237,7 @@ app.directive('gamesSearch', ['factories', 'user-service', 'games-service', func
                   .then(function (success) {
                       _this.invertModal("gameAdd");
                       userSrv.updateUserData();
-                      UIkit.notify(game.title + ' è stato aggiunto alla libreria', { status: 'success', timeout: 5000 });
+                      UIkit.notify(game.title + ' aggiunto alla libreria', { status: 'success', timeout: 5000 });
                   },
                   function (error) {
                       UIkit.notify('Si è verificato un errore nell\'operazione. Si prega di riprovare', { status: 'warning', timeout: 5000 });
@@ -244,7 +248,7 @@ app.directive('gamesSearch', ['factories', 'user-service', 'games-service', func
                 _this.selectedImage = "";
                 gameSrv.loadImage(gameId)
                 .then(function (success) {
-                    _this.selectedImage = success;
+                    _this.selectedImage = success;                   
                 })
             }
 

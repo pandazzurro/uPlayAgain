@@ -366,6 +366,11 @@ app.directive('userLink', ['factories', function (gxcFct) {
                 userId: $scope.userId
             };
 
+            this.summary = function(){
+                return _this.username + " - " + Math.round(_this.rankingPercentage) + "% su " + _this.rankingCount + " scambi ";
+            }
+            
+
             // store user data?
             gxcFct.user.byId(queryParameters).$promise
             .then(function (success) {

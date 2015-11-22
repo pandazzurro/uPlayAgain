@@ -204,6 +204,7 @@
     <Content Include="css\images\logo.png" />
     <Content Include="css\images\logo.svg" />
     <Content Include="css\images\logoMaxi.svg" />
+    <Content Include="css\images\placeholder_600x400.png" />
     <Content Include="css\loading-bar.css" />
     <Content Include="css\mail-attivation.css" />
     <Content Include="css\maps.css" />

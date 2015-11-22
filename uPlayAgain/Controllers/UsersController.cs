@@ -201,9 +201,9 @@ namespace uPlayAgain.Controllers
         [ResponseType(typeof(MessageCountResponse))]
         public async Task<IHttpActionResult> GetMessages(string id)
         {
-            IQueryable<Message> incoming = db.Messages.Where(m => m.UserReceiving_Id == id && !m.IsAlreadyReadReceiving);
+            IQueryable<Message> incoming = db.Messages.Where(m => m.UserReceiving_Id == id && !m.IsAlreadyReadReceiving && !m.IsAlreadyDeleteReceiving);
 
-            IQueryable<Message> outgoing = db.Messages.Where(m => m.UserProponent_Id == id && !m.IsAlreadyReadProponent);
+            IQueryable<Message> outgoing = db.Messages.Where(m => m.UserProponent_Id == id && !m.IsAlreadyReadProponent && !m.IsAlreadyDeleteProponent);
 
             int resultTran = await db.Transactions
                                      .Where(t => t.UserProponent_Id == id || t.UserReceiving_Id == id)
@@ -222,7 +222,7 @@ namespace uPlayAgain.Controllers
                                                        .Where(y => y.Proposal.ProposalId == x.Proposals.OrderByDescending(p => p.DateStart).FirstOrDefault().ProposalId)
                                                        .Select(z => new { LibraryComponents = z.LibraryComponents, UserId = z.LibraryComponents.Library.UserId })
                                      })
-                                      .Where(
+                                     .Where(
                                             x => (x.LastProposals.UserProponent_ProposalStatus == ProposalStatus.Accettata && x.LastProposals.UserReceiving_ProposalStatus == ProposalStatus.DaApprovare)
                                         )
                                      .CountAsync();
@@ -241,7 +241,7 @@ namespace uPlayAgain.Controllers
         public IQueryable<Message> GetIncomingMessages(string id, ushort page)
         {
             return db.Messages
-                     .Where(m => m.UserReceiving_Id == id)
+                     .Where(m => m.UserReceiving_Id == id && !m.IsAlreadyDeleteReceiving)
                      .OrderByDescending(m => m.MessageDate)
                      .Skip((page - 1) * PAGE_COUNT)
                      .Take(PAGE_COUNT);
@@ -253,7 +253,7 @@ namespace uPlayAgain.Controllers
         public IQueryable<Message> GetOutgoingMessages(string id, ushort page)
         {
             return db.Messages
-                     .Where(m => m.UserProponent_Id == id)
+                     .Where(m => m.UserProponent_Id == id && !m.IsAlreadyDeleteProponent)
                      .OrderByDescending(m => m.MessageDate)
                      .Skip((page - 1) * PAGE_COUNT)
                      .Take(PAGE_COUNT);

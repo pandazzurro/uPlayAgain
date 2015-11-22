@@ -18,6 +18,11 @@
             <table class="uk-table uk-table-condensed" ng-show="!mailbox.showTransactions">
                 <thead>
                     <tr>
+                        <th>
+                            <button class="uk-button uk-button-small uk-button-primary uk-icon-eye" type="button" ng-click="mailbox.massiveReadMail()" data-uk-tooltip title="Segna come letti"></button>
+                            <button class="uk-button uk-button-small uk-button-primary uk-icon-eye-slash" type="button" ng-click="mailbox.massiveUnReadMail()" data-uk-tooltip title="Segna NON come letti"></button>
+                            <button class="uk-button uk-button-small uk-button-primary uk-icon-trash" type="button" ng-click="mailbox.massiveDeleteMail()" data-uk-tooltip title="Rimuovi i messaggi"></button>
+                        </th>
                         <th>Letto</th>
                         <th>Data</th>
                         <th>Titolo</th>
@@ -30,11 +35,24 @@
                     </tr>
                 </tfoot>
                 <tbody>
-                    <tr class="message" ng-repeat="mail in mailbox.messages" ng-mouseover="mailbox.hoverIn(mail)" ng-mouseleave="mailbox.hoverOut(mail)" ng-class="mail.hovered ? 'hover': ''" ng-click="mailbox.open(mail)">
-                        <td><span class="uk-icon-small" ng-class="mailbox.isAlreadyReadMail(mail) ? 'uk-icon-eye' : 'uk-icon-eye-slash'"></span></td>
-                        <td>{{ mail.messageDate | date: 'dd-MM-yyyy HH:mm'}}</td>
-                        <td>{{ mail.messageObject }}</td>
+                    <tr class="message" ng-repeat="mail in mailbox.messages" ng-mouseover="mailbox.hoverIn(mail)" ng-mouseleave="mailbox.hoverOut(mail)" ng-class="mail.hovered ? 'hover': ''">
                         <td>
+                            <div class="uk-form-stacked">
+                                <input class="checkboxUnderButton" ng-click="mail.checkRead = !mail.checkRead" ng-disabled="mailbox.isAlreadyReadMail(mail)" type="checkbox" />
+                                <input class="checkboxUnderButton" ng-click="mail.checkUnRead = !mail.checkUnRead" ng-disabled="!mailbox.isAlreadyReadMail(mail)" type="checkbox" />
+                                <input class="checkboxUnderButton" ng-click="mail.checkDelete = !mail.checkRead" type="checkbox" />
+                            </div>
+                        </td>
+                        <td ng-click="mailbox.open(mail)">
+                            <span class="uk-icon-small" ng-class="mailbox.isAlreadyReadMail(mail) ? 'uk-icon-eye' : 'uk-icon-eye-slash'"></span>
+                        </td>
+                        <td ng-click="mailbox.open(mail)">
+                            {{ mail.messageDate | date: 'dd-MM-yyyy HH:mm'}}
+                        </td>
+                        <td ng-click="mailbox.open(mail)">
+                            {{ mail.messageObject }}
+                        </td>
+                        <td ng-click="mailbox.open(mail)">
                             <span ng-show="mailbox.params.direction == 'in'"><user-link data-user='{{ mail.userProponent_Id }}'></user-link></span>
                             <span ng-show="mailbox.params.direction != 'in'"><user-link data-user='{{ mail.userReceiving_Id }}'></user-link></span>
                         </td>

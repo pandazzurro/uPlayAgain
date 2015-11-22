@@ -193,3 +193,12 @@ div.wrapper {
         padding-bottom: 350px;
     }
 }
+
+.checkboxUnderButton {
+    margin-left:9px !important;
+    margin-right:9px !important;
+}
+
+.userImageBorder {
+    border: solid 1px;
+}
