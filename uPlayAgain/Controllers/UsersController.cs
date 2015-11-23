@@ -97,11 +97,28 @@ namespace uPlayAgain.Controllers
             {
                 return NotFound();
             }
-            
+
+            int libraryId = db.Libraries.Where(x => x.UserId == user.Id).FirstOrDefault().LibraryId;
             int gameInLibrary = db.LibraryComponents
-                                  .Where(p => p.LibraryId == db.Libraries.Where(x => x.UserId == user.Id).FirstOrDefault().LibraryId)
+                                  .Where(p => p.LibraryId == libraryId)
                                   .Where(p => p.IsDeleted == false)
                                   .Count();
+
+            IList<Feedback> feedbacks = await db.Feedbacks.Where(p => p.UserId == id).ToListAsync();
+            if (feedbacks == null)
+            {
+                return NotFound();
+            }
+
+            int feedbackCounter = feedbacks.Sum(p => p.Rate);
+            double feedbackRate = 100 * (double)(feedbackCounter / feedbacks.Count);
+            if (feedbackRate < 0) { feedbackRate = 0; }
+
+            FeedbackRate fr = new FeedbackRate()
+            {
+                Rate = feedbackRate,
+                Counter = feedbackCounter
+            };
 
             UserResponse response = new UserResponse()
             {
@@ -112,7 +129,10 @@ namespace uPlayAgain.Controllers
                 PositionUser = user.PositionUser,
                 Image = user.Image,
                 LastLogin = user.LastLogin,
-                GameInLibrary = gameInLibrary
+                GameInLibrary = gameInLibrary,
+                LibrariesId = new List<int>(libraryId),
+                FeedbackAvg = (float)fr.Rate,
+                FeedbackCount = fr.Counter
             };
 
             return Ok(response);
