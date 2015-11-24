@@ -445,8 +445,7 @@ app.directive('messageNew', ['factories', 'user-service', 'games-service', funct
                     UIkit.notify('Errore in creazione scambio.', { status: 'success', timeout: 5000 });
                 });
             }
-
-
+            
             this.send = function () {
                 if (_this.exchange) {
                     if (_this.currentTransaction === undefined) {
@@ -566,8 +565,10 @@ app.directive('messageNew', ['factories', 'user-service', 'games-service', funct
                 if (_this.libraryComponentId != undefined) {
                     _this.exchange = true;
                     angular.forEach(gamesIds, function (item) {
-                        if (item.libraryComponents.libraryComponentId == _this.libraryComponentId)
+                        if (item.libraryComponents.libraryComponentId == _this.libraryComponentId) {
                             _this.message.hisItems.push(item);
+                            _this.message.titolo = "Proposta per: " + item.games.title;
+                        }   
                     });
                 }
             });
