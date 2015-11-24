@@ -1,24 +1,24 @@
 <form class="uk-form">
-  <div class="uk-panel uk-panel-box uk-panel-box-primary">
-    <div class="uk-grid">
-      <div class="uk-width-9-10">
-        <h3 class="uk-panel-title">{{ mail.message.titolo ? mail.message.titolo : 'Nuovo messaggio' }}</h3>
-      </div>
+    <div class="uk-panel uk-panel-box uk-panel-box-primary">
+        <div class="uk-grid">
+            <div class="uk-width-9-10">
+                <h3 class="uk-panel-title">{{ mail.message.titolo ? mail.message.titolo : 'Nuovo messaggio' }}</h3>
+            </div>
+        </div>
+        <div class="uk-grid small-margin" data-uk-grid-match>
+            <h5 class="uk-width-1-6 uk-text-middle uk-text-right">Destinatario</h5>
+            <h5 class="uk-width-5-6"><user-link data-user='{{ mail.recipientId }}'></user-link></h5>
+        </div>
+        <div class="uk-grid small-margin" data-uk-grid-match>
+            <h5 class="uk-width-1-6 uk-text-middle uk-text-right">Titolo</h5>
+            <h5 class="uk-width-5-6"><input type="text" placeholder="Titolo" ng-model="mail.message.titolo" class="uk-width-1-1"></h5>
+        </div>
     </div>
-      <div class="uk-grid small-margin" data-uk-grid-match>
-          <h5 class="uk-width-1-6 uk-text-middle uk-text-right">Destinatario</h5>
-          <h5 class="uk-width-5-6"><user-link data-user='{{ mail.recipientId }}'></user-link></h5>
-      </div>
-    <div class="uk-grid small-margin" data-uk-grid-match>
-      <h5 class="uk-width-1-6 uk-text-middle uk-text-right">Titolo</h5>
-      <h5 class="uk-width-5-6"><input type="text" placeholder="Titolo" ng-model="mail.message.titolo" class="uk-width-1-1"></h5>
+    <div class="uk-margin-bottom"></div>
+    <div class="uk-panel uk-panel-box">
+        <textarea placeholder="Testo del messaggio" class="uk-width-1-1" rows="6" ng-model="mail.message.text"></textarea>
     </div>
-  </div>
-  <div class="uk-panel-space"></div>
-  &nbsp;
-  <div class="uk-panel uk-panel-box">
-    <textarea placeholder="Testo del messaggio" class="uk-width-1-1" rows="6" ng-model="mail.message.text"></textarea>
-  </div>
+    <div class="uk-margin-bottom"></div>
     <div class="uk-text-center">
         <button class="uk-button uk-button-primary" ng-click="mail.exchange = !mail.exchange">
             <i class="fa fa-exchange"></i> Proponi scambio
