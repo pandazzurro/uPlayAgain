@@ -1,22 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using uPlayAgain.Models;
+using uPlayAgain.Data.EF.Models;
 
 namespace uPlayAgain.Controllers
 {
-    public class MessagesController : ApiController
+    public class MessagesController : BaseController
     {
-        private uPlayAgainContext db = new uPlayAgainContext();
-
         // GET: api/Messages
         public IQueryable<Message> GetMessages()
         {
@@ -103,16 +97,7 @@ namespace uPlayAgain.Controllers
 
             return Ok(message);
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
+        
         private bool MessageExists(int id)
         {
             return db.Messages.Count(e => e.MessageId == id) > 0;

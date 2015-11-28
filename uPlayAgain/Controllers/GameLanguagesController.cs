@@ -5,14 +5,12 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using uPlayAgain.Models;
+using uPlayAgain.Data.EF.Models;
 
 namespace uPlayAgain.Controllers
 {
-    public class GameLanguagesController : ApiController
+    public class GameLanguagesController : BaseController
     {
-        private uPlayAgainContext db = new uPlayAgainContext();
-
         // GET: api/GameLanguages
         public IQueryable<GameLanguage> GetGameLanguages()
         {
@@ -97,16 +95,7 @@ namespace uPlayAgain.Controllers
 
             return Ok(gameLanguage);
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
+        
         private bool GameLanguageExists(int id)
         {
             return db.GameLanguages.Count(e => e.GameLanguageId == id) > 0;

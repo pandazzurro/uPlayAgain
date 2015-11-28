@@ -4,10 +4,8 @@ using System.Web.Http;
 namespace uPlayAgain.Controllers
 {
     [RoutePrefix("api/RefreshTokens")]
-    public class RefreshTokensController : ApiController
+    public class RefreshTokensController : BaseController
     {
-        private AuthRepository _repo = null;
-
         public RefreshTokensController()
         {
             _repo = new AuthRepository();

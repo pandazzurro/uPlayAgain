@@ -8,15 +8,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using uPlayAgain.Models;
+using uPlayAgain.Data.EF.Models;
 
 namespace uPlayAgain.Controllers
 {
-    public class ProposalComponentsController : ApiController
+    public class ProposalComponentsController : BaseController
     {
-        private uPlayAgainContext db = new uPlayAgainContext();
-        private NLog.Logger _log = NLog.LogManager.GetLogger("uPlayAgain");
-
         // GET: api/ProposalComponents
         public IQueryable<ProposalComponent> GetProposalComponents()
         {
@@ -116,16 +113,7 @@ namespace uPlayAgain.Controllers
 
             return Ok(proposalComponent);
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
+        
         private bool ProposalComponentExists(int id)
         {
             return db.ProposalComponents.Count(e => e.ProposalComponentId == id) > 0;

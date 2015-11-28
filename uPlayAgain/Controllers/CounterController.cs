@@ -1,22 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
+using uPlayAgain.Data.EF.Models;
 using uPlayAgain.Models;
 
 namespace uPlayAgain.Controllers
 {
-    public class CounterController : ApiController
+    public class CounterController : BaseController
     {
-        private uPlayAgainContext db = new uPlayAgainContext();
-
         // GET: api/Counter/GamesByUser/5
         [Route("api/Counter/GamesByUser/{id:int}")]
         [ResponseType(typeof(int))]
@@ -93,44 +87,6 @@ namespace uPlayAgain.Controllers
 
             return Ok(resultMessage + resultTran);
         }
-
-        //// GET: api/Counter/TransactionsIngoingByUser/5
-        //[Route("api/Counter/TransactionsIngoingByUser/{id:int}")]
-        //[ResponseType(typeof(int))]
-        //public async Task<IHttpActionResult> GetTransactionsIngoingByUser(int id)
-        //{
-        //    User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    int result = await db.Transactions
-        //                         .Include(t => t.UserReceiving)
-        //                         .Include(t => t.Proposals)
-        //                         .Where(t => t.UserReceiving.UserId == id)
-        //                         .Where(t => t.TransactionStatus != TransactionStatus.Conclusa)
-        //                         .CountAsync();
-        //    return Ok(result);
-        //}
-
-        //// GET: api/Counter/TransactionsOutgoingByUser/5
-        //[Route("api/Counter/TransactionsOutgoingByUser/{id:int}")]
-        //[ResponseType(typeof(int))]
-        //public async Task<IHttpActionResult> GetTransactionsOutgoingByUser(int id)
-        //{
-        //    User user = await db.Users.Where(t => t.UserId == id).SingleOrDefaultAsync();
-        //    if (user == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    int result = await db.Transactions
-        //                         .Include(t => t.UserReceiving)
-        //                         .Include(t => t.Proposals)
-        //                         .Where(t => t.UserProponent.UserId == id)
-        //                         .Where(t => t.TransactionStatus != TransactionStatus.Conclusa)
-        //                         .CountAsync();
-        //    return Ok(result);
-        //}
         
         // GET: api/Counter/ByUser/''
         [Route("api/Counter/ByUser/{id}")]
@@ -199,15 +155,5 @@ namespace uPlayAgain.Controllers
             int result = 100 * (rateSum / rateCount);
             return Ok(result);
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-        
     }
 }

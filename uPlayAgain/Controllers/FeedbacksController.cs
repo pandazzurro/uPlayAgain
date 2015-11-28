@@ -6,15 +6,14 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using uPlayAgain.Dto;
+using uPlayAgain.Data.Dto;
+using uPlayAgain.Data.EF.Models;
 using uPlayAgain.Models;
 
 namespace uPlayAgain.Controllers
 {
-    public class FeedbacksController : ApiController
+    public class FeedbacksController : BaseController
     {
-        private uPlayAgainContext db = new uPlayAgainContext();
-
         // GET: api/Feedbacks
         public IQueryable<Feedback> GetFeedbacks()
         {
@@ -197,16 +196,7 @@ namespace uPlayAgain.Controllers
 
             return Ok(feedback);
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
+        
         private bool FeedbackExists(int id)
         {
             return db.Feedbacks.Count(e => e.FeedbackId == id) > 0;

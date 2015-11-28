@@ -2,29 +2,21 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using uPlayAgain.Dto;
+using uPlayAgain.Data.Dto;
+using uPlayAgain.Data.EF.Models;
 using uPlayAgain.Models;
 using uPlayAgain.Utilities;
 
 namespace uPlayAgain.Controllers
 {
-    public class UsersController : ApiController
+    public class UsersController : BaseController
     {
-        private uPlayAgainContext db;
-        private ApplicationUserManager _userManager;
         private static readonly int PAGE_COUNT = 40;
 
-        public UsersController()
-        {
-            db = new uPlayAgainContext();
-            _userManager = new ApplicationUserManager(new UserStore<User>(db));
-        }
         // GET: api/Users
         public IQueryable<User> GetUsers()
         {

@@ -2,9 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Spatial;
-using System.Linq;
-using System.Web;
-using uPlayAgain.Converters;
+using uPlayAgain.Data.Utils.Converters;
 
 namespace uPlayAgain.Models
 {

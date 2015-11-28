@@ -8,10 +8,7 @@ using Microsoft.Owin.Security.Google;
 using Microsoft.Owin.Security.Facebook;
 using System.Web.Http.Validation;
 using Microsoft.Owin.Security.Cookies;
-using System.Security.Claims;
-using System.Web.Helpers;
 using Microsoft.Owin.Security.DataProtection;
-using uPlayAgain.Models;
 using uPlayAgain.Utilities;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.AspNet.Identity;
@@ -19,6 +16,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Net;
+using uPlayAgain.Data.EF.Context;
+using uPlayAgain.Data.EF.Models;
 
 [assembly: OwinStartup(typeof(uPlayAgain.Startup))]
 namespace uPlayAgain
@@ -68,7 +67,7 @@ namespace uPlayAgain
                     // This is a security feature which is used when you change a password or add an external login to your account.  
                     OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, User>(
                     validateInterval: TimeSpan.FromMinutes(30),
-                    regenerateIdentity: (manager, user) => user.GenerateUserIdentityAsync(manager, user))
+                    regenerateIdentity: (manager, user) => manager.CreateIdentityAsync(user, "UPlayAgainAuth"))
                 }
             };
 

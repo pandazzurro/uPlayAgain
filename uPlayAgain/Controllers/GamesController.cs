@@ -6,15 +6,13 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using uPlayAgain.Dto;
-using uPlayAgain.Models;
+using uPlayAgain.Data.Dto;
+using uPlayAgain.Data.EF.Models;
 
 namespace uPlayAgain.Controllers
 {
-    public class GamesController : ApiController
+    public class GamesController : BaseController
     {
-        private uPlayAgainContext db = new uPlayAgainContext();
-
         // GET: api/Games
         public IQueryable<Game> GetGames()
         {
@@ -156,16 +154,7 @@ namespace uPlayAgain.Controllers
 
             return Ok(game);
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
+        
         private bool GameExists(int id)
         {
             return db.Games.Count(e => e.GameId == id) > 0;

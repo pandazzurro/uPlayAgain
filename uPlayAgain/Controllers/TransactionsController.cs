@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
@@ -9,15 +8,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using uPlayAgain.Models;
+using uPlayAgain.Data.EF.Models;
 
 namespace uPlayAgain.Controllers
 {
-    public class TransactionsController : ApiController
+    public class TransactionsController : BaseController
     {
-        private uPlayAgainContext db = new uPlayAgainContext();
-        private NLog.Logger _log = NLog.LogManager.GetLogger("uPlayAgain");
-
         // GET: api/Transactions
         public IQueryable<Transaction> GetTransactions()
         {
@@ -124,16 +120,7 @@ namespace uPlayAgain.Controllers
 
             return Ok(transaction);
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
+        
         private bool TransactionExists(int id)
         {
             return db.Transactions.Count(e => e.TransactionId == id) > 0;

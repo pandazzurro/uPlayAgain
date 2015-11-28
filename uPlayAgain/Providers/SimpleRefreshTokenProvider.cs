@@ -1,7 +1,7 @@
-﻿using uPlayAgain.Entities;
-using Microsoft.Owin.Security.Infrastructure;
+﻿using Microsoft.Owin.Security.Infrastructure;
 using System;
 using System.Threading.Tasks;
+using uPlayAgain.Data.EF.Models;
 
 namespace uPlayAgain.Providers
 {

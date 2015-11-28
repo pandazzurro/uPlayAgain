@@ -1,19 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Data.Entity.Spatial;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using uPlayAgain.Dto;
-using uPlayAgain.Models;
+using uPlayAgain.Data.Dto;
+using uPlayAgain.Data.EF.Models;
 
 namespace uPlayAgain.Controllers
 {
-    public class SearchController : ApiController
+    public class SearchController : BaseController
     {
-        private uPlayAgainContext db = new uPlayAgainContext();
-
         // GET: api/Search/5
         public async Task<IHttpActionResult> Get(int userId, string gameTitle, string platformId, string genreId, double distance, int? take, int? skip)
         {
@@ -97,15 +94,6 @@ namespace uPlayAgain.Controllers
                      .Where(g => string.IsNullOrEmpty(gameTitle) || g.Title.Contains(gameTitle))
                      .Where(gr => string.IsNullOrEmpty(genreId) || string.Equals(gr.Genre.GenreId, genreId))
                      .Where(p => string.IsNullOrEmpty(platformId) || string.Equals(p.Platform.PlatformId, platformId));            
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+        }        
     }
 }

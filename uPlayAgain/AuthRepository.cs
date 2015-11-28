@@ -1,5 +1,4 @@
-﻿using uPlayAgain.Entities;
-using Microsoft.AspNet.Identity;
+﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
@@ -8,12 +7,12 @@ using System.Threading.Tasks;
 using uPlayAgain.Models;
 using System.Web.Mvc;
 using uPlayAgain.Utilities;
-using Microsoft.Owin.Security.DataProtection;
-using Microsoft.AspNet.Identity.Owin;
 using System.Data.Entity.Validation;
 using System.Text;
 using System.Web;
 using System.IO;
+using uPlayAgain.Data.EF.Models;
+using uPlayAgain.Data.EF.Context;
 
 namespace uPlayAgain
 {

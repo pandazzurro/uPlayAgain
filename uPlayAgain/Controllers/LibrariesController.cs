@@ -1,20 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using uPlayAgain.Models;
+using uPlayAgain.Data.EF.Models;
 
 namespace uPlayAgain.Controllers
 {
-    public class LibrariesController : ApiController
+    public class LibrariesController : BaseController
     {
-        private uPlayAgainContext db = new uPlayAgainContext();
-
         // GET: api/Libraries
         public IQueryable<Library> GetLibrarys()
         {
@@ -111,16 +107,7 @@ namespace uPlayAgain.Controllers
 
             return Ok(library);
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
+        
         private bool LibraryExists(int id)
         {
             return db.Libraries.Count(e => e.LibraryId == id) > 0;

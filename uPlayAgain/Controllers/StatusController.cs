@@ -5,14 +5,11 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using uPlayAgain.Models;
 
 namespace uPlayAgain.Controllers
 {
-    public class StatusController : ApiController
+    public class StatusController : BaseController
     {
-        private uPlayAgainContext db = new uPlayAgainContext();
-
         // GET: api/Status
         public IQueryable<Status> GetStatus()
         {

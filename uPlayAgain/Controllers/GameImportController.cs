@@ -3,15 +3,12 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
-using uPlayAgain.Models;
+using uPlayAgain.Data.EF.Models;
 
 namespace uPlayAgain.Controllers
 {
-    public class GameImportController : ApiController
+    public class GameImportController : BaseController
     {
-        private uPlayAgainContext db = new uPlayAgainContext();
-        private NLog.Logger _log = NLog.LogManager.GetLogger("uPlayAgain");
-
         // GET: api/GameImporter/5
         public async Task<IHttpActionResult> Get(int id)
         {

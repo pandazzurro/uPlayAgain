@@ -5,14 +5,12 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using uPlayAgain.Models;
+using uPlayAgain.Data.EF.Models;
 
 namespace uPlayAgain.Controllers
 {
-    public class GenresController : ApiController
+    public class GenresController : BaseController
     {
-        private uPlayAgainContext db = new uPlayAgainContext();
-
         // GET: api/Genres
         public IQueryable<Genre> GetGenres()
         {
@@ -112,16 +110,7 @@ namespace uPlayAgain.Controllers
 
             return Ok(genre);
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
+        
         private bool GenreExists(string id)
         {
             return db.Genres.Count(e => e.Name == id) > 0;

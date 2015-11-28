@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -10,10 +7,8 @@ using config = System.Configuration;
 
 namespace uPlayAgain.Controllers
 {
-    public class AlertAdminController : ApiController
+    public class AlertAdminController : BaseController
     {
-        private NLog.Logger _log = NLog.LogManager.GetLogger("uPlayAgain");
-        
         // POST: api/AlertAdmin
         public async Task Post([FromBody]string message)
         {

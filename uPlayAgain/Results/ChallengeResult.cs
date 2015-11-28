@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using uPlayAgain.Controllers;
 
 namespace uPlayAgain.Results
 {
@@ -12,7 +13,7 @@ namespace uPlayAgain.Results
         public string LoginProvider { get; set; }
         public HttpRequestMessage Request { get; set; }
 
-        public ChallengeResult(string loginProvider, ApiController controller)
+        public ChallengeResult(string loginProvider, BaseController controller)
         {
             LoginProvider = loginProvider;
             Request = controller.Request;

@@ -1,12 +1,7 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Entity.Spatial;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using uPlayAgain.Converters;
+using uPlayAgain.Data.Utils.Converters;
 
 namespace uPlayAgain.Models
 {
