@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
+using uPlayAgain.Data.EF.Models;
 
 namespace uPlayAgain.Controllers
 {

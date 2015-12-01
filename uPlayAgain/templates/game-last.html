@@ -1,7 +1,7 @@
 ﻿<div data-uk-slideshow="{autoplay:true}" class="uk-margin uk-width-1-1">
     <ul class="uk-slideshow">
         <li ng-repeat="game in gamesLast.games">
-            <img ng-src="data:image/gif;base64,{{game.image}}" alt="{{game.title}}" data-uk-tooltip title="{{game.title}}" height="300">/>
+            <img ng-src="data:image/gif;base64,{{game.image}}" alt="{{game.title}}" data-uk-tooltip title="{{game.title}}" height="300">
             <div class="uk-overlay-panel uk-overlay-background uk-overlay-fade">{{game.title}}</div>
         </li>
     </ul>
