@@ -92,4 +92,8 @@ app.controller('UserController', ['$scope', '$cookies', 'user-service', 'authSer
     this.register = function () {
         window.location = '#/register';
     };
+
+    this.resetPassword = function () {
+        userSrv.resetPassword($scope.mailReset);
+    }
 }]);

@@ -102,7 +102,7 @@ namespace uPlayAgain
         }
 
         [AllowAnonymous]
-        public async Task GeneratePasswordResetTokenAsync(string email)
+        public async Task<bool> GeneratePasswordResetTokenAsync(string email)
         {
             User user = await _userManager.FindByEmailAsync(email);
             if (user != null)
@@ -119,25 +119,35 @@ namespace uPlayAgain
                 mailText = mailText.Replace("{USERPIC}", Convert.ToBase64String(user.Image));
 
                 await _userManager.SendEmailAsync(user.Id, "UplayAgain ti da il benvenuto. Conferma la tua password!", mailText);
+                return true;
             }
+            return false;
         }
 
         [AllowAnonymous]        
-        public async Task ResetPasswordByToken(string userId, string token, string newPassword)
+        public async Task<bool> ValidateResetPasswordByTokenAndConfirm(string userId, string token, string newPassword)
         {
             try
-            {
+            {   
                 User u = await _userManager.FindByIdAsync(userId);
                 if(u != null)
                 {
-                    await _userManager.ResetPasswordAsync(u.Id, token, newPassword);
-                }
+                    IdentityResult r = await _userManager.ResetPasswordAsync(u.Id, token, newPassword);
+                    return r.Succeeded;
+                }                
             }
             catch (Exception ex)
             {
-                _log.Error(ex);
-            }            
+                _log.Error(ex);                
+            }
+            return false;
         }
+        public async Task<IList<string>> ValidateResetPasswordMessages(string userId, string token, string newPassword)
+        {
+            IdentityResult result = await _userManager.ResetPasswordAsync(userId, token, newPassword);
+            return result.Errors.ToList();
+        }
+
         public async Task<User> FindUser(string userName, string password)
         {
             User user = await _userManager.FindAsync(userName, password);

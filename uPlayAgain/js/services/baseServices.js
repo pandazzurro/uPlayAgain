@@ -104,6 +104,20 @@ app.service('user-service', ['factories', function (gxcFct) {
             });
     };
 
+    this.resetPassword = function (mailReset) {
+        var queryParameters = {
+            email: mailReset
+        }
+
+        gxcFct.user.resetPassword(queryParameters).$promise
+            .then(function (userSuccess) {
+                UIkit.notify('Controlla la tua posta e segui le istruzioni per ripristinare l\'account', { status: 'success', timeout: 5000 });
+            },
+            function (error) {
+                UIkit.notify('Non esiste nessun account con l\'indirizzo mail specificato', { status: 'warning', timeout: 5000 });                
+            });
+    }
+
     this.isLoggedIn = function () {
         return user.userId !== undefined;
     }

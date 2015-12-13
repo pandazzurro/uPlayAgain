@@ -47,6 +47,8 @@
     <Compile Include="Dto\GameDto.cs" />
     <Compile Include="Dto\GameImageDto.cs" />
     <Compile Include="Dto\LibraryComponentDto.cs" />
+    <Compile Include="Dto\ResetPasswordDto.cs" />
+    <Compile Include="Dto\ResetPasswordValidation.cs" />
     <Compile Include="Dto\SearchGame.cs" />
     <Compile Include="Dto\TransactionDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

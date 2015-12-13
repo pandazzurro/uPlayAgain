@@ -25,6 +25,7 @@ namespace uPlayAgain.Data.EF.Context
 
         public uPlayAgainContext() : base("name=uPlayAgainContext")
         {
+            Database.SetInitializer<uPlayAgainContext>(null);
             this.Configuration.ProxyCreationEnabled = false;
             this.Configuration.LazyLoadingEnabled = false;            
             // Log query DB

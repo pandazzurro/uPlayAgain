@@ -47,6 +47,7 @@ app.factory('factories', ['$resource', function ($resource) {
                 load: { url: app.webapi + '/api/users/load/:id', method: 'GET', isArray: false },
                 login: { url: app.webapi + '/api/account/login', method: 'POST', isArray: false },
                 logout: { url: app.webapi + '/api/account/logout', method: 'POST', isArray: false },
+                resetPassword: { url: app.webapi + '/api/account/resetpassword/', method: 'POST', isArray: false },
                 register: { url: app.webapi + '/api/account/register', method: 'POST', isArray: true },
                 update: { url: app.webapi + '/api/users/:userId', method: 'PUT', isArray: false },
                 remove: { url: app.webapi + '/api/users/:userId', method: 'DELETE', isArray: false }

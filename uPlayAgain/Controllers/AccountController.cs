@@ -18,12 +18,44 @@ using uPlayAgain.Utilities;
 using System.Data.Entity;
 using System.Collections.Generic;
 using uPlayAgain.Data.EF.Models;
+using uPlayAgain.Data.Dto.Dto;
 
 namespace uPlayAgain.Controllers
 {
     [RoutePrefix("api/Account")]
     public class AccountController : BaseController
     {
+        #region ResetPassword
+        [HttpPost]
+        [Route("ValidateResetPassword")]
+        public async Task<IHttpActionResult> ValidateResetPassword(ResetPasswordValidation validation)
+        {
+            string decode = Encoding.Default.GetString(HttpServerUtility.UrlTokenDecode(validation.Token));
+            bool result = await _repo.ValidateResetPasswordByTokenAndConfirm(validation.UserId, decode, validation.Password);
+            if (result)
+            {
+                return Ok();                
+            }
+            else
+            {
+                IList<string> Errors = await _repo.ValidateResetPasswordMessages(validation.UserId, decode, validation.Password);
+                string errorsResult = string.Empty;
+                Errors.ToList().ForEach(error => { errorsResult = string.Concat(errorsResult, error); });
+                return BadRequest("Errore, token non valido per questo utente. Generare un nuovo token:  " + errorsResult);
+            }
+        }
+        
+        [HttpPost]
+        [Route("ResetPassword")]
+        public async Task<IHttpActionResult> ResetPassword(ResetPasswordDto reset)
+        {
+            if(await _repo.GeneratePasswordResetTokenAsync(reset.Email))
+                return Ok();
+            return BadRequest();
+        }
+        #endregion
+
+        #region ValidateMail
         [HttpGet]
         [Route("ValidateMail/{userId}/{token}")]
         public async Task<IHttpActionResult> ValidateMailConfirmationToken(string userId, string token)
@@ -64,7 +96,9 @@ namespace uPlayAgain.Controllers
             }
                 
         }
-        // POST api/Account/Register
+        #endregion
+
+        #region Register
         [AllowAnonymous]
         [Route("Register")]
         public async Task<IHttpActionResult> Register(UserLogin userModel) // UserLogin
@@ -138,6 +172,7 @@ namespace uPlayAgain.Controllers
 
             return Ok(accessTokenResponse);
         }
+        #endregion
 
         // GET api/Account/ExternalLogin
         [OverrideAuthentication]

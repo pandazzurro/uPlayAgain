@@ -34,6 +34,7 @@ namespace uPlayAgain.Controllers
         {
             db = new uPlayAgainContext();
             _log = LogManager.GetLogger("uPlayAgain");
+            _repo = new AuthRepository();
             _userManager = new ApplicationUserManager(new UserStore<User>(db));
         }
 

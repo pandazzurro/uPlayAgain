@@ -20,11 +20,7 @@ app.directive('exchangeSearch', ['factories', 'user-service', 'games-service', '
             _this.searchPerformed = false;
             _this.results = [];
             _this.searchParameter = {};
-            if ($cookies.getObject('exchangeSearch') === undefined)
-                _this.params = {};
-            else
-                _this.params = $cookies.getObject('exchangeSearch');
-
+           
             this.setGenre = function (genre) {
                 _this.params.genre = genre;
             };
@@ -114,6 +110,16 @@ app.directive('exchangeSearch', ['factories', 'user-service', 'games-service', '
                 .then(function (success) {
                     _this.selectedImage = success;
                 })
+            }
+
+            this.startSearchByCookiesHistory = function () {
+                if ($cookies.getObject('exchangeSearch') === undefined)
+                    _this.params = {};
+                else
+                {
+                    _this.params = $cookies.getObject('exchangeSearch');
+                    _this.startSearch();
+                }
             }
         },
         controllerAs: 'search'

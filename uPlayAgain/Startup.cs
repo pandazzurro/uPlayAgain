@@ -18,6 +18,7 @@ using System.Threading;
 using System.Net;
 using uPlayAgain.Data.EF.Context;
 using uPlayAgain.Data.EF.Models;
+using System.Web.Mvc;
 
 [assembly: OwinStartup(typeof(uPlayAgain.Startup))]
 namespace uPlayAgain
@@ -37,15 +38,16 @@ namespace uPlayAgain
 
             WebApiConfig.Register(config);
             // Pulire la validazione
-            config.Services.Clear(typeof(ModelValidatorProvider));
+            config.Services.Clear(typeof(System.Web.Http.Validation.ModelValidatorProvider));
             // Configura il model validator corretto
             GlobalConfiguration.Configuration.Services.Replace(typeof(IBodyModelValidator), new GeographyBodyModelValidator());
-            ////Webapi
-            //AreaRegistration.RegisterAllAreas();
+            //Webapi
+            GlobalConfiguration.Configure(WebApiConfig.Register);
+            AreaRegistration.RegisterAllAreas();
 
             //HibernatingRhinos.Profiler.Appender.EntityFramework.EntityFrameworkProfiler.Initialize();
+            //SqlServerTypes.Utilities.LoadNativeAssemblies(Server.MapPath("~/bin"));
 
-            
             app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
             app.UseWebApi(config);            
         }
