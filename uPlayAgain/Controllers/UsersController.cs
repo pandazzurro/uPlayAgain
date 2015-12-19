@@ -296,6 +296,7 @@ namespace uPlayAgain.Controllers
                         LastProposals = x.Proposals
                                          .OrderByDescending(p => p.DateStart)
                                          .FirstOrDefault(),
+                        LastProposalsNumber = x.Proposals.Count,
                         Components = x.Proposals
                                       .OrderByDescending(p => p.DateStart)
                                       .FirstOrDefault()
@@ -322,6 +323,7 @@ namespace uPlayAgain.Controllers
                             TransactionId = t.Transaction.TransactionId,
                             TheirLibraryId = db.Libraries.Where(p => p.UserId == (isProponent ? t.Transaction.UserReceiving_Id : t.Transaction.UserProponent_Id)).First().LibraryId,
                             Proposal = t.LastProposals,
+                            ProposalNumber = t.LastProposalsNumber,
                             LastChange = t.LastProposals.DateStart,
                             UserOwnerId = t.Transaction.UserProponent_Id,
                             Direction = t.LastProposals.Direction,
