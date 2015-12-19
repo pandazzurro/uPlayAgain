@@ -19,9 +19,13 @@
                 <thead>
                     <tr>
                         <th>
-                            <button class="uk-button uk-button-small uk-button-success uk-icon-eye" type="button" ng-click="mailbox.massiveReadMail()" data-uk-tooltip title="Segna come letti"></button>
-                            <button class="uk-button uk-button-small uk-button-primary uk-icon-eye-slash" type="button" ng-click="mailbox.massiveUnReadMail()" data-uk-tooltip title="Segna NON come letti"></button>
-                            <button class="uk-button uk-button-small uk-button-danger uk-icon-trash" type="button" ng-click="mailbox.massiveDeleteMail()" data-uk-tooltip title="Rimuovi i messaggi"></button>
+                            <div class="uk-text-center">
+                                <button class="uk-button uk-button-small uk-button uk-icon-check-square-o" type="button" ng-click="mailbox.massiveCheckMail()" data-uk-tooltip title="Seleziona tutti"></button>
+                                <button class="uk-button uk-button-small uk-button uk-icon-square-o" type="button" ng-click="mailbox.massiveUnCheckMail()" data-uk-tooltip title="Deseleziona tutti"></button>
+                                <button class="uk-button uk-button-small uk-button-success uk-icon-eye" type="button" ng-click="mailbox.massiveReadMail()" data-uk-tooltip title="Segna selezionati come letti"></button>
+                                <button class="uk-button uk-button-small uk-button-primary uk-icon-eye-slash" type="button" ng-click="mailbox.massiveUnReadMail()" data-uk-tooltip title="Segna selezionati come NON letti"></button>
+                                <button class="uk-button uk-button-small uk-button-danger uk-icon-trash" type="button" ng-click="mailbox.massiveDeleteMail()" data-uk-tooltip title="Rimuovi i messaggi selezionati"></button>
+                            </div>
                         </th>
                         <th>Letto</th>
                         <th>Data</th>
@@ -37,10 +41,8 @@
                 <tbody>
                     <tr class="message" ng-repeat="mail in mailbox.messages" ng-mouseover="mailbox.hoverIn(mail)" ng-mouseleave="mailbox.hoverOut(mail)" ng-class="mail.hovered ? 'hover': ''">
                         <td>
-                            <div class="uk-form-stacked">
-                                <input class="checkboxUnderButton" ng-click="mail.checkRead = !mail.checkRead" ng-disabled="mailbox.isAlreadyReadMail(mail)" type="checkbox" />
-                                <input class="checkboxUnderButton" ng-click="mail.checkUnRead = !mail.checkUnRead" ng-disabled="!mailbox.isAlreadyReadMail(mail)" type="checkbox" />
-                                <input class="checkboxUnderButton" ng-click="mail.checkDelete = !mail.checkRead" type="checkbox" />
+                            <div class="uk-form-stacked uk-text-center">
+                                <input class="uk-text-center" ng-click="mail.check = true" type="checkbox" ng-checked="mail.check" />                                
                             </div>
                         </td>
                         <td ng-click="mailbox.open(mail)">

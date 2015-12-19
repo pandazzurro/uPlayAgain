@@ -33,7 +33,7 @@ namespace uPlayAgain
         public void Configuration(IAppBuilder app)
         {
             HttpConfiguration config = new HttpConfiguration();
-            config.MessageHandlers.Add(new CancelledTaskBugWorkaroundMessageHandler());
+            //config.MessageHandlers.Add(new CancelledTaskBugWorkaroundMessageHandler());
             ConfigureOAuth(app);
 
             WebApiConfig.Register(config);
@@ -118,19 +118,19 @@ namespace uPlayAgain
 
 
 
-    class CancelledTaskBugWorkaroundMessageHandler : DelegatingHandler
-    {
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
+    //class CancelledTaskBugWorkaroundMessageHandler : DelegatingHandler
+    //{
+    //    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    //    {
+    //        HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
 
-            // Try to suppress response content when the cancellation token has fired; ASP.NET will log to the Application event log if there's content in this case.
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return new HttpResponseMessage(HttpStatusCode.InternalServerError);
-            }
+    //        // Try to suppress response content when the cancellation token has fired; ASP.NET will log to the Application event log if there's content in this case.
+    //        if (cancellationToken.IsCancellationRequested)
+    //        {
+    //            return new HttpResponseMessage(HttpStatusCode.InternalServerError);
+    //        }
 
-            return response;
-        }
-    }
+    //        return response;
+    //    }
+    //}
 }

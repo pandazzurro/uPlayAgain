@@ -103,7 +103,13 @@ namespace uPlayAgain.Controllers
             }
 
             int feedbackCounter = feedbacks.Sum(p => p.Rate);
-            double feedbackRate = 100 * (double)(feedbackCounter / feedbacks.Count);
+            double feedbackRate = default(double);
+
+            if (feedbacks.Count == 0)
+                feedbackRate = 0;
+            else
+                feedbackRate = 100 * (double)(feedbackCounter / feedbacks.Count);
+
             if (feedbackRate < 0) { feedbackRate = 0; }
 
             FeedbackRate fr = new FeedbackRate()

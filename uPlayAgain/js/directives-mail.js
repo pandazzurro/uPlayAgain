@@ -105,7 +105,7 @@ app.directive('mailbox', ['factories', 'user-service', 'games-service', '$locati
                                     _this.transactions.splice(i, 1);
                                     // rifiuto
                                     if (newState == 2) {
-                                        userSrv.getInfoUser(tran.userId)
+                                        userSrv.getInfoUser(_this.currentUserId)
                                         .then(function (userToChangeInfo) {
                                             var queryParams = {
                                                 messageText: "Ciao, Lo scambio da te proposto con l'utente " + userToChangeInfo.username + " è stato rifiutato.",
@@ -236,14 +236,26 @@ app.directive('mailbox', ['factories', 'user-service', 'games-service', '$locati
                 return false;
             }
 
+            this.massiveCheckMail = function () {
+                angular.forEach(_this.messages, function (message, index) {
+                    message.check = true;                    
+                });
+            }
+
+            this.massiveUnCheckMail = function () {
+                angular.forEach(_this.messages, function (message, index) {
+                    message.check = false;
+                });
+            }
+
             this.massiveUnReadMail = function () {
                 var lastIndexToUnRead = -1;
                 angular.forEach(_this.messages, function (message, index) {
-                    if (message.checkUnRead)
+                    if (message.check)
                         lastIndexToUnRead = index;
                 });
                 angular.forEach(_this.messages, function (message, index) {
-                    if (message.checkUnRead) {
+                    if (message.check) {
                         if (message.userReceiving_Id == _this.currentUserId)
                             message.isAlreadyReadReceiving = false;
 
@@ -266,12 +278,12 @@ app.directive('mailbox', ['factories', 'user-service', 'games-service', '$locati
             this.massiveReadMail = function () {
                 var lastIndexToRead = -1;
                 angular.forEach(_this.messages, function (message, index) {
-                    if (message.checkRead)
+                    if (message.check)
                         lastIndexToRead = index;
                 });
 
                 angular.forEach(_this.messages, function (message, index) {
-                    if (message.checkRead) {
+                    if (message.check) {
                         if (message.userReceiving_Id == _this.currentUserId)
                             message.isAlreadyReadReceiving = true;
 
@@ -295,11 +307,11 @@ app.directive('mailbox', ['factories', 'user-service', 'games-service', '$locati
                 UIkit.modal.confirm("Sei sicuro di rimuovere i messaggi selezionati?", function () {
                     var lastIndexToDelete = -1;
                     angular.forEach(_this.messages, function (message, index) {
-                        if (message.checkDelete)
+                        if (message.check)
                             lastIndexToDelete = index;
                     });
                     angular.forEach(_this.messages, function (message, index) {
-                        if (message.checkDelete) {
+                        if (message.check) {
                             if (message.userReceiving_Id == _this.currentUserId) {
                                 message.isAlreadyDeleteReceiving = true;
                                 message.isAlreadyReadReceiving = true;

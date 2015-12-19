@@ -121,6 +121,8 @@ app.directive('exchangeSearch', ['factories', 'user-service', 'games-service', '
                     _this.startSearch();
                 }
             }
+
+            _this.startSearchByCookiesHistory();
         },
         controllerAs: 'search'
     };
