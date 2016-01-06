@@ -14,14 +14,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace uPlayAgain.GameImporter
+namespace uPlayAgain.GameImporter.View
 {
     /// <summary>
-    /// Logica di interazione per MainWindow.xaml
+    /// Logica di interazione per ListGame.xaml
     /// </summary>
-    public partial class MainWindow : MetroWindow
+    public partial class ListGame : MetroContentControl
     {
-        public MainWindow()
+        public ListGame()
         {
             InitializeComponent();
         }

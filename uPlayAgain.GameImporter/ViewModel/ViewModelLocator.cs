@@ -15,6 +15,7 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
+using uPlayAgain.GameImporter.Service;
 
 namespace uPlayAgain.GameImporter.ViewModel
 {
@@ -31,31 +32,34 @@ namespace uPlayAgain.GameImporter.ViewModel
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
-            ////if (ViewModelBase.IsInDesignModeStatic)
-            ////{
-            ////    // Create design time view services and models
-            ////    SimpleIoc.Default.Register<IDataService, DesignDataService>();
-            ////}
-            ////else
-            ////{
-            ////    // Create run time view services and models
-            ////    SimpleIoc.Default.Register<IDataService, DataService>();
-            ////}
+            //if (ViewModelBase.IsInDesignModeStatic)
+            //{
+            //    // Create design time view services and models
+            //    SimpleIoc.Default.Register<IConnectionWebApi, ConnectionWebApi>();
+            //    SimpleIoc.Default.Register<IConfigurationApplication, ConfigurationApplication>();
+            //}
+            //else
+            //{
+                // Create run time view services and models
+                SimpleIoc.Default.Register<IConnectionWebApi, ConnectionWebApi>();
+                SimpleIoc.Default.Register<IConfigurationApplication, ConfigurationApplication>();
+            //}
 
             SimpleIoc.Default.Register<MainViewModel>();
+            SimpleIoc.Default.Register<ImportGameViewModel>();
+            SimpleIoc.Default.Register<CreateGameViewModel>();
+            SimpleIoc.Default.Register<ListGameViewModel>();
         }
-
+        
         public MainViewModel Main
         {
             get
-            {
+            {   
                 return ServiceLocator.Current.GetInstance<MainViewModel>();
             }
         }
-        
+
         public static void Cleanup()
-        {
-            // TODO Clear the ViewModels
-        }
+        { }
     }
 }

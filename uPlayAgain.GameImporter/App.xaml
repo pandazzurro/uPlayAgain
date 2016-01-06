@@ -1,7 +1,35 @@
-<Application x:Class="uPlayAgain.GameImporter.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:uPlayAgain.GameImporter" StartupUri="MainWindow.xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" d1p1:Ignorable="d" xmlns:d1p1="http://schemas.openxmlformats.org/markup-compatibility/2006">
-  <Application.Resources>
-    <ResourceDictionary>
-      <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" xmlns:vm="clr-namespace:uPlayAgain.GameImporter.ViewModel" />
-    </ResourceDictionary>
-  </Application.Resources>
+<Application x:Class="uPlayAgain.GameImporter.App" 
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+             xmlns:local="clr-namespace:uPlayAgain.GameImporter" 
+             StartupUri="MainWindow.xaml" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             d1p1:Ignorable="d" 
+             xmlns:views="clr-namespace:uPlayAgain.GameImporter.View"
+             xmlns:vm="clr-namespace:uPlayAgain.GameImporter.ViewModel"             
+             xmlns:d1p1="http://schemas.openxmlformats.org/markup-compatibility/2006">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--Metro-->
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" xmlns:vm="clr-namespace:uPlayAgain.GameImporter.ViewModel" />
+            <!-- Associazioni View To ViewModel-->
+            <DataTemplate DataType="{x:Type vm:ImportGameViewModel}">
+                <views:ImportGame />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:CreateGameViewModel}">
+                <views:CreateGame />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:ListGameViewModel}">
+                <views:ListGame />
+            </DataTemplate>
+            
+        </ResourceDictionary>            
+    </Application.Resources>    
 </Application>

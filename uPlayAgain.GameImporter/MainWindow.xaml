@@ -1,12 +1,41 @@
-﻿<Window x:Class="uPlayAgain.GameImporter.MainWindow"
+﻿<Metro:MetroWindow x:Class="uPlayAgain.GameImporter.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:uPlayAgain.GameImporter"
+        xmlns:Metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        WindowStartupLocation="CenterScreen"
+        DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
+        Icon="favicon.ico"
+        IconBitmapScalingMode="HighQuality"
+        Title="UPlayAgainImporter" 
+        TitleCaps="False"
+        Height="350" Width="525">    
     <Grid>
-        
-    </Grid>
-</Window>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="160"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Ribbon Grid.Row="0">
+            <Ribbon.ApplicationMenu>
+                <RibbonApplicationMenu>
+                    <RibbonApplicationMenuItem>
+                        
+                    </RibbonApplicationMenuItem>
+                </RibbonApplicationMenu>
+            </Ribbon.ApplicationMenu>
+            <RibbonTab Header="Principale">
+                <RibbonGroup Header="Importazione">
+                    <RibbonButton LargeImageSource="Image/import.png" Label="Importazione" Command="{Binding ImportGameViewCommand}" RenderOptions.BitmapScalingMode="HighQuality"></RibbonButton>
+                    <RibbonButton LargeImageSource="Image/edit.png" Label="Crea" Command="{Binding CreateGameViewCommand}"  RenderOptions.BitmapScalingMode="HighQuality"></RibbonButton>                    
+                </RibbonGroup>
+                <RibbonGroup Header="Visualizzazione">
+                    <RibbonButton LargeImageSource="Image/lista.png" Label="Elenco" Command="{Binding ListGameViewCommand}"  RenderOptions.BitmapScalingMode="HighQuality"></RibbonButton>                    
+                </RibbonGroup>
+            </RibbonTab>
+        </Ribbon>        
+        <Metro:MetroContentControl Content="{Binding CurrentViewModel}" Grid.Row="1"></Metro:MetroContentControl>
+    </Grid>     
+</Metro:MetroWindow>

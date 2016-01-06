@@ -1,0 +1,14 @@
+﻿{
+  "uPlayAgainApi": "http://www.uplayagain.com/api",
+  "ExternalApi": "",
+  "EndPoints": [
+      {
+        "Controller": "Game",
+        "Methods": [ "GET", "POST", "PUT", "DELETE" ]
+      },
+      {
+        "Controller": "GameImport",
+        "Methods": [ "GET"]
+      }
+    ]
+}
