@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uPlayAgain.Data.Dto", "uPla
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uPlayAgain.GameImporter", "uPlayAgain.GameImporter\uPlayAgain.GameImporter.csproj", "{6F12A5F1-28C0-49AC-9222-8AB9E67DDB7D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uPlayAgain.TheGamesDB.Entity", "uPlayAgain.TheGamesDB.Entity\uPlayAgain.TheGamesDB.Entity.csproj", "{0F3099F4-2398-4D00-A21D-1E6CB935F0CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uPlayAgain.Http", "uPlayAgain.Http\uPlayAgain.Http.csproj", "{0B86D17C-2146-4F36-A7B4-2D9CF87A85FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{6F12A5F1-28C0-49AC-9222-8AB9E67DDB7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F12A5F1-28C0-49AC-9222-8AB9E67DDB7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F12A5F1-28C0-49AC-9222-8AB9E67DDB7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F3099F4-2398-4D00-A21D-1E6CB935F0CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F3099F4-2398-4D00-A21D-1E6CB935F0CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F3099F4-2398-4D00-A21D-1E6CB935F0CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F3099F4-2398-4D00-A21D-1E6CB935F0CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B86D17C-2146-4F36-A7B4-2D9CF87A85FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B86D17C-2146-4F36-A7B4-2D9CF87A85FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B86D17C-2146-4F36-A7B4-2D9CF87A85FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B86D17C-2146-4F36-A7B4-2D9CF87A85FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
