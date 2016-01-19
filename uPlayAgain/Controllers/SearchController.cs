@@ -46,6 +46,7 @@ namespace uPlayAgain.Controllers
                       .Where(p => string.IsNullOrEmpty(platformId) || string.Equals(p.Platform.PlatformId, platformId))
                       .Select(x => new SearchGame()
                       {
+                          
                           Status = x.LibraryComponent.LibraryComponents.Status,
                           GameLanguage = x.LibraryComponent.LibraryComponents.GameLanguage,
                           Genre = x.Game.Genre, 

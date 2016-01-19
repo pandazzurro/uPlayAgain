@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace uPlayAgain.Http
 {
-    public class TheGamesDB
+    public class InternalConfiguration
     {
+        public string Uri { get; set; }
     }
 }

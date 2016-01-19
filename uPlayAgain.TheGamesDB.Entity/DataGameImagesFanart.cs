@@ -9,40 +9,37 @@ namespace uPlayAgain.TheGamesDB.Entity
 {
     /// <remarks/>
     [XmlTypeAttribute(AnonymousType = true)]
-    [XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class Data
+    public partial class DataGameImagesFanart
     {
 
-        private string baseImgUrlField;
+        private DataGameImagesFanartOriginal originalField;
 
-        private DataGame gameField;
+        private string thumbField;
 
         /// <remarks/>
-        public string baseImgUrl
+        public DataGameImagesFanartOriginal original
         {
             get
             {
-                return this.baseImgUrlField;
+                return this.originalField;
             }
             set
             {
-                this.baseImgUrlField = value;
+                this.originalField = value;
             }
         }
 
         /// <remarks/>
-        public DataGame Game
+        public string thumb
         {
             get
             {
-                return this.gameField;
+                return this.thumbField;
             }
             set
             {
-                this.gameField = value;
+                this.thumbField = value;
             }
         }
-
-        public byte[] DowloadedFrontImage { get; set; }
     }
 }

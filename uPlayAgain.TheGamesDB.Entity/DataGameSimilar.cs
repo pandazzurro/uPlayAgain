@@ -9,29 +9,29 @@ namespace uPlayAgain.TheGamesDB.Entity
 {
     /// <remarks/>
     [XmlTypeAttribute(AnonymousType = true)]
-    [XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class Data
+    public partial class DataGameSimilar
     {
 
-        private string baseImgUrlField;
+        private int similarCountField;
 
-        private DataGame gameField;
+        private DataGameSimilarGame[] gameField;
 
         /// <remarks/>
-        public string baseImgUrl
+        public int SimilarCount
         {
             get
             {
-                return this.baseImgUrlField;
+                return this.similarCountField;
             }
             set
             {
-                this.baseImgUrlField = value;
+                this.similarCountField = value;
             }
         }
 
         /// <remarks/>
-        public DataGame Game
+        [XmlElementAttribute("Game")]
+        public DataGameSimilarGame[] Game
         {
             get
             {
@@ -42,7 +42,5 @@ namespace uPlayAgain.TheGamesDB.Entity
                 this.gameField = value;
             }
         }
-
-        public byte[] DowloadedFrontImage { get; set; }
     }
 }

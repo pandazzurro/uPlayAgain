@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>uPlayAgain.TheGamesDB.Entity</RootNamespace>
     <AssemblyName>uPlayAgain.TheGamesDB.Entity</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,6 +30,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -41,10 +45,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data.cs" />
-    <Compile Include="Game.cs" />
-    <Compile Include="PlatformGame.cs" />
-    <Compile Include="Platforms.cs" />
+    <Compile Include="DataGame.cs" />
+    <Compile Include="DataGameGenres.cs" />
+    <Compile Include="DataGameImages.cs" />
+    <Compile Include="DataGameImagesBanner.cs" />
+    <Compile Include="DataGameImagesBoxart.cs" />
+    <Compile Include="DataGameImagesClearlogo.cs" />
+    <Compile Include="DataGameImagesFanart.cs" />
+    <Compile Include="DataGameImagesFanartOriginal.cs" />
+    <Compile Include="DataGameImagesScreenshot.cs" />
+    <Compile Include="DataGameImagesScreenshotOriginal.cs" />
+    <Compile Include="DataGameSimilar.cs" />
+    <Compile Include="DataGameSimilarGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="favicon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

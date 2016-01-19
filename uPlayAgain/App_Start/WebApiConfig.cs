@@ -3,6 +3,10 @@ using System.Linq;
 using System.Net.Http.Formatting;
 using System.Web.Http;
 using Newtonsoft.Json;
+using System.Web.OData.Builder;
+using System.Web.OData.Extensions;
+using uPlayAgain.Data.EF.Models;
+using uPlayAgain.Odata;
 
 namespace uPlayAgain
 {
@@ -14,9 +18,12 @@ namespace uPlayAgain
             config.EnableCors();
 
             // Servizi e configurazione dell'API Web
+            uPlayAgainOData builder = new uPlayAgainOData();
 
             // Route dell'API Web
             config.MapHttpAttributeRoutes();
+
+            config.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
@@ -27,7 +34,7 @@ namespace uPlayAgain
             JsonMediaTypeFormatter jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>().First();
             jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             jsonFormatter.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-            jsonFormatter.SerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.None;
+            jsonFormatter.SerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.All;
             config.Formatters.Clear();
             config.Formatters.Add(jsonFormatter);
         }

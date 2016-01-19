@@ -1,0 +1,4 @@
+﻿{
+  "UrlGameList": "http://thegamesdb.net/api/GetPlatformGames.php?platform=",
+  "UrlGameDetail": "http://thegamesdb.net/api/GetGame.php?id="
+}
