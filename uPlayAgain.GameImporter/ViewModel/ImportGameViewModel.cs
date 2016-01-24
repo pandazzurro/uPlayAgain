@@ -3,10 +3,13 @@ using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 using uPlayAgain.Data.EF.Models;
 using uPlayAgain.GameImporter.Service;
 using uPlayAgain.Http.TheGamesDB;
@@ -16,12 +19,12 @@ namespace uPlayAgain.GameImporter.ViewModel
     public class ImportGameViewModel : ViewModelBase
     {
         private ObservableCollection<Game> _gamesList;
-        public ObservableCollection <Game> GamesList
+        public ObservableCollection<Game> GamesList
         {
             get
             {
-                if(_gamesList == null)
-                    _gamesList = new ObservableCollection<Game>();                
+                if (_gamesList == null)
+                    _gamesList = new ObservableCollection<Game>();
                 return _gamesList;
             }
             set
@@ -36,6 +39,19 @@ namespace uPlayAgain.GameImporter.ViewModel
         public Genre CurrentGenre { get; set; }
         public ObservableCollection<Platform> AvailablePlatforms { get; set; }
         public ObservableCollection<Genre> AvailableGenres { get; set; }
+        private static object _lock = new object();
+
+        private double _progressBarValue;
+
+        public double ProgressBarValue
+        {
+            get { return _progressBarValue; }
+            set
+            {
+                _progressBarValue = value;
+                RaisePropertyChanged("ProgressBarValue");
+            }
+        }
         private IConnectionWebApi _currentWebApi;
 
         public ICommand LoadTheGameDbGameCommand { get; private set; }
@@ -45,28 +61,32 @@ namespace uPlayAgain.GameImporter.ViewModel
             _currentWebApi = api;
             AvailableGenres = new ObservableCollection<Genre>(_currentWebApi.GetGenres());
             AvailablePlatforms = new ObservableCollection<Platform>(_currentWebApi.GetPlatforms());
-            LoadTheGameDbGameCommand = new RelayCommand(LoadTheGameDbGame);
+            LoadTheGameDbGameCommand = new RelayCommand(async () => await LoadTheGameDbGame());            
+            BindingOperations.EnableCollectionSynchronization(GamesList, _lock);
         }
 
-        public void LoadTheGameDbGame()
+        public async Task LoadTheGameDbGame()
         {
-            Task.Factory.StartNew(() =>
+            await Task.Factory.StartNew(async () =>
             {
                 List<GameSummary> gs = null;
                 if (CurrentPlatform != null)
-                    gs = _currentWebApi.TheGamesDBGameListByPlatform(DataInizio, DataFine, CurrentPlatform).Result;
+                    gs = await _currentWebApi.TheGamesDBGameListByPlatform(DataInizio, DataFine, CurrentPlatform);
                 else
-                    AvailablePlatforms.ToList().ForEach(_currentPlatform =>
+                    AvailablePlatforms.ToList().ForEach(async _currentPlatform =>
                     {
-                        gs.AddRange(_currentWebApi.TheGamesDBGameListByPlatform(DataInizio, DataFine, _currentPlatform).Result);
+                        gs.AddRange(await _currentWebApi.TheGamesDBGameListByPlatform(DataInizio, DataFine, _currentPlatform));
                     });
 
-                gs.ForEach(currentGameSummary =>
-                {
-                    GamesList.Add(_currentWebApi.TheGamesDBGetGameDetails(currentGameSummary).Result);
-                });
-            }).Wait();
-        }
+                double percentageToIncrement = (double)100 / gs.Count;
+                ProgressBarValue = 0;
 
+                gs.ForEach(async currentGameSummary =>
+                {
+                    ProgressBarValue += percentageToIncrement;
+                    GamesList.Add(await _currentWebApi.TheGamesDBGetGameDetails(currentGameSummary));
+                });
+            });
+        }
     }
 }

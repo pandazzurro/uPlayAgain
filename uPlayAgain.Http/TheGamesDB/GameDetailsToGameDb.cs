@@ -29,7 +29,7 @@ namespace uPlayAgain.Http.TheGamesDB
                 g.ShortName = d.Game.GameTitle.RemoveMultipleSpace().Replace(" ", "-").Substring(0, Math.Min(d.Game.GameTitle.Length, 30));
             g.Platform = GetPlatform(d.Game.PlatformId, platforms);
             g.Image = d.DowloadedFrontImage;
-            g.Genre = GetGenre(d.Game.Genres.genre, genres);
+            g.Genre = GetGenre(d.Game.Genres == null ? string.Empty : d.Game.Genres.genre, genres);
             return g;
         }
 

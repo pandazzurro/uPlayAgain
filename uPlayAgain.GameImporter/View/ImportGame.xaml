@@ -9,14 +9,15 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="35"></RowDefinition>
-            <RowDefinition Height="0,75"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <StackPanel Orientation="Horizontal">
-                <Metro:SplitButton ItemsSource="{Binding Path=AvailablePlatforms}" DisplayMemberPath="Name" SelectedItem="{Binding CurrentPlatform}" Width="200"></Metro:SplitButton>
-                <Metro:SplitButton ItemsSource="{Binding Path=AvailableGenres}" DisplayMemberPath="Name" SelectedItem="{Binding CurrentGenre}" Width="200"></Metro:SplitButton>
-                <Button Style="{DynamicResource SquareButtonStyle}" Command="{Binding LoadTheGameDbGameCommand, Mode=TwoWay}" Content="Carica TheGameDbGame" Width="150" Margin="5"></Button>
+                <Metro:SplitButton ItemsSource="{Binding Path=AvailablePlatforms}" DisplayMemberPath="Name" SelectedItem="{Binding CurrentPlatform}" Width="200" Margin="5" Height="30"></Metro:SplitButton>
+                <Metro:SplitButton ItemsSource="{Binding Path=AvailableGenres}" DisplayMemberPath="Name" SelectedItem="{Binding CurrentGenre}" Width="200" Margin="5" Height="30"></Metro:SplitButton>
+                <Button Style="{DynamicResource SquareButtonStyle}" Command="{Binding LoadTheGameDbGameCommand, Mode=TwoWay}" Content="Carica TheGameDbGame" Width="150" Margin="5" Height="30"></Button>
+                <Metro:MetroProgressBar Value="{Binding ProgressBarValue, Mode=TwoWay}" Height="20" VerticalAlignment="Center" Margin="5" Width="200"></Metro:MetroProgressBar> 
             </StackPanel>
         </Grid>
         <DataGrid Grid.Row="1" ItemsSource="{Binding Path=GamesList}" AutoGenerateColumns="True" Margin="5">
