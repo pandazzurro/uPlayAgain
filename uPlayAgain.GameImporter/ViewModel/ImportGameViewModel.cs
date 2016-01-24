@@ -15,28 +15,57 @@ namespace uPlayAgain.GameImporter.ViewModel
 {
     public class ImportGameViewModel : ViewModelBase
     {
-        public ObservableCollection <Game> GamesList { get; set; }
+        private ObservableCollection<Game> _gamesList;
+        public ObservableCollection <Game> GamesList
+        {
+            get
+            {
+                if(_gamesList == null)
+                    _gamesList = new ObservableCollection<Game>();                
+                return _gamesList;
+            }
+            set
+            {
+                _gamesList = value;
+                RaisePropertyChanged("GamesList");
+            }
+        }
         public DateTime? DataInizio { get; set; }
         public DateTime? DataFine { get; set; }
         public Platform CurrentPlatform { get; set; }
         public Genre CurrentGenre { get; set; }
-        private ConnectionWebApi _currentWebApi { get; set; }
+        public ObservableCollection<Platform> AvailablePlatforms { get; set; }
+        public ObservableCollection<Genre> AvailableGenres { get; set; }
+        private IConnectionWebApi _currentWebApi;
 
-        public ICommand LoadTheGameDbGameCommand;
-        public ImportGameViewModel(ConnectionWebApi api)
+        public ICommand LoadTheGameDbGameCommand { get; private set; }
+        //public ImportGameViewModel()
+        public ImportGameViewModel(IConnectionWebApi api)
         {
             _currentWebApi = api;
-            LoadTheGameDbGameCommand = new RelayCommand(async () => await LoadTheGameDbGame());
+            AvailableGenres = new ObservableCollection<Genre>(_currentWebApi.GetGenres());
+            AvailablePlatforms = new ObservableCollection<Platform>(_currentWebApi.GetPlatforms());
+            LoadTheGameDbGameCommand = new RelayCommand(LoadTheGameDbGame);
         }
 
-        public async Task LoadTheGameDbGame()
+        public void LoadTheGameDbGame()
         {
-            List<GameSummary> gs = await _currentWebApi.TheGamesDBGameListByPlatform(DataInizio, DataFine, CurrentPlatform);
-            gs.ForEach(async currentGameSummary =>
+            Task.Factory.StartNew(() =>
             {
-                await _currentWebApi.TheGamesDBGetGameDetails(currentGameSummary);
-            });
-            
+                List<GameSummary> gs = null;
+                if (CurrentPlatform != null)
+                    gs = _currentWebApi.TheGamesDBGameListByPlatform(DataInizio, DataFine, CurrentPlatform).Result;
+                else
+                    AvailablePlatforms.ToList().ForEach(_currentPlatform =>
+                    {
+                        gs.AddRange(_currentWebApi.TheGamesDBGameListByPlatform(DataInizio, DataFine, _currentPlatform).Result);
+                    });
+
+                gs.ForEach(currentGameSummary =>
+                {
+                    GamesList.Add(_currentWebApi.TheGamesDBGetGameDetails(currentGameSummary).Result);
+                });
+            }).Wait();
         }
 
     }

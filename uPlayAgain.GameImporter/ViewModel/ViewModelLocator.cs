@@ -32,8 +32,8 @@ namespace uPlayAgain.GameImporter.ViewModel
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
-            SimpleIoc.Default.Register<IConnectionWebApi, ConnectionWebApi>();
             SimpleIoc.Default.Register<IConfigurationApplication, ConfigurationApplication>();
+            SimpleIoc.Default.Register<IConnectionWebApi, ConnectionWebApi>();           
             
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<ImportGameViewModel>();
@@ -47,7 +47,7 @@ namespace uPlayAgain.GameImporter.ViewModel
             {   
                 return ServiceLocator.Current.GetInstance<MainViewModel>();
             }
-        }
+        }       
 
         public static void Cleanup()
         { }

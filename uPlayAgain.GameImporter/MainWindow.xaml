@@ -11,8 +11,9 @@
         Icon="favicon.ico"
         IconBitmapScalingMode="HighQuality"
         Title="UPlayAgainImporter" 
-        TitleCaps="False"
-        Height="350" Width="525">    
+        TitleCaps="False"        
+        WindowState="Maximized"
+        Height="400" Width="525">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="160"></RowDefinition>

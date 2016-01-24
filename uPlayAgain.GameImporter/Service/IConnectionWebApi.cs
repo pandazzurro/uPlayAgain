@@ -11,8 +11,10 @@ namespace uPlayAgain.GameImporter.Service
     public interface IConnectionWebApi
     {
         #region [ Internal API ]
-        Task<IEnumerable<Genre>> GetGenres();
+        IEnumerable<Genre> GetGenres();
+        IEnumerable<Platform> GetPlatforms();
         Task<IEnumerable<Platform>> GetPlatformsAsync();
+        Task<IEnumerable<Genre>> GetGenresAsync();
         Task<IEnumerable<Game>> GetAllGame();
         Task<Game> GetGameByFieldSearch(Game g);
         Task<IEnumerable<Game>> GetGamesByFieldSearch(Game g);

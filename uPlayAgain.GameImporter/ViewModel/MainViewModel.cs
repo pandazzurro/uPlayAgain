@@ -44,9 +44,6 @@ namespace uPlayAgain.GameImporter.ViewModel
             _listGameViewModel = lg;
             _createGameViewModel = cg;
 
-            // Associo il primo ViewModel alla finestra corrente.
-            CurrentViewModel = _importGameViewModel;
-
             // Aggangio L'ICommand alla sua implementazione.
             ImportGameViewCommand = new RelayCommand(() => ExecuteImportGameViewCommand());
             CreateGameViewCommand = new RelayCommand(() => ExecuteCreateGameViewCommand());

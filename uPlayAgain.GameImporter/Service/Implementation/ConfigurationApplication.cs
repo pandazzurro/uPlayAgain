@@ -20,9 +20,6 @@ namespace uPlayAgain.GameImporter.Service
             _configurations = JsonConvert.DeserializeObject<Configuration>(File.ReadAllText("configuration.json"));
         }
 
-        public Configuration GetConfig()
-        {
-            return _configurations;
-        }        
+        public Configuration GetConfig() => _configurations;
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using uPlayAgain.Data.EF.Models;
 using uPlayAgain.Data.Utils;
@@ -13,7 +14,7 @@ namespace uPlayAgain.GameImporter.Service
 {
     public class ConnectionWebApi : IConnectionWebApi
     {
-        private IConfigurationApplication _configurationApplication { get; set; }
+        private IConfigurationApplication _configurationApplication;
         private InternalApi _client;
         private InternalApi Client
         {
@@ -22,8 +23,6 @@ namespace uPlayAgain.GameImporter.Service
                 if (_clientTheGamesDB == null)
                 {
                     _client = new InternalApi(_configurationApplication.GetConfig().BaseInternalApi);
-                    Genres = _client.GetGenres().ToList();
-                    Platforms = _client.GetPlatforms().ToList();
                 }
                 return _client; 
             }
@@ -34,13 +33,16 @@ namespace uPlayAgain.GameImporter.Service
             get
             {
                 if(_clientTheGamesDB == null)
-                    _clientTheGamesDB = new TheGamesDBImport(Genres, Platforms);
+                {
+                    _clientTheGamesDB = new TheGamesDBImport(
+                        Client.GetGenres().ToList(),
+                        Client.GetPlatforms().ToList(), 
+                        _configurationApplication.GetConfig().TheGamesDBGameDetail, 
+                        _configurationApplication.GetConfig().TheGamesDBGameList);
+                }   
                 return _clientTheGamesDB;
             }
         }
-        public List<Genre> Genres { get; set; }
-        public List<Platform> Platforms { get; set; }
-
 
         public ConnectionWebApi(IConfigurationApplication config)
         {
@@ -48,14 +50,16 @@ namespace uPlayAgain.GameImporter.Service
         }
 
         #region [ Internal API ]
-        public async Task<IEnumerable<Genre>> GetGenres() => await _client.GetGenresAsync();
-        public async Task<IEnumerable<Platform>> GetPlatformsAsync() => await _client.GetPlatformsAsync();
-        public async Task<IEnumerable<Game>> GetAllGame() => await _client.GetGameAll();
-        public async Task<Game> GetGameByFieldSearch(Game g) => await _client.GetGameByFieldSearch(g);
-        public async Task<IEnumerable<Game>> GetGamesByFieldSearch(Game g) => await _client.GetGamesByFieldSearch(g);
-        public async Task<Game> InsertGame(Game g) => await _client.InsertGame(g);
-        public async Task<Game> UpdateGame(Game g) => await _client.UpdateGame(g);
-        public async Task DeleteGame(Game g) => await _client.DeleteGame(g);
+        public IEnumerable<Genre> GetGenres() => Client.GetGenres();
+        public IEnumerable<Platform> GetPlatforms() => Client.GetPlatforms();
+        public async Task<IEnumerable<Platform>> GetPlatformsAsync() => await Client.GetPlatformsAsync();
+        public async Task<IEnumerable<Genre>> GetGenresAsync() => await Client.GetGenresAsync();
+        public async Task<IEnumerable<Game>> GetAllGame() => await Client.GetGameAll();
+        public async Task<Game> GetGameByFieldSearch(Game g) => await Client.GetGameByFieldSearch(g);
+        public async Task<IEnumerable<Game>> GetGamesByFieldSearch(Game g) => await Client.GetGamesByFieldSearch(g);
+        public async Task<Game> InsertGame(Game g) => await Client.InsertGame(g);
+        public async Task<Game> UpdateGame(Game g) => await Client.UpdateGame(g);
+        public async Task DeleteGame(Game g) => await Client.DeleteGame(g);
         #endregion
 
         #region [ TheGamesDB ]

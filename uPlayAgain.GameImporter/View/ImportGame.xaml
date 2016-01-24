@@ -6,17 +6,20 @@
              xmlns:local="clr-namespace:uPlayAgain.GameImporter.View"
              xmlns:Metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              mc:Ignorable="d"              
-             d:DesignHeight="300" d:DesignWidth="300"
-             DataContext="{Binding ImportGame, Source={StaticResource Locator}}">
+             d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0,25"></RowDefinition>
+            <RowDefinition Height="35"></RowDefinition>
             <RowDefinition Height="0,75"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
-            <Button Style="{DynamicResource SquareButtonStyle}" Command="{Binding LoadTheGameDbGameCommand}">Conferma</Button>
+            <StackPanel Orientation="Horizontal">
+                <Metro:SplitButton ItemsSource="{Binding Path=AvailablePlatforms}" DisplayMemberPath="Name" SelectedItem="{Binding CurrentPlatform}" Width="200"></Metro:SplitButton>
+                <Metro:SplitButton ItemsSource="{Binding Path=AvailableGenres}" DisplayMemberPath="Name" SelectedItem="{Binding CurrentGenre}" Width="200"></Metro:SplitButton>
+                <Button Style="{DynamicResource SquareButtonStyle}" Command="{Binding LoadTheGameDbGameCommand, Mode=TwoWay}" Content="Carica TheGameDbGame" Width="150" Margin="5"></Button>
+            </StackPanel>
         </Grid>
-        <DataGrid Grid.Row="1" ItemsSource="{Binding GamesList}" AutoGenerateColumns="True" Margin="5">
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Path=GamesList}" AutoGenerateColumns="True" Margin="5">
             
         </DataGrid>
     </Grid>

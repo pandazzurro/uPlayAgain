@@ -7,23 +7,38 @@ using uPlayAgain.Data.EF.Models;
 using Simple.OData.Client;
 using Newtonsoft.Json;
 using System.IO;
+using NLog;
+using System.Runtime.ExceptionServices;
 
 namespace uPlayAgain.Http
 {
     public class InternalApi
     {
-        private ODataClient _client;        
+        private ODataClient _client;
+        private Logger _log;
 
         public InternalApi(string uri)
-        {   
-            _client = new ODataClient(uri);           
+        {
+            _log = LogManager.GetLogger("applicationLog");
+            _client = new ODataClient(new ODataClientSettings
+            {
+                BaseUri = new Uri(uri),
+                OnTrace = (x, y) => _log.Info(string.Format(x, y))
+            });
         }
 
-        public IEnumerable<Genre> GetGenres() => this.GetGenresAsync().Result;
 
-        public IEnumerable<Platform> GetPlatforms() => GetPlatformsAsync().Result;
+        public IEnumerable<Genre> GetGenres() => Task.Factory.StartNew(() =>
+        {
+            return GetGenresAsync().Result;
+        }).Result;
 
-        public async Task<IEnumerable<Genre>> GetGenresAsync() => await _client.For<Genre>("GenresImporter").FindEntriesAsync();
+        public IEnumerable<Platform> GetPlatforms() => Task.Factory.StartNew(() =>
+        {
+            return GetPlatformsAsync().Result;
+        }).Result;
+
+        public async Task<IEnumerable<Genre>> GetGenresAsync() => await _client.For<Genre>("GenresImporter").FindEntriesAsync().ConfigureAwait(false);
 
         public async Task<IEnumerable<Platform>> GetPlatformsAsync() => await _client.For<Platform>("PlatformsImporter").FindEntriesAsync();
 
