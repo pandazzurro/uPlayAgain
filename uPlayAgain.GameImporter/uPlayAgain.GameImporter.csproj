@@ -84,6 +84,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\Configuration.cs" />
+    <Compile Include="Model\GameDto.cs" />
     <Compile Include="Service\IConfigurationApplication.cs" />
     <Compile Include="Service\IConnectionWebApi.cs" />
     <Compile Include="Service\Implementation\ConfigurationApplication.cs" />
@@ -166,9 +168,7 @@
   <ItemGroup>
     <Resource Include="favicon.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\uPlayAgain.Converters\uPlayAgain.Data.Utils.csproj">
       <Project>{9fed4454-41a1-49e4-bb62-68fdcba237e2}</Project>
@@ -181,6 +181,10 @@
     <ProjectReference Include="..\uPlayAgain.Data.EF\uPlayAgain.Data.EF.csproj">
       <Project>{259e0840-d3a5-4fa1-aae6-5aeb4e9ca7a9}</Project>
       <Name>uPlayAgain.Data.EF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\uPlayAgain.Http\uPlayAgain.Http.csproj">
+      <Project>{0b86d17c-2146-4f36-a7b4-2d9cf87a85fb}</Project>
+      <Name>uPlayAgain.Http</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

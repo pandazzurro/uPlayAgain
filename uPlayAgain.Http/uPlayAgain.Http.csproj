@@ -101,7 +101,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InternalApi.cs" />
-    <Compile Include="InternalConfiguration.cs" />
     <Compile Include="TheGamesDB\Configuration.cs" />
     <Compile Include="TheGamesDB\GameSummary.cs" />
     <Compile Include="TheGamesDB\LoadGameDetails.cs" />
@@ -128,7 +127,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="app.config" />
-    <None Include="InternalConfiguration.json" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

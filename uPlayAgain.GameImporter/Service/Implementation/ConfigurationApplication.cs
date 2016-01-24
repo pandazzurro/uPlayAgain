@@ -23,15 +23,6 @@ namespace uPlayAgain.GameImporter.Service
         public Configuration GetConfig()
         {
             return _configurations;
-        }
-
-        public WebApiEndPoint GetEndPoint(string controller, WebApiMethod method)
-        {
-            return _configurations.EndPoints.Where(x => string.Equals(x.Controller, controller, StringComparison.CurrentCultureIgnoreCase) 
-                                            && x.Method.Any(y => string.Equals(Enum.GetName(typeof(WebApiMethod),y), method.ToString(), StringComparison.CurrentCultureIgnoreCase)))
-                          .FirstOrDefault();
-
-
-        }
+        }        
     }
 }

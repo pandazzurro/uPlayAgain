@@ -32,19 +32,9 @@ namespace uPlayAgain.GameImporter.ViewModel
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
-            //if (ViewModelBase.IsInDesignModeStatic)
-            //{
-            //    // Create design time view services and models
-            //    SimpleIoc.Default.Register<IConnectionWebApi, ConnectionWebApi>();
-            //    SimpleIoc.Default.Register<IConfigurationApplication, ConfigurationApplication>();
-            //}
-            //else
-            //{
-                // Create run time view services and models
-                SimpleIoc.Default.Register<IConnectionWebApi, ConnectionWebApi>();
-                SimpleIoc.Default.Register<IConfigurationApplication, ConfigurationApplication>();
-            //}
-
+            SimpleIoc.Default.Register<IConnectionWebApi, ConnectionWebApi>();
+            SimpleIoc.Default.Register<IConfigurationApplication, ConfigurationApplication>();
+            
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<ImportGameViewModel>();
             SimpleIoc.Default.Register<CreateGameViewModel>();

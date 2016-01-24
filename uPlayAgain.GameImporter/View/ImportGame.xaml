@@ -14,9 +14,9 @@
             <RowDefinition Height="0,75"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
-            <Button Style="{DynamicResource SquareButtonStyle}">Conferma</Button>
+            <Button Style="{DynamicResource SquareButtonStyle}" Command="{Binding LoadTheGameDbGameCommand}">Conferma</Button>
         </Grid>
-        <DataGrid Grid.Row="1" ItemsSource="{Binding prova}" AutoGenerateColumns="True" Margin="5">
+        <DataGrid Grid.Row="1" ItemsSource="{Binding GamesList}" AutoGenerateColumns="True" Margin="5">
             
         </DataGrid>
     </Grid>

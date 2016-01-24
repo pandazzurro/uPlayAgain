@@ -11,6 +11,5 @@ namespace uPlayAgain.GameImporter.Service
     public interface IConfigurationApplication
     {
         Configuration GetConfig();
-        WebApiEndPoint GetEndPoint(string controller, WebApiMethod method);
     }
 }

@@ -37,10 +37,10 @@ namespace uPlayAgain.Http.TheGamesDB
         /// <param name="dataFine"></param>
         /// <param name="p"></param>
         /// <returns></returns>
-        public List<GameSummary> LoadGameListByPlatform(DateTime? dataInizio, DateTime? dataFine, Platform p)
+        public async Task<List<GameSummary>> LoadGameListByPlatform(DateTime? dataInizio, DateTime? dataFine, Platform p)
         {
             string urlGamePlatform = string.Format("{0}{1}", _config.UrlGameList, p.ImportId);
-            return new LoadGameList().Load(urlGamePlatform, p.ImportId, dataInizio, dataFine);            
+            return await Task.Run(() => new LoadGameList().Load(urlGamePlatform, p.ImportId, dataInizio, dataFine));
         }
 
         /// <summary>
@@ -48,11 +48,11 @@ namespace uPlayAgain.Http.TheGamesDB
         /// </summary>
         /// <param name="simpleGame"></param>
         /// <returns></returns>
-        public Game GetGameDetails(GameSummary simpleGame)
+        public async Task<Game> GetGameDetails(GameSummary simpleGame)
         {
             string urlGameDetails = string.Format("{0}{1}", _config.UrlGameDetail, simpleGame.ID);
             Entity.Data gameDetail = new LoadGameDetails().LoadDetails(urlGameDetails);
-            return GameDetailsToGameDb.Convert(gameDetail, _genres, _platforms);
+            return await Task.Run(() => GameDetailsToGameDb.Convert(gameDetail, _genres, _platforms));
         }
     }
 }

@@ -79,8 +79,7 @@ namespace uPlayAgain.Http.TheGamesDB
             }
             catch (Exception ex)
             {
-                _log.Error(ex, "Errore durante lo scaricamento delle informazioni di sommario dei giochi presenti: {0}", url);
-                //Utitlity.LogError.AddError(ex);
+                _log.Error(ex, "Errore durante lo scaricamento delle informazioni di sommario dei giochi presenti: {0}", url);                
             }
             return GamesInPlatform;
         }
