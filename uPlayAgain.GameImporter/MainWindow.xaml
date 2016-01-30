@@ -16,14 +16,22 @@
         Height="400" Width="525">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="160"></RowDefinition>
+            <RowDefinition Height="{Binding RibbonHeight}"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        <Ribbon Grid.Row="0">
+        <Ribbon Grid.Row="0" IsMinimized="{Binding IsMinimized}">
+            <Ribbon.HelpPaneContent>
+                <StackPanel>
+                    <Button Command="{Binding CollapseViewCommand}" Width="24" Height="24">
+                        <Button.Content>
+                            <Image Source="{Binding CollapseButtonImage}" RenderOptions.BitmapScalingMode="HighQuality" Stretch="UniformToFill"></Image>
+                        </Button.Content>
+                    </Button>
+                </StackPanel>
+            </Ribbon.HelpPaneContent>
             <Ribbon.ApplicationMenu>
                 <RibbonApplicationMenu>
-                    <RibbonApplicationMenuItem>
-                        
+                    <RibbonApplicationMenuItem>                        
                     </RibbonApplicationMenuItem>
                 </RibbonApplicationMenu>
             </Ribbon.ApplicationMenu>

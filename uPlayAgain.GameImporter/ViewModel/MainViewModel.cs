@@ -1,6 +1,7 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using System.Windows.Input;
+using System;
 
 namespace uPlayAgain.GameImporter.ViewModel
 {
@@ -32,6 +33,48 @@ namespace uPlayAgain.GameImporter.ViewModel
         public ICommand ImportGameViewCommand { get; private set; }
         public ICommand CreateGameViewCommand { get; private set; }
         public ICommand ListGameViewCommand { get; private set; }
+        private ICommand _collapseCommand;
+        public ICommand CollapseViewCommand
+        {
+            get
+            {
+                if (_collapseCommand == null)
+                    _collapseCommand = new RelayCommand(ExecuteCollapseBarViewCommand);
+                return _collapseCommand;
+            }
+        }
+        public string CollapseButtonImage
+        {
+            get
+            {
+                if(IsMinimized)
+                    return "/uPlayAgain.GameImporter;component/Image/up.png";
+                return "/uPlayAgain.GameImporter;component/Image/down.png";
+            }
+        }
+        private bool _isMinimized;
+        public bool IsMinimized
+        {
+            get { return _isMinimized; }
+            set
+            {
+                _isMinimized = value;
+                RaisePropertyChanged("IsMinimized");
+                RaisePropertyChanged("CollapseButtonImage");
+                RaisePropertyChanged("RibbonHeight");                
+            }
+        }
+
+        public int RibbonHeight
+        {
+            get
+            {
+                if(IsMinimized)
+                    return 48;
+                return 135;
+            }
+        }
+
         #endregion
 
         #region [ Constructor ]
@@ -52,6 +95,12 @@ namespace uPlayAgain.GameImporter.ViewModel
         #endregion
 
         #region [ Command Implementation ]
+
+        private void ExecuteCollapseBarViewCommand()
+        {
+            IsMinimized = !IsMinimized;
+        }
+
         private void ExecuteImportGameViewCommand()
         {
             CurrentViewModel = _importGameViewModel;

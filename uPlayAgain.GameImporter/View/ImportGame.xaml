@@ -6,40 +6,61 @@
              xmlns:local="clr-namespace:uPlayAgain.GameImporter.View"
              xmlns:Metro="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              xmlns:simpleChildWindow="clr-namespace:MahApps.Metro.SimpleChildWindow;assembly=MahApps.Metro.SimpleChildWindow"
-             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-             xmlns:Command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"             
+             xmlns:Command="http://www.galasoft.ch/mvvmlight"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"             
              d:DesignHeight="300" d:DesignWidth="900">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
-        </Grid.RowDefinitions>        
+        </Grid.RowDefinitions>
+        <simpleChildWindow:ChildWindow Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"
+                 IsOpen="{Binding LoadingPopupOpen, Mode=TwoWay}"
+                 HorizontalContentAlignment="Center"
+                 VerticalContentAlignment="Center"                                                 
+                 CloseByEscape="True"
+                 Title="Caricamento completato">
+            <Grid>
+                <StackPanel Orientation="Vertical" Margin="5">
+                    <Label>
+                        <TextBlock>
+                        Caricamento completato!<LineBreak/>
+                        E' ora possibile ricercare e modificare i giochi.<LineBreak/>
+                        Premere IMPORTA per salvarli nel database di uPlayAgain!
+                        </TextBlock>
+                    </Label>
+                    <Button Style="{DynamicResource SquareButtonStyle}" Command="{Binding CloseLoadingPopupCommand, Mode=TwoWay}" Content="OK" HorizontalAlignment="Center" Width="50" Margin="10"></Button>
+                </StackPanel>
+            </Grid>
+        </simpleChildWindow:ChildWindow>
+        
         <StackPanel Orientation="Horizontal" Grid.Row="0">
-            <Label>Piattaforme: </Label>
-            <Metro:SplitButton ItemsSource="{Binding Path=AvailablePlatforms}" DisplayMemberPath="Name" SelectedItem="{Binding CurrentPlatform}" Width="200" Margin="5" Height="30"></Metro:SplitButton>
-            <Label>Generi:</Label>
-            <Metro:SplitButton ItemsSource="{Binding Path=AvailableGenres}" DisplayMemberPath="Name" SelectedItem="{Binding CurrentGenre}" Width="200" Margin="5" Height="30"></Metro:SplitButton>
-            <Button Style="{DynamicResource SquareButtonStyle}" Command="{Binding LoadTheGameDbGameCommand, Mode=TwoWay}" Content="Carica TheGameDbGame" Width="150" Margin="5" Height="30"></Button>
-            <Metro:MetroProgressBar Value="{Binding ProgressBarValue, Mode=TwoWay}" Height="20" VerticalAlignment="Center" Margin="5" Width="200"></Metro:MetroProgressBar>                
+            <Label VerticalAlignment="Center">Piattaforme: </Label>
+            <Metro:SplitButton ItemsSource="{Binding Path=AvailablePlatforms}" DisplayMemberPath="Name" SelectedItem="{Binding CurrentPlatform}" Width="120" Margin="5" Height="20"></Metro:SplitButton>
+            <Label VerticalAlignment="Center">Generi:</Label>
+            <Metro:SplitButton ItemsSource="{Binding Path=AvailableGenres}" DisplayMemberPath="Name" SelectedItem="{Binding CurrentGenre}" Width="180" Margin="5" Height="20"></Metro:SplitButton>
+            <Label VerticalAlignment="Center">Intervallo date:</Label>
+            <DatePicker SelectedDate="{Binding DataInizio}" DisplayDate="{x:Static sys:DateTime.Now}" Height="20" Margin="5"></DatePicker>
+            <DatePicker SelectedDate="{Binding DataFine}" DisplayDate="{x:Static sys:DateTime.Now}" Height="20" Margin="5"></DatePicker>
+            <Button Style="{DynamicResource SquareButtonStyle}" Command="{Binding LoadTheGameDbGameCommand}" Content="Carica TheGameDbGame" Width="150" Margin="5" Height="30"></Button>
+            <Button Style="{DynamicResource SquareButtonStyle}" Command="{Binding ImportTouPlayAgainCommand}" Content="Importa selezionati in uPlayAgain" Width="250" Margin="5" Height="30"></Button>
+            <Metro:MetroProgressBar Value="{Binding ProgressBarValue, Mode=TwoWay}" Height="20" VerticalAlignment="Center" Margin="5" Width="200" Minimum="0" Maximum="100"></Metro:MetroProgressBar>            
         </StackPanel>
         <DataGrid Grid.Row="1" ItemsSource="{Binding Path=GamesDto}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedGameDto}" Margin="5" IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTemplateColumn>
-                    <DataGridTemplateColumn.Header>
-                        <CheckBox Command="{Binding SelectAllGameCommand,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" HorizontalAlignment="Center">Seleziona tutto</CheckBox>
-                    </DataGridTemplateColumn.Header>
+                <DataGridCheckBoxColumn Binding="{Binding IsSelected, Mode=TwoWay}">
+                    <DataGridCheckBoxColumn.Header>
+                        <CheckBox Command="{Binding Path=DataContext.SelectAllGameCommand,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" HorizontalAlignment="Center" Content="Seleziona Tutto" ></CheckBox>
+                    </DataGridCheckBoxColumn.Header>
+                </DataGridCheckBoxColumn>
+                <DataGridTemplateColumn Header="Azioni">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <CheckBox IsChecked="{Binding IsSelected}"></CheckBox>
-                                <Button Style="{DynamicResource SquareButtonStyle}" Content="Modifica" >
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="Click">
-                                            <Command:EventToCommand Command="{Binding Source={StaticResource Locator}, Path=Main.EnableEditModeCommand}" PassEventArgsToCommand="False" />
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-                                </Button>
+                                <Button Style="{DynamicResource SquareButtonStyle}" Command="{Binding Path=DataContext.EnableEditModeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" Content="Modifica"></Button>
+                                <Button Style="{DynamicResource SquareButtonStyle}" Command="{Binding Path=DataContext.EnableEditModeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" Content="Rimuovi"></Button>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -58,52 +79,26 @@
                 </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid> 
-        <Metro:Flyout Header="Modifica gioco" Position="Right" MinWidth="200" IsOpen="{Binding IsEditMode, Mode=TwoWay}" IsModal="True" IsPinned="True">
-            <Grid>
+        <Metro:Flyout Theme="Accent" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Header="Modifica gioco" Position="Right" MaxWidth="900" IsOpen="{Binding IsGameDtoEditMode, Mode=TwoWay}" IsEnabled="True">
+            <Grid Margin="5">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="35"></RowDefinition>
+                    <RowDefinition Height="35"></RowDefinition>
+                    <RowDefinition Height="35"></RowDefinition>
+                    <RowDefinition Height="35"></RowDefinition>
                     <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
-                    <RowDefinition></RowDefinition>
+                    <RowDefinition MaxHeight="150"></RowDefinition>
+                    <RowDefinition Height="50"></RowDefinition>
                 </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition></ColumnDefinition>
-                    <ColumnDefinition></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" Grid.Column="0">Nome corto: </Label>
-                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SelectedGameDto.ShortName}" MaxLength="20"></TextBox>
-                <Label Grid.Row="1" Grid.Column="0">Titolo:</Label>
-                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedGameDto.Title}"></TextBox>
-                <Label Grid.Row="2" Grid.Column="0">Genere:</Label>
-                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SelectedGameDto.Game.Name}" IsReadOnly="True"></TextBox>
-                <Label Grid.Row="3" Grid.Column="0">Piattaforma:</Label>
-                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding SelectedGameDto.Platform.Name}" IsReadOnly="True"></TextBox>
-                <Label Grid.Row="4" Grid.Column="0">Descrizione:</Label>
-                <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding SelectedGameDto.Description}" MaxLines="20"></TextBox>
-                <Button Style="{DynamicResource SquareButtonStyle}" Command="{Binding SaveSelectedGame, Mode=TwoWay}" Content="Salva" Width="150" Margin="5" Height="30" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="5"></Button>
+                <TextBox Grid.Row="0" Text="{Binding SelectedGameDto.ShortName}" Metro:TextBoxHelper.Watermark="Nome corto" Metro:TextBoxHelper.ClearTextButton="True" Height="20" MaxLength="30"></TextBox>
+                <TextBox Grid.Row="1" Text="{Binding SelectedGameDto.Title}" Metro:TextBoxHelper.Watermark="Titolo" Height="20"  Metro:TextBoxHelper.ClearTextButton="True" ></TextBox>
+                <TextBox Grid.Row="2" Text="{Binding SelectedGameDto.Genre.Name}" Metro:TextBoxHelper.Watermark="Genere" Height="20" IsReadOnly="True" IsEnabled="False"></TextBox>
+                <TextBox Grid.Row="3" Text="{Binding SelectedGameDto.Platform.Name}"  Metro:TextBoxHelper.Watermark="Piattaforma" Height="20" IsReadOnly="True" IsEnabled="False"></TextBox>
+                <TextBox Grid.Row="4" Text="{Binding SelectedGameDto.Description}" Metro:TextBoxHelper.Watermark="Descrizione" Metro:TextBoxHelper.ClearTextButton="True" Margin="0,5,0,0" TextWrapping="WrapWithOverflow"></TextBox>
+                <Image Grid.Row="5" Source="{Binding SelectedGameDto.SourceImage}" Margin="0,5,0,5"></Image>
+                <Button Style="{DynamicResource SquareButtonStyle}" Command="{Binding SaveSelectedGame, Mode=TwoWay}" Content="Salva" Width="150" Margin="5" Height="30" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="6"></Button>
             </Grid>
         </Metro:Flyout>
-        <simpleChildWindow:ChildWindow
-                 IsOpen="{Binding LoadingPopupOpen, Mode=TwoWay}"
-                 HorizontalContentAlignment="Stretch"
-                 VerticalContentAlignment="Stretch"
-                 Padding="15"
-                 ChildWindowHeight="200"
-                 ChildWindowWidth="500"
-                 CloseByEscape="True"
-                 ChildWindowImage="Information"
-                 Title="Caricamento completato">
-            <StackPanel>
-                <Label>
-                    <TextBlock>
-                        Caricamento completato!<LineBreak/>
-                        E' ora possibile ricercare e modificare i giochi.<LineBreak/>
-                        Premere IMPORTA per salvarli nel database di uPlayAgain!
-                    </TextBlock>
-                </Label>
-                <Button Style="{DynamicResource SquareButtonStyle}" Command="{Binding CloseLoadingPopupCommand, Mode=TwoWay}"></Button>
-            </StackPanel>
-        </simpleChildWindow:ChildWindow>
+        
     </Grid>
 </Metro:MetroContentControl>

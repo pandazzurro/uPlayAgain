@@ -205,7 +205,10 @@
   <ItemGroup>
     <Resource Include="favicon.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Image\down.png" />
+    <Resource Include="Image\up.png" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\uPlayAgain.Converters\uPlayAgain.Data.Utils.csproj">
       <Project>{9fed4454-41a1-49e4-bb62-68fdcba237e2}</Project>

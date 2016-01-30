@@ -30,6 +30,7 @@ namespace uPlayAgain.Http.TheGamesDB
             g.Platform = GetPlatform(d.Game.PlatformId, platforms);
             g.PlatformId = g.Platform != null ? g.Platform.PlatformId : null;
             g.Image = d.DowloadedFrontImage;
+            g.ImageThumb = g.Resize();
             g.Genre = GetGenre(d.Game.Genres == null ? string.Empty : d.Game.Genres.genre, genres);
             g.GenreId = g.Genre != null ? g.Genre.GenreId : null;
             return g;

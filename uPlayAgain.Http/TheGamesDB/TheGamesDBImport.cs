@@ -15,7 +15,8 @@ namespace uPlayAgain.Http.TheGamesDB
         public LoadGameList _loadGameList;
         public List<Genre> _genres { get; set; }
         public List<Platform> _platforms { get; set; }
-        private Configuration _config { get; set; }        
+        private Configuration _config { get; set; }     
+        private LoadGameDetails _loadGameDetails { get; set; }
 
         /// <summary>
         /// Imposto i generi e le piattaforme gestite da uPlayAgain
@@ -27,6 +28,7 @@ namespace uPlayAgain.Http.TheGamesDB
             _loadGameList = new LoadGameList();
             _genres = g;
             _platforms = p;
+            _loadGameDetails = new LoadGameDetails();
             _config = new Configuration { UrlGameDetail = UrlGameDetail, UrlGameList = UrlGameList };
         }
 
@@ -54,7 +56,9 @@ namespace uPlayAgain.Http.TheGamesDB
         public async Task<Game> GetGameDetails(GameSummary simpleGame)
         {
             string urlGameDetails = string.Format("{0}{1}", _config.UrlGameDetail, simpleGame.ID);
-            Entity.Data gameDetail = new LoadGameDetails().LoadDetails(urlGameDetails);
+            Entity.Data gameDetail = null;
+            gameDetail = _loadGameDetails.LoadDetails(urlGameDetails);
+            gameDetail = _loadGameDetails.DownloadImage(gameDetail);
             return await Task.Factory.StartNew(() =>
             {
                 return GameDetailsToGameDb.Convert(gameDetail, _genres, _platforms);
