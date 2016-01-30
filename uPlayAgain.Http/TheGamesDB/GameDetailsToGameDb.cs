@@ -28,8 +28,10 @@ namespace uPlayAgain.Http.TheGamesDB
             if (!string.IsNullOrEmpty(d.Game.GameTitle))
                 g.ShortName = d.Game.GameTitle.RemoveMultipleSpace().Replace(" ", "-").Substring(0, Math.Min(d.Game.GameTitle.Length, 30));
             g.Platform = GetPlatform(d.Game.PlatformId, platforms);
+            g.PlatformId = g.Platform != null ? g.Platform.PlatformId : null;
             g.Image = d.DowloadedFrontImage;
             g.Genre = GetGenre(d.Game.Genres == null ? string.Empty : d.Game.Genres.genre, genres);
+            g.GenreId = g.Genre != null ? g.Genre.GenreId : null;
             return g;
         }
 

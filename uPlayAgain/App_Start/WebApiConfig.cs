@@ -34,7 +34,7 @@ namespace uPlayAgain
             JsonMediaTypeFormatter jsonFormatter = config.Formatters.OfType<JsonMediaTypeFormatter>().First();
             jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             jsonFormatter.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-            jsonFormatter.SerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.All;
+            jsonFormatter.SerializerSettings.PreserveReferencesHandling = PreserveReferencesHandling.None;
             config.Formatters.Clear();
             config.Formatters.Add(jsonFormatter);
         }

@@ -65,7 +65,7 @@ namespace uPlayAgain.GameImporter.Service
         #region [ TheGamesDB ]
         public async Task<List<GameSummary>> TheGamesDBGameListByPlatform(DateTime? dataInizio, DateTime? dataFine, Platform platform)
         {
-            return await ClientTheGamesDB.LoadGameListByPlatform(dataInizio, dataFine, platform);
+            return await ClientTheGamesDB.LoadGameListByPlatform(dataInizio, dataFine, platform);            
         }
 
         public async Task<Game> TheGamesDBGetGameDetails(GameSummary gameSummary)

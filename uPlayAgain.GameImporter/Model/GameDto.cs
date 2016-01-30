@@ -9,10 +9,7 @@ namespace uPlayAgain.GameImporter.Model
 {
     public class GameDto : Game
     {
-        public bool Save { get; set; }
-        public bool Delete { get; set; }
-        public bool Update { get; set; }
-        public bool Insert { get; set; }
+        public bool IsSelected { get; set; }
 
         public GameDto()
         {
