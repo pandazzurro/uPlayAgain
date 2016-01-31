@@ -11,7 +11,13 @@ namespace uPlayAgain.GameImporter.Model
 {
     public class GameDto : Game
     {
-        public bool IsSelected { get; set; }
+        private bool _isChecked;
+        public bool IsChecked
+        {
+            get { return _isChecked; }
+            set { _isChecked = value; }
+        }
+
         public BitmapImage SourceImage
         {
             get

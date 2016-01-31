@@ -74,15 +74,25 @@ namespace uPlayAgain.Http
                 executor.Filter(x => x.Title.Contains(g.Title));
 
             if (g.ImportId.HasValue)
-                executor.Filter(x => x.ImportId.Value == g.ImportId.Value);
+            {
+                executor.Filter("ImportId eq " + g.ImportId.Value);                
+            }
+                
             return executor;
         }
 
         public async Task<Game> InsertGame(Game g)
         {
-            return await _client.For<Game>("GamesImporter")                                
-                                       .Set(g)                                
-                                       .InsertEntryAsync(true);
+            try
+            {
+                return await _client.For<Game>("GamesImporter")
+                                       .Set(g)
+                                       .InsertEntryAsync();
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
         }
 
         public async Task<Game> UpdateGame(Game g)

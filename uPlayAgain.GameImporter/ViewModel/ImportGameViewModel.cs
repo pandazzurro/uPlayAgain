@@ -29,7 +29,7 @@ namespace uPlayAgain.GameImporter.ViewModel
             set
             {
                 _gamesList = value;
-                RaisePropertyChanged("GamesList");
+                RaisePropertyChanged("GamesDto");
             }
         }
 
@@ -109,6 +109,36 @@ namespace uPlayAgain.GameImporter.ViewModel
                 return _importTouPlayAgainCommand;
             }
         }
+        private ICommand _deleteSelectedGameCommand;
+        public ICommand DeleteSelectedGameCommand
+        {
+            get
+            {
+                if (_deleteSelectedGameCommand == null)
+                    _deleteSelectedGameCommand = new RelayCommand<GameDto>(DeleteSelectedGame);
+                return _deleteSelectedGameCommand;
+            }
+        }
+        private ICommand _deleteAllGameCommand;
+        public ICommand DeleteAllGameCommand
+        {
+            get
+            {
+                if (_deleteAllGameCommand == null)
+                    _deleteAllGameCommand = new RelayCommand(DeleteAllGame);
+                return _deleteAllGameCommand;
+            }
+        }
+        private ICommand _deleteAllGameSelectedCommand;
+        public ICommand DeleteAllGameSelectedCommand
+        {
+            get
+            {
+                if (_deleteAllGameSelectedCommand == null)
+                    _deleteAllGameSelectedCommand = new RelayCommand(DeleteAllGameSelected);
+                return _deleteAllGameSelectedCommand;
+            }
+        }
         private IConnectionWebApi _currentWebApi;
 
         
@@ -121,8 +151,8 @@ namespace uPlayAgain.GameImporter.ViewModel
             AvailablePlatforms = new ObservableCollection<Platform>(_currentWebApi.GetPlatforms());
             AvailablePlatforms.Add(default(Platform));
             SaveSelectedGameCommand = new RelayCommand(async () => await SaveSelectedGame());
-            EnableEditModeCommand = new RelayCommand(EnableEditMode);
-            SelectAllGameCommand = new RelayCommand(() => SelectAllGame());
+            EnableEditModeCommand = new RelayCommand<GameDto>(EnableEditMode);
+            SelectAllGameCommand = new RelayCommand<bool>(SelectAllGame);
             CloseLoadingPopupCommand = new RelayCommand(CloseLoadingPopup);
 
             _mapper = new MapperConfiguration(MapperGameImport).CreateMapper();
@@ -136,7 +166,7 @@ namespace uPlayAgain.GameImporter.ViewModel
 
         private void MapperGameImport(IMapperConfiguration map)
         {
-            map.CreateMap<Game, GameDto>();
+            map.CreateMap<Game, GameDto>().ReverseMap();
         }
 
         public async Task LoadTheGameDbGame()
@@ -159,33 +189,48 @@ namespace uPlayAgain.GameImporter.ViewModel
 
                 gs.ForEach(async currentGameSummary =>
                 {
-                    ProgressBarValue += percentageToIncrement;
                     try
                     {
-                        GamesDto.Add(_mapper.Map<GameDto>(await _currentWebApi.TheGamesDBGetGameDetails(currentGameSummary)));
+                        if (await _currentWebApi.GetGameByFieldSearch(new Game() { ImportId = currentGameSummary.ID }) == default(Game))
+                        {
+                            GameDto result = _mapper.Map<GameDto>(await _currentWebApi.TheGamesDBGetGameDetails(currentGameSummary));
+                            GamesDto.Add(result);
+                        }
                     }
                     catch (Exception ex)
                     {
                         string a = ex.Message;
                     }
+                    finally
+                    {
+                        ProgressBarValue += percentageToIncrement;
+                        if (ProgressBarValue >= 100 )
+                            // Apro il popup di segnalazione. Finita importazione
+                            LoadingPopupOpen = true;
+                    }
                 });
-
-                // Apro il popup di segnalazione. Finita importazione
-                LoadingPopupOpen = true;
             });
         }
         public async Task ImportTouPlayAgain()
-        {   
-            GamesDto.Where(x => x.IsSelected).ToList().ForEach(async game =>
+        {
+            await Task.Factory.StartNew(() =>
             {
-                // Se esiste già l'idImport allora NON posso inserirlo
-                if(await _currentWebApi.GetGameByFieldSearch(new Game() { ImportId = game.ImportId }) != default(Game))
+                List<GameDto> ToEleborate = GamesDto.Where(x => x.IsChecked).ToList();
+                double percentageToIncrement = (double)100 / ToEleborate.Count;
+                ProgressBarValue = 0;
+
+                ToEleborate.Where(x => x.IsChecked).ToList().ForEach(async game =>
                 {
-                    await _currentWebApi.InsertGame(game);
-                }
+                    ProgressBarValue += percentageToIncrement;
+                    // Se esiste già l'idImport allora NON posso inserirlo
+                    if (await _currentWebApi.GetGameByFieldSearch(new Game() { ImportId = game.ImportId }) == default(Game))
+                    {
+                        await _currentWebApi.InsertGame(_mapper.Map<Game>(game));
+                        // Rimuovo i giochi già processati
+                        GamesDto.Remove(game);
+                    }
+                });
             });
-            // Rimuovo i giochi già processati
-            GamesDto = new ObservableCollection<GameDto>(GamesDto.Where(x => !x.IsSelected));
         }
 
         public async Task SaveSelectedGame()
@@ -196,14 +241,30 @@ namespace uPlayAgain.GameImporter.ViewModel
             });
         }
 
-        public void EnableEditMode()
+        public void EnableEditMode(GameDto game)
         {
             IsGameDtoEditMode = true;
         }
-
-        public void SelectAllGame()
+        public void DeleteSelectedGame(GameDto game)
         {
-            GamesDto.ToList().ForEach(game => game.IsSelected = true);
+            GamesDto.Remove(GamesDto.Where(x => x.ImportId == game.ImportId).FirstOrDefault());
+            RaisePropertyChanged("GamesDto");
+        }
+        public void DeleteAllGame()
+        {
+            GamesDto.Clear();
+            RaisePropertyChanged("GamesDto");
+        }
+        public void DeleteAllGameSelected()
+        {
+            List<GameDto> GamesToRemove = GamesDto.Where(x => x.IsChecked == true).ToList();
+            GamesToRemove.ForEach(game => GamesDto.Remove(game));
+            RaisePropertyChanged("GamesDto");
+        }
+        public void SelectAllGame(bool check)
+        {
+            GamesDto.ToList().ForEach(game => game.IsChecked = check);
+            RaisePropertyChanged<GameDto>();
         }
     }
 }

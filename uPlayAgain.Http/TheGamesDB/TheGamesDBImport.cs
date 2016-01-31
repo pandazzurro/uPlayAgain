@@ -57,8 +57,8 @@ namespace uPlayAgain.Http.TheGamesDB
         {
             string urlGameDetails = string.Format("{0}{1}", _config.UrlGameDetail, simpleGame.ID);
             Entity.Data gameDetail = null;
-            gameDetail = _loadGameDetails.LoadDetails(urlGameDetails);
-            gameDetail = _loadGameDetails.DownloadImage(gameDetail);
+            gameDetail = await _loadGameDetails.LoadDetails(urlGameDetails);
+            gameDetail = await _loadGameDetails.DownloadImage(gameDetail);
             return await Task.Factory.StartNew(() =>
             {
                 return GameDetailsToGameDb.Convert(gameDetail, _genres, _platforms);

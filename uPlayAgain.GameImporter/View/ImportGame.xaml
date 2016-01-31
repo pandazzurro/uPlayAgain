@@ -50,17 +50,68 @@
         </StackPanel>
         <DataGrid Grid.Row="1" ItemsSource="{Binding Path=GamesDto}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedGameDto}" Margin="5" IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridCheckBoxColumn Binding="{Binding IsSelected, Mode=TwoWay}">
-                    <DataGridCheckBoxColumn.Header>
-                        <CheckBox Command="{Binding Path=DataContext.SelectAllGameCommand,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" HorizontalAlignment="Center" Content="Seleziona Tutto" ></CheckBox>
-                    </DataGridCheckBoxColumn.Header>
-                </DataGridCheckBoxColumn>
-                <DataGridTemplateColumn Header="Azioni">
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.Header>
+                        <CheckBox Command="{Binding Path=DataContext.SelectAllGameCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" 
+                                  CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
+                                  HorizontalAlignment="Center" Content="Tutti" ></CheckBox>
+                    </DataGridTemplateColumn.Header>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding Path=IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"></CheckBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.Header>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Button Style="{DynamicResource MetroCircleButtonStyle}" 
+                                        Command="{Binding Path=DataContext.DeleteAllGameSelectedCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"
+                                        CommandParameter="{Binding}"
+                                        ToolTip="Cancella SOLO i selezionati"
+                                        Height="45" Width="45">
+                                <Rectangle Width="24" Height="24">
+                                    <Rectangle.Fill>
+                                        <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_list_delete_inline}" />
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </Button>
+                            <Button Style="{DynamicResource MetroCircleButtonStyle}" 
+                                        Command="{Binding Path=DataContext.DeleteAllGameCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"
+                                        CommandParameter="{Binding}"
+                                        ToolTip="Cancella TUTTI"
+                                        Height="45" Width="45">
+                                <Rectangle Width="24" Height="24">
+                                    <Rectangle.Fill>
+                                        <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_list_delete}" />
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </Button>
+                        </StackPanel>
+                    </DataGridTemplateColumn.Header>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                <Button Style="{DynamicResource SquareButtonStyle}" Command="{Binding Path=DataContext.EnableEditModeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" Content="Modifica"></Button>
-                                <Button Style="{DynamicResource SquareButtonStyle}" Command="{Binding Path=DataContext.EnableEditModeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" Content="Rimuovi"></Button>
+                                <Button Style="{DynamicResource MetroCircleButtonStyle}" 
+                                        Command="{Binding Path=DataContext.EnableEditModeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"
+                                        CommandParameter="{Binding}"
+                                        Height="45" Width="45">
+                                    <Rectangle Width="24" Height="24">
+                                        <Rectangle.Fill>
+                                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_edit}" />
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                </Button>
+                                <Button Style="{DynamicResource MetroCircleButtonStyle}" 
+                                        Command="{Binding Path=DataContext.DeleteSelectedGameCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"
+                                        CommandParameter="{Binding}"
+                                        Height="45" Width="45">
+                                    <Rectangle Width="24" Height="24">
+                                        <Rectangle.Fill>
+                                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_delete}" />
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                </Button>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
