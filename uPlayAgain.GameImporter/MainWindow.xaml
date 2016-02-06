@@ -37,8 +37,7 @@
             </Ribbon.ApplicationMenu>
             <RibbonTab Header="Principale">
                 <RibbonGroup Header="Importazione">
-                    <RibbonButton LargeImageSource="Image/import.png" Label="Importazione" Command="{Binding ImportGameViewCommand}" RenderOptions.BitmapScalingMode="HighQuality"></RibbonButton>
-                    <RibbonButton LargeImageSource="Image/edit.png" Label="Crea" Command="{Binding CreateGameViewCommand}"  RenderOptions.BitmapScalingMode="HighQuality"></RibbonButton>                    
+                    <RibbonButton LargeImageSource="Image/import.png" Label="Importazione" Command="{Binding ImportGameViewCommand}" RenderOptions.BitmapScalingMode="HighQuality"></RibbonButton>                   
                 </RibbonGroup>
                 <RibbonGroup Header="Visualizzazione">
                     <RibbonButton LargeImageSource="Image/lista.png" Label="Elenco" Command="{Binding ListGameViewCommand}"  RenderOptions.BitmapScalingMode="HighQuality"></RibbonButton>                    

@@ -37,7 +37,6 @@ namespace uPlayAgain.GameImporter.ViewModel
             
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<ImportGameViewModel>();
-            SimpleIoc.Default.Register<CreateGameViewModel>();
             SimpleIoc.Default.Register<ListGameViewModel>();
         }
         
