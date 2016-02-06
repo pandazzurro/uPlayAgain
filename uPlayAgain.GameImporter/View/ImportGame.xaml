@@ -154,7 +154,7 @@
                 <TextBox Grid.Row="3" Text="{Binding SelectedGameDto.Platform.Name}"  Metro:TextBoxHelper.Watermark="Piattaforma" Height="20" IsReadOnly="True" IsEnabled="False"></TextBox>
                 <TextBox Grid.Row="4" Text="{Binding SelectedGameDto.Description}" Metro:TextBoxHelper.Watermark="Descrizione" Metro:TextBoxHelper.ClearTextButton="True" Margin="0,5,0,0" TextWrapping="WrapWithOverflow"></TextBox>
                 <Image Grid.Row="5" Source="{Binding SelectedGameDto.SourceImage}" Margin="0,5,0,5"></Image>
-                <Button Style="{DynamicResource SquareButtonStyle}" Command="{Binding SaveSelectedGame, Mode=TwoWay}" Content="Salva" Width="150" Margin="5" Height="30" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="6"></Button>
+                <Button Style="{DynamicResource SquareButtonStyle}" Command="{Binding SaveSelectedGame, Mode=TwoWay}" Content="Conferma" Width="150" Margin="5" Height="30" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="6"></Button>
             </Grid>
         </Metro:Flyout>
         

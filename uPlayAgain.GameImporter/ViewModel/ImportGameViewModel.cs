@@ -136,10 +136,46 @@ namespace uPlayAgain.GameImporter.ViewModel
                 return _loadTheGameDbGameCommand;
             }
         }
-        public ICommand SaveSelectedGameCommand { get; private set; }
-        public ICommand EnableEditModeCommand { get; private set; }
-        public ICommand SelectAllGameCommand { get; private set; }
-        public ICommand CloseLoadingPopupCommand { get; private set; }
+        private ICommand _saveSelectedGameCommand;
+        public ICommand SaveSelectedGameCommand
+        {
+            get
+            {
+                if(_saveSelectedGameCommand == null)
+                    _saveSelectedGameCommand = new RelayCommand(SaveSelectedGame);
+                return _saveSelectedGameCommand;
+            }
+        }
+        private ICommand _enableEditModeCommand;
+        public ICommand EnableEditModeCommand
+        {
+            get
+            {
+                if(_enableEditModeCommand == null)
+                    _enableEditModeCommand = new RelayCommand<GameDto>(EnableEditMode);
+                return _enableEditModeCommand;
+            }
+        }
+        private ICommand _selectAllGameCommand;
+        public ICommand SelectAllGameCommand
+        {
+            get
+            {
+                if(_selectAllGameCommand == null)
+                    _selectAllGameCommand = new RelayCommand<bool>(SelectAllGame);
+                return _selectAllGameCommand;
+            }
+        }
+        private ICommand _closeLoadingPopupCommand;
+        public ICommand CloseLoadingPopupCommand
+        {
+            get
+            {
+                if(_closeLoadingPopupCommand == null)
+                    _closeLoadingPopupCommand = new RelayCommand(CloseLoadingPopup);
+                return _closeLoadingPopupCommand;
+            }
+        }
         private ICommand _importTouPlayAgainCommand;
         public ICommand ImportTouPlayAgainCommand
         {
@@ -182,8 +218,6 @@ namespace uPlayAgain.GameImporter.ViewModel
         }
         private IConnectionWebApi _currentWebApi;
 
-        
-        //public ImportGameViewModel()
         public ImportGameViewModel(IConnectionWebApi api)
         {
             _currentWebApi = api;
@@ -191,11 +225,7 @@ namespace uPlayAgain.GameImporter.ViewModel
             AvailableGenres.Add(default(Genre));
             AvailablePlatforms = new ObservableCollection<Platform>(_currentWebApi.GetPlatforms());
             AvailablePlatforms.Add(default(Platform));
-            SaveSelectedGameCommand = new RelayCommand(async () => await SaveSelectedGame());
-            EnableEditModeCommand = new RelayCommand<GameDto>(EnableEditMode);
-            SelectAllGameCommand = new RelayCommand<bool>(SelectAllGame);
-            CloseLoadingPopupCommand = new RelayCommand(CloseLoadingPopup);
-
+            BindingOperations.EnableCollectionSynchronization(GamesDto, _lock);
             _mapper = new MapperConfiguration(MapperGameImport).CreateMapper();
             BindingOperations.EnableCollectionSynchronization(GamesDto, _lock);
             IsReadOnlyTitleSearch = true;
@@ -280,12 +310,10 @@ namespace uPlayAgain.GameImporter.ViewModel
             });
         }
 
-        public async Task SaveSelectedGame()
-        {
-            await Task.Factory.StartNew(async () =>
+        public void SaveSelectedGame()
             {
-                string a = "";
-            });
+            DeleteSelectedGame(SelectedGameDto);
+            GamesDto.Add(SelectedGameDto);
         }
 
         public void EnableEditMode(GameDto game)
@@ -295,7 +323,6 @@ namespace uPlayAgain.GameImporter.ViewModel
         public void DeleteSelectedGame(GameDto game)
         {
             GamesDto.Remove(GamesDto.Where(x => x.ImportId == game.ImportId).FirstOrDefault());
-            RaisePropertyChanged("GamesDto");
         }
         public void DeleteAllGame()
         {
