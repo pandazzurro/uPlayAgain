@@ -17,24 +17,37 @@ namespace uPlayAgain.GameImporter.ViewModel
 {
     public class ImportGameViewModel : ViewModelBase
     {
-        private ObservableCollection<GameDto> _gamesList;
+        private ObservableCollection<GameDto> _gamesDto;
         public ObservableCollection<GameDto> GamesDto
         {
             get
             {
-                if (_gamesList == null)
-                    _gamesList = new ObservableCollection<GameDto>();
-                return _gamesList;
+                if (_gamesDto == null)
+                    _gamesDto = new ObservableCollection<GameDto>();
+                return _gamesDto;
             }
             set
             {
-                _gamesList = value;
+                _gamesDto = value;
                 RaisePropertyChanged("GamesDto");
+            }
+        }
+        private ObservableCollection<GameDto> _gamesSearchDto;
+        public ObservableCollection<GameDto> GamesSearchDto
+        {
+            get
+            {
+                if (_gamesSearchDto == null)
+                    _gamesSearchDto = new ObservableCollection<GameDto>();
+                return _gamesSearchDto;
+            }
+            set
+            {
+                _gamesSearchDto = value;
             }
         }
 
         private GameDto _selectedGameDto;
-
         public GameDto SelectedGameDto
         {
             get { return _selectedGameDto; }
@@ -42,6 +55,34 @@ namespace uPlayAgain.GameImporter.ViewModel
             {
                 _selectedGameDto = value;
                 RaisePropertyChanged("SelectedGameDto");
+            }
+        }
+
+        private string _titleSearch;
+        public string TitleSearch
+        {
+            get { return _titleSearch; }
+            set
+            {
+                _titleSearch = value;
+                if(GamesDto.Count > 0)
+                {
+                    if (string.IsNullOrEmpty(_titleSearch))
+                        GamesSearchDto = new ObservableCollection<GameDto>(GamesDto);
+                    else
+                        GamesDto = new ObservableCollection<GameDto>(GamesDto.Where(x => x.Title.Contains(TitleSearch)));
+                }
+            }
+        }
+        private bool _isEnableTitleSearch;
+
+        public bool IsReadOnlyTitleSearch
+        {
+            get { return _isEnableTitleSearch; }
+            set
+            {
+                _isEnableTitleSearch = value;
+                RaisePropertyChanged("IsReadOnlyTitleSearch");
             }
         }
 
@@ -156,7 +197,8 @@ namespace uPlayAgain.GameImporter.ViewModel
             CloseLoadingPopupCommand = new RelayCommand(CloseLoadingPopup);
 
             _mapper = new MapperConfiguration(MapperGameImport).CreateMapper();
-            BindingOperations.EnableCollectionSynchronization(GamesDto, _lock);            
+            BindingOperations.EnableCollectionSynchronization(GamesDto, _lock);
+            IsReadOnlyTitleSearch = true;
         }
 
         private void CloseLoadingPopup()
@@ -173,6 +215,7 @@ namespace uPlayAgain.GameImporter.ViewModel
         {
             await Task.Factory.StartNew(async () =>
             {
+                IsReadOnlyTitleSearch = true;
                 if (GamesDto.Count > 0)
                     GamesDto.Clear();
                 List<GameSummary> gs = new List<GameSummary>();
@@ -204,12 +247,16 @@ namespace uPlayAgain.GameImporter.ViewModel
                     finally
                     {
                         ProgressBarValue += percentageToIncrement;
-                        if (ProgressBarValue >= 100 )
+                        if (ProgressBarValue >= 100)
+                        {
                             // Apro il popup di segnalazione. Finita importazione
                             LoadingPopupOpen = true;
+                            IsReadOnlyTitleSearch = false;
+                        }  
                     }
                 });
             });
+
         }
         public async Task ImportTouPlayAgain()
         {

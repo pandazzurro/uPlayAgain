@@ -117,7 +117,14 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>            
                 <DataGridTextColumn Binding="{Binding ShortName}" Header="Short Name"></DataGridTextColumn>
-                <DataGridTextColumn Binding="{Binding Title}" Header="Titolo"></DataGridTextColumn>
+                <DataGridTextColumn Binding="{Binding Title}">
+                    <DataGridTextColumn.Header>
+                        <TextBox Grid.Row="0" Text="{Binding DataContext.TitleSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" 
+                                 IsReadOnly="{Binding DataContext.IsReadOnlyTitleSearch, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" 
+                                 Metro:TextBoxHelper.Watermark="Titolo" Metro:TextBoxHelper.ClearTextButton="True" Height="20" MaxLength="50">                          
+                        </TextBox>
+                    </DataGridTextColumn.Header>
+                </DataGridTextColumn>
                 <DataGridTextColumn Binding="{Binding Genre.Name}" Header="Genere"></DataGridTextColumn>
                 <DataGridTextColumn Binding="{Binding Platform.Name}" Header="Piattaforma"></DataGridTextColumn>
                 <DataGridTextColumn Binding="{Binding Description}" Header="Descrizione">
