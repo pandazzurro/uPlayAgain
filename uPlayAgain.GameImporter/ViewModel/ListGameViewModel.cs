@@ -1,12 +1,18 @@
-﻿using GalaSoft.MvvmLight;
+﻿using AutoMapper;
+using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
+using System.Windows.Input;
 using uPlayAgain.Data.EF.Models;
+using uPlayAgain.GameImporter.Model;
 using uPlayAgain.GameImporter.Service;
+using uPlayAgain.Http.TheGamesDB;
 
 namespace uPlayAgain.GameImporter.ViewModel
 {
@@ -38,6 +44,17 @@ namespace uPlayAgain.GameImporter.ViewModel
                 RaisePropertyChanged("SelectedGameDto");
             }
         }
+        private GameDto _createdGameDto;
+        public GameDto CreatedGameDto
+        {
+            get { return _createdGameDto; }
+            set
+            {
+                _createdGameDto = value;
+                RaisePropertyChanged("CreatedGameDto");
+            }
+        }
+        
         public bool _isGameDtoEditMode;
         public bool IsGameDtoEditMode
         {
@@ -48,6 +65,17 @@ namespace uPlayAgain.GameImporter.ViewModel
                 RaisePropertyChanged("IsGameDtoEditMode");
             }
         }
+        private bool _isGameDtoCreateMode;
+
+        public bool IsGameDtoCreateMode
+        {
+            get { return _isGameDtoCreateMode; }
+            set {
+                _isGameDtoCreateMode = value;
+                RaisePropertyChanged("IsGameDtoCreateMode");
+            }
+        }
+
         public Platform CurrentPlatform { get; set; }
         public Genre CurrentGenre { get; set; }
         public ObservableCollection<Platform> AvailablePlatforms { get; set; }
@@ -86,16 +114,6 @@ namespace uPlayAgain.GameImporter.ViewModel
                 return _loadFromuPlauAgainCommand;
             }
         }
-        private ICommand _saveSelectedGameCommand;
-        public ICommand SaveSelectedGameCommand
-        {
-            get
-            {
-                if (_saveSelectedGameCommand == null)
-                    _saveSelectedGameCommand = new RelayCommand(SaveSelectedGame);
-                return _saveSelectedGameCommand;
-            }
-        }
         private ICommand _enableEditModeCommand;
         public ICommand EnableEditModeCommand
         {
@@ -106,14 +124,14 @@ namespace uPlayAgain.GameImporter.ViewModel
                 return _enableEditModeCommand;
             }
         }
-        private ICommand _selectAllGameCommand;
-        public ICommand SelectAllGameCommand
+        private ICommand _addGameCommand;
+        public ICommand AddGameCommand
         {
             get
             {
-                if (_selectAllGameCommand == null)
-                    _selectAllGameCommand = new RelayCommand<bool>(SelectAllGame);
-                return _selectAllGameCommand;
+                if (_addGameCommand == null)
+                    _addGameCommand = new RelayCommand(AddGame);
+                return _addGameCommand;
             }
         }
         private ICommand _closeLoadingPopupCommand;
@@ -146,42 +164,11 @@ namespace uPlayAgain.GameImporter.ViewModel
                 return _insertGameCommand;
             }
         }
-        private ICommand _deleteSelectedGameCommand;
-        public ICommand DeleteSelectedGameCommand
-        {
-            get
-            {
-                if (_deleteSelectedGameCommand == null)
-                    _deleteSelectedGameCommand = new RelayCommand<GameDto>(DeleteSelectedGame);
-                return _deleteSelectedGameCommand;
-            }
-        }
-        private ICommand _deleteAllGameCommand;
-        public ICommand DeleteAllGameCommand
-        {
-            get
-            {
-                if (_deleteAllGameCommand == null)
-                    _deleteAllGameCommand = new RelayCommand(DeleteAllGame);
-                return _deleteAllGameCommand;
-            }
-        }
-        private ICommand _deleteAllGameSelectedCommand;
-        public ICommand DeleteAllGameSelectedCommand
-        {
-            get
-            {
-                if (_deleteAllGameSelectedCommand == null)
-                    _deleteAllGameSelectedCommand = new RelayCommand(DeleteAllGameSelected);
-                return _deleteAllGameSelectedCommand;
-            }
-        }
         private IConnectionWebApi _currentWebApi;
 
         public ListGameViewModel(IConnectionWebApi webApi)
         {
-            _connectionWebApi = webApi;
-            _currentWebApi = api;
+            _currentWebApi = webApi;
             AvailableGenres = new ObservableCollection<Genre>(_currentWebApi.GetGenres());
             AvailableGenres.Add(default(Genre));
             AvailablePlatforms = new ObservableCollection<Platform>(_currentWebApi.GetPlatforms());
@@ -202,33 +189,33 @@ namespace uPlayAgain.GameImporter.ViewModel
 
         public async Task LoadFromuPlayAgain()
         {
+            IEnumerable<Game> gs;
+            Game GameFilter = new Game();
             await Task.Factory.StartNew(async () =>
             {
                 if (GamesDto.Count > 0)
                     GamesDto.Clear();
-                List<GameSummary> gs = new List<GameSummary>();
+
+
                 // Create oData Filter and count
                 if (CurrentPlatform != default(Platform))
-                    gs = await _currentWebApi.TheGamesDBGameListByPlatform(DataInizio, DataFine, CurrentPlatform);
-                else
-                    AvailablePlatforms.Where(x => x != default(Platform)).ToList().ForEach(async _currentPlatform =>
-                    {
-                        gs.AddRange(await _currentWebApi.TheGamesDBGameListByPlatform(DataInizio, DataFine, _currentPlatform));
-                    });
+                    GameFilter.PlatformId = CurrentPlatform.PlatformId;
+                if (CurrentGenre != default(Genre))
+                    GameFilter.GenreId = CurrentGenre.GenreId;
 
-                double percentageToIncrement = (double)100 / gs.Count;
+                gs = await _currentWebApi.GetGameIds(GameFilter);
+
+                double percentageToIncrement = (double)100 / gs.Count();
                 ProgressBarValue = 0;
 
                 // apply oData Filter and load data
-                gs.ForEach(async currentGameSummary =>
+                gs.ToList().ForEach(async currentGameSummary =>
                 {
                     try
                     {
-                        if (await _currentWebApi.GetGameByFieldSearch(new Game() { ImportId = currentGameSummary.ID }) == default(Game))
-                        {
-                            GameDto result = _mapper.Map<GameDto>(await _currentWebApi.TheGamesDBGetGameDetails(currentGameSummary));
+                        GameDto result = _mapper.Map<GameDto>(await _currentWebApi.GetGameById(new Game() { GameId = currentGameSummary.GameId }));
+                        if(result != null)
                             GamesDto.Add(result);
-                        }
                     }
                     catch (Exception ex)
                     {
@@ -247,20 +234,17 @@ namespace uPlayAgain.GameImporter.ViewModel
 
         public async Task UpdateGame()
         {
-            await _currentWebApi.UpdateGame(_mapper.Map<Game>(game));
+            GameDto dtoToUpdate = (GameDto)SelectedGameDto.Clone();
+            DeleteSelectedGame(SelectedGameDto);
+            GamesDto.Add(dtoToUpdate);            
+            await _currentWebApi.UpdateGame(_mapper.Map<Game>(dtoToUpdate));
         }
 
         public async Task InsertNewGame()
         {
-            await _currentWebApi.CreateAsync(_mapper.Map<Game>(game));
+            await _currentWebApi.InsertGame(_mapper.Map<Game>(CreatedGameDto));
         }
        
-        public void SaveSelectedGame()
-        {
-            DeleteSelectedGame(SelectedGameDto);
-            GamesDto.Add(SelectedGameDto);
-        }
-
         public void EnableEditMode(GameDto game)
         {
             IsGameDtoEditMode = true;
@@ -269,21 +253,14 @@ namespace uPlayAgain.GameImporter.ViewModel
         {
             GamesDto.Remove(GamesDto.Where(x => x.ImportId == game.ImportId).FirstOrDefault());
         }
-        public void DeleteAllGame()
+        public void AddGame()
         {
-            GamesDto.Clear();
-            RaisePropertyChanged("GamesDto");
-        }
-        public void DeleteAllGameSelected()
-        {
-            List<GameDto> GamesToRemove = GamesDto.Where(x => x.IsChecked == true).ToList();
-            GamesToRemove.ForEach(game => GamesDto.Remove(game));
-            RaisePropertyChanged("GamesDto");
-        }
-        public void SelectAllGame(bool check)
-        {
-            GamesDto.ToList().ForEach(game => game.IsChecked = check);
-            RaisePropertyChanged<GameDto>();
+            IsGameDtoCreateMode = true;
+            CreatedGameDto = new GameDto()
+            {
+                Genre = new Genre(),
+                Platform = new Platform()
+            };
         }
     }
 }

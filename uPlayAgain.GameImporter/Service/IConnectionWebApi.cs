@@ -18,6 +18,8 @@ namespace uPlayAgain.GameImporter.Service
         Task<IEnumerable<Game>> GetAllGame();
         Task<Game> GetGameByFieldSearch(Game g);
         Task<IEnumerable<Game>> GetGamesByFieldSearch(Game g);
+        Task<IEnumerable<Game>> GetGameIds(Game g);
+        Task<Game> GetGameById(Game g);
         Task<Game> InsertGame(Game g);
         Task<Game> UpdateGame(Game g);
         Task DeleteGame(Game g);

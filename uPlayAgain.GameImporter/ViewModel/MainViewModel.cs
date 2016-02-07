@@ -10,7 +10,6 @@ namespace uPlayAgain.GameImporter.ViewModel
         #region [ Private ViewModel ]
         private ViewModelBase _currentViewModel;
         private ViewModelBase _importGameViewModel;
-        private ViewModelBase _createGameViewModel;
         private ViewModelBase _listGameViewModel;
         #endregion
 
@@ -31,7 +30,6 @@ namespace uPlayAgain.GameImporter.ViewModel
 
         #region [ Command ]
         public ICommand ImportGameViewCommand { get; private set; }
-        public ICommand CreateGameViewCommand { get; private set; }
         public ICommand ListGameViewCommand { get; private set; }
         private ICommand _collapseCommand;
         public ICommand CollapseViewCommand
@@ -81,15 +79,13 @@ namespace uPlayAgain.GameImporter.ViewModel
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
-        public MainViewModel(ImportGameViewModel ip, ListGameViewModel lg, CreateGameViewModel cg)
+        public MainViewModel(ImportGameViewModel ip, ListGameViewModel lg)
         {
             _importGameViewModel = ip;
             _listGameViewModel = lg;
-            _createGameViewModel = cg;
 
             // Aggangio L'ICommand alla sua implementazione.
             ImportGameViewCommand = new RelayCommand(() => ExecuteImportGameViewCommand());
-            CreateGameViewCommand = new RelayCommand(() => ExecuteCreateGameViewCommand());
             ListGameViewCommand = new RelayCommand(() => ExecuteListGameViewCommand());
         }
         #endregion
@@ -104,10 +100,6 @@ namespace uPlayAgain.GameImporter.ViewModel
         private void ExecuteImportGameViewCommand()
         {
             CurrentViewModel = _importGameViewModel;
-        }
-        private void ExecuteCreateGameViewCommand()
-        {
-            CurrentViewModel = _createGameViewModel;
         }
         private void ExecuteListGameViewCommand()
         {

@@ -49,11 +49,23 @@ namespace uPlayAgain.Http
             return await getBoundGameByFieldSearch(g).FindEntryAsync();
         }
 
+        public async Task<IEnumerable<Game>> GetGameIds(Game g)
+        {
+            return await getBoundGameByFieldSearch(g).Select(x => x.GameId).FindEntriesAsync();
+        }
+
         public async Task<IEnumerable<Game>> GetGamesByFieldSearch(Game g)
         {
             return await getBoundGameByFieldSearch(g).FindEntriesAsync();
         }
 
+        public async Task<Game> GetGameById(Game g)
+        {
+            return await _client.For<Game>("GamesImporter")
+                                .Key(g)
+                                .Expand(y => new { y.Genre, y.Platform })
+                                .FindEntryAsync();
+        }
         private IBoundClient<Game> getBoundGameByFieldSearch(Game g)
         {
             IBoundClient<Game> executor = _client.For<Game>("GamesImporter")
@@ -62,10 +74,10 @@ namespace uPlayAgain.Http
                 executor.Filter(x => x.Description.Contains(g.Description));
 
             if (!string.IsNullOrEmpty(g.GenreId))
-                executor.Filter(x => x.GenreId.Contains(g.GenreId));
+                executor.Filter(x => x.GenreId == g.GenreId);
 
             if (!string.IsNullOrEmpty(g.PlatformId))
-                executor.Filter(x => x.PlatformId.Contains(g.PlatformId));
+                executor.Filter(x => x.PlatformId == g.PlatformId);
 
             if (!string.IsNullOrEmpty(g.ShortName))
                 executor.Filter(x => x.ShortName.Contains(g.ShortName));

@@ -9,15 +9,9 @@ using uPlayAgain.Data.EF.Models;
 
 namespace uPlayAgain.GameImporter.Model
 {
-    public class GameDto : Game
+    public class GameDto : Game, ICloneable
     {
-        private bool _isChecked;
-        public bool IsChecked
-        {
-            get { return _isChecked; }
-            set { _isChecked = value; }
-        }
-
+        public bool IsChecked{get; set;}
         public BitmapImage SourceImage
         {
             get
@@ -44,6 +38,11 @@ namespace uPlayAgain.GameImporter.Model
         public GameDto()
         {
 
+        }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
         }
     }
 }
