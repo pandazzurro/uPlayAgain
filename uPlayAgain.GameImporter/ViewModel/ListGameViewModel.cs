@@ -215,7 +215,10 @@ namespace uPlayAgain.GameImporter.ViewModel
                     {
                         GameDto result = _mapper.Map<GameDto>(await _currentWebApi.GetGameById(new Game() { GameId = currentGameSummary.GameId }));
                         if(result != null)
-                            GamesDto.Add(result);
+                            await App.Current.Dispatcher.BeginInvoke((Action)delegate ()
+                             {
+                                 GamesDto.Add(result);
+                             });
                     }
                     catch (Exception ex)
                     {
@@ -224,7 +227,7 @@ namespace uPlayAgain.GameImporter.ViewModel
                     finally
                     {
                         ProgressBarValue += percentageToIncrement;
-                        if (ProgressBarValue >= 100)
+                        if (ProgressBarValue >= (100 - percentageToIncrement))
                             // Apro il popup di segnalazione. Finita importazione
                             LoadingPopupOpen = true;
                     }
@@ -255,6 +258,7 @@ namespace uPlayAgain.GameImporter.ViewModel
         }
         public void AddGame()
         {
+            IsGameDtoEditMode = false;
             IsGameDtoCreateMode = true;
             CreatedGameDto = new GameDto()
             {

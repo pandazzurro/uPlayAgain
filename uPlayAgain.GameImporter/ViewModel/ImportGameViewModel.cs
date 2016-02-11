@@ -267,7 +267,10 @@ namespace uPlayAgain.GameImporter.ViewModel
                         if (await _currentWebApi.GetGameByFieldSearch(new Game() { ImportId = currentGameSummary.ID }) == default(Game))
                         {
                             GameDto result = _mapper.Map<GameDto>(await _currentWebApi.TheGamesDBGetGameDetails(currentGameSummary));
-                            GamesDto.Add(result);
+                            await App.Current.Dispatcher.BeginInvoke((Action)delegate ()
+                            {
+                                GamesDto.Add(result);
+                            });
                         }
                     }
                     catch (Exception ex)
@@ -311,7 +314,7 @@ namespace uPlayAgain.GameImporter.ViewModel
         }
 
         public void SaveSelectedGame()
-            {
+        {
             DeleteSelectedGame(SelectedGameDto);
             GamesDto.Add(SelectedGameDto);
         }

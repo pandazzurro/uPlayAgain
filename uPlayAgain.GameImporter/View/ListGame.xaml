@@ -53,8 +53,8 @@
         </StackPanel>
         <DataGrid Grid.Row="1" ItemsSource="{Binding Path=GamesDto}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedGameDto}" Margin="5" IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTemplateColumn>
-                    <DataGridTemplateColumn.Header>
+                <DataGridTemplateColumn Header="Modifica">
+                    <!--<DataGridTemplateColumn.Header>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <Button Style="{DynamicResource MetroCircleButtonStyle}" 
                                         Command="{Binding Path=DataContext.DeleteAllGameCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"
@@ -68,7 +68,7 @@
                                 </Rectangle>
                             </Button>
                         </StackPanel>
-                    </DataGridTemplateColumn.Header>
+                    </DataGridTemplateColumn.Header>-->
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -82,7 +82,7 @@
                                         </Rectangle.Fill>
                                     </Rectangle>
                                 </Button>
-                                <Button Style="{DynamicResource MetroCircleButtonStyle}" 
+                                <!--<Button Style="{DynamicResource MetroCircleButtonStyle}" 
                                         Command="{Binding Path=DataContext.DeleteSelectedGameCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"
                                         CommandParameter="{Binding}"
                                         Height="45" Width="45">
@@ -91,7 +91,7 @@
                                             <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_delete}" />
                                         </Rectangle.Fill>
                                     </Rectangle>
-                                </Button>
+                                </Button>-->
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -130,7 +130,7 @@
                 <Button Style="{DynamicResource SquareButtonStyle}" Command="{Binding UpdateGameCommand}" Content="Aggiorna" Width="150" Margin="5" Height="30" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="6"></Button>
             </Grid>
         </Metro:Flyout>
-        <Metro:Flyout Theme="Accent" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Header="Modifica gioco" Position="Right" MaxWidth="900" IsOpen="{Binding IsGameDtoCreateMode, Mode=TwoWay}" IsEnabled="True">
+        <Metro:Flyout Theme="Accent" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Header="Crea gioco" Position="Right" MinWidth="300" MaxWidth="900" IsOpen="{Binding IsGameDtoCreateMode, Mode=TwoWay}" IsEnabled="True">
             <Grid Margin="5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="35"></RowDefinition>
@@ -146,7 +146,7 @@
                 <Metro:SplitButton Grid.Row="2" ItemsSource="{Binding Path=AvailableGenres}" DisplayMemberPath="Name" SelectedItem="{Binding CreatedGameDto.Genre}" Width="180" Margin="5" Height="20"></Metro:SplitButton>
                 <Metro:SplitButton Grid.Row="3" ItemsSource="{Binding Path=AvailablePlatforms}" DisplayMemberPath="Name" SelectedItem="{Binding CreatedGameDto.Platform}" Width="180" Margin="5" Height="20"></Metro:SplitButton>
                 <TextBox Grid.Row="4" Text="{Binding CreatedGameDto.Description}" Metro:TextBoxHelper.Watermark="Descrizione" Metro:TextBoxHelper.ClearTextButton="True" Margin="0,5,0,0" TextWrapping="WrapWithOverflow"></TextBox>
-                <Image Grid.Row="5" Source="{Binding CreatedGameDto.SourceImage}" Margin="0,5,0,5"></Image>
+                <Image Grid.Row="5" Source="{Binding CreatedGameDto.SourceImage}" Margin="0,5,0,5" RenderOptions.BitmapScalingMode="HighQuality"></Image>
                 <Button Style="{DynamicResource SquareButtonStyle}" Command="{Binding InsertGameCommand}" Content="Aggiorna" Width="150" Margin="5" Height="30" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="6"></Button>
             </Grid>
         </Metro:Flyout>

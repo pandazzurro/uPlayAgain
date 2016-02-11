@@ -21,7 +21,7 @@ namespace uPlayAgain.Data.EF.Models
         [JsonProperty(Required = Required.AllowNull)]
         public int? ImportId { get; set; }
         public DateTimeOffset RegistrationDate { get; set; }
-        [JsonIgnore]
+        //[JsonIgnore]
         public byte[] Image {get; set;}       
         public byte[] ImageThumb { get; set; }
 
