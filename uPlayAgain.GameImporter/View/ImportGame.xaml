@@ -31,7 +31,7 @@
                         Premere IMPORTA per salvarli nel database di uPlayAgain!
                         </TextBlock>
                     </Label>
-                    <Button Style="{DynamicResource SquareButtonStyle}" Command="{Binding CloseLoadingPopupCommand, Mode=TwoWay}" Content="OK" HorizontalAlignment="Center" Width="50" Margin="10"></Button>
+                    <Button Style="{DynamicResource SquareButtonStyle}" Command="{Binding CloseLoadingPopupCommand}" Content="OK" HorizontalAlignment="Center" Width="50" Margin="10"></Button>
                 </StackPanel>
             </Grid>
         </simpleChildWindow:ChildWindow>

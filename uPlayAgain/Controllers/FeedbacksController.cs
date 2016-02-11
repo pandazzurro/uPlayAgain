@@ -64,29 +64,31 @@ namespace uPlayAgain.Controllers
         {
             List<TransactionDto> result = new List<TransactionDto>();
 
-            var trans = await db.Transactions
+            var t1 = await db.Transactions
+                    .Include(k => k.Feedbacks)
                     .Where(t => t.UserProponent_Id == id || t.UserReceiving_Id == id)
                     .Where(t => t.Proposals.Count > 0)
                     .OrderByDescending(t => t.Proposals.OrderByDescending(p => p.DateStart).FirstOrDefault().DateStart)
                     .Select(x => new
-                    {
-                        Transaction = x,
-                        LastProposals = x.Proposals
+                     {
+                         Transaction = x,
+                         LastProposals = x.Proposals
                                          .OrderByDescending(p => p.DateStart)
                                          .FirstOrDefault(),
-                        Components = x.Proposals
+                         Components = x.Proposals
                                       .OrderByDescending(p => p.DateStart)
                                       .FirstOrDefault()
                                       .ProposalComponents
                                       .Where(y => y.Proposal.ProposalId == x.Proposals.OrderByDescending(p => p.DateStart).FirstOrDefault().ProposalId)
                                       .Select(z => new { LibraryComponents = z.LibraryComponents, UserId = z.LibraryComponents.Library.UserId })
-                    })
+                     })
                     // Mostro tutte le proposte approvate da entrambi gli utenti e senza feedback da parte dell'utente corrente
                     .Where(
-                        x => (x.LastProposals.UserProponent_ProposalStatus == ProposalStatus.Accettata && x.LastProposals.UserReceiving_ProposalStatus == ProposalStatus.Accettata) 
-                             && !x.Transaction.Feedbacks.Where(y => y.UserId != id).Any() //Feedback rilasciati DA me!
-                    )
+                        x => (x.LastProposals.UserProponent_ProposalStatus == ProposalStatus.Accettata && x.LastProposals.UserReceiving_ProposalStatus == ProposalStatus.Accettata)                             
+                    )                    
                     .ToListAsync();
+
+            var trans = t1.Where(x => !x.Transaction.Feedbacks.Any(y => y.UserId != id)).ToList();//Feedback rilasciati DA me!
 
             trans.ForEach(t =>
             {

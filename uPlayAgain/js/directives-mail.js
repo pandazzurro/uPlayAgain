@@ -604,8 +604,8 @@ app.directive('feedbackVote', ['factories', 'user-service', 'games-service', fun
             _this.GetPendingTransactionFeedback = function () {
 
                 var queryParameters = {
-                    userId: _this.currentUserId,
-                    page: _this.currentPage
+                    userId: _this.currentUserId//,
+                    //page: _this.currentPage
                 };
 
                 gxcFct.feedback.pending(queryParameters).$promise
