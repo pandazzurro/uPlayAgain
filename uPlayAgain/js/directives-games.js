@@ -284,6 +284,8 @@ app.directive('gamesLibrary', ['factories', 'user-service', 'games-service', fun
             _this.games = [];
             _this.gameSrv = gameSrv;
             _this.currentUser = userSrv.getCurrentUser().id;
+            _this.genres = gameSrv.genres;
+            _this.platforms = gameSrv.platforms;
 
             _this.statuses = gameSrv.statuses;
             _this.languages = gameSrv.languages;
@@ -327,9 +329,42 @@ app.directive('gamesLibrary', ['factories', 'user-service', 'games-service', fun
                 modal.show();
             };
 
+            this.infoGame = function (game) {
+                _this.infosGame = game;
+
+                var modal = UIkit.modal("#gameInfo");
+                modal.show();
+            };
+
             this.toggleTrade = function () {
                 _this.editingGame.gameData.isExchangeable = !_this.editingGame.gameData.isExchangeable;
             };
+
+            this.getGenreById = function (id) {
+                var result = undefined;
+
+                for (i in _this.genres) {
+                    if (_this.genres[i].genreId == id) {
+                        result = _this.genres[i];
+                        break;
+                    }
+                }
+
+                return result;
+            }
+
+            this.getPlatformById = function (id) {
+                var result = undefined;
+
+                for (i in _this.platforms) {
+                    if (_this.platforms[i].platformId == id) {
+                        result = _this.platforms[i];
+                        break;
+                    }
+                }
+
+                return result;
+            }
 
             this.getRemainingChars = function () {
                 var result = 200;

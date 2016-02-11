@@ -51,7 +51,7 @@ namespace uPlayAgain.Http
 
         public async Task<IEnumerable<Game>> GetGameIds(Game g)
         {
-            return await getBoundGameByFieldSearch(g).Select(x => x.GameId).FindEntriesAsync();
+            return await getBoundGameByFieldSearch(g, false).Select(x => x.GameId).FindEntriesAsync();
         }
 
         public async Task<IEnumerable<Game>> GetGamesByFieldSearch(Game g)
@@ -66,10 +66,12 @@ namespace uPlayAgain.Http
                                 .Expand(y => new { y.Genre, y.Platform })
                                 .FindEntryAsync();
         }
-        private IBoundClient<Game> getBoundGameByFieldSearch(Game g)
+        private IBoundClient<Game> getBoundGameByFieldSearch(Game g, bool expand = true)
         {
-            IBoundClient<Game> executor = _client.For<Game>("GamesImporter")
-                                                 .Expand(y => new { y.Genre, y.Platform });
+            IBoundClient<Game> executor = _client.For<Game>("GamesImporter");
+            if(expand)
+                executor.Expand(y => new { y.Genre, y.Platform });
+
             if (!string.IsNullOrEmpty(g.Description))
                 executor.Filter(x => x.Description.Contains(g.Description));
 
@@ -86,10 +88,8 @@ namespace uPlayAgain.Http
                 executor.Filter(x => x.Title.Contains(g.Title));
 
             if (g.ImportId.HasValue)
-            {
                 executor.Filter("ImportId eq " + g.ImportId.Value);                
-            }
-                
+            
             return executor;
         }
 

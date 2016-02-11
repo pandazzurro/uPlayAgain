@@ -1,5 +1,5 @@
 ﻿{
-  "BaseInternalApi": "http://localhost/odata/",
+  "BaseInternalApi": "http://www.uplayagain.com/odata/",
   "TheGamesDBGameList": "http://thegamesdb.net/api/GetPlatformGames.php?platform=",
   "TheGamesDBGameDetail": "http://thegamesdb.net/api/GetGame.php?id="
 }
