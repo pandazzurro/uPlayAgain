@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using MahApps.Metro.Controls.Dialogs;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -80,17 +83,7 @@ namespace uPlayAgain.GameImporter.ViewModel
         public Genre CurrentGenre { get; set; }
         public ObservableCollection<Platform> AvailablePlatforms { get; set; }
         public ObservableCollection<Genre> AvailableGenres { get; set; }
-        private bool _loadingPopupOpen;
-
-        public bool LoadingPopupOpen
-        {
-            get { return _loadingPopupOpen; }
-            set
-            {
-                _loadingPopupOpen = value;
-                RaisePropertyChanged("LoadingPopupOpen");
-            }
-        }
+       
         private IMapper _mapper { get; set; }
         private static object _lock = new object();
         private double _progressBarValue;
@@ -101,6 +94,16 @@ namespace uPlayAgain.GameImporter.ViewModel
             {
                 _progressBarValue = value;
                 RaisePropertyChanged("ProgressBarValue");
+            }
+        }
+        private string _giochiCaricati;
+        public string GiochiCaricati
+        {
+            get { return _giochiCaricati; }
+            set
+            {
+                _giochiCaricati = value;
+                RaisePropertyChanged("GiochiCaricati");
             }
         }
 
@@ -134,16 +137,6 @@ namespace uPlayAgain.GameImporter.ViewModel
                 return _addGameCommand;
             }
         }
-        private ICommand _closeLoadingPopupCommand;
-        public ICommand CloseLoadingPopupCommand
-        {
-            get
-            {
-                if (_closeLoadingPopupCommand == null)
-                    _closeLoadingPopupCommand = new RelayCommand(CloseLoadingPopup);
-                return _closeLoadingPopupCommand;
-            }
-        }
         private ICommand _updateGameCommand;
         public ICommand UpdateGameCommand
         {
@@ -164,11 +157,34 @@ namespace uPlayAgain.GameImporter.ViewModel
                 return _insertGameCommand;
             }
         }
+        private ICommand _loadEditImage;
+        public ICommand LoadEditImageCommand
+        {
+            get
+            {
+                if (_loadEditImage == null)
+                    _loadEditImage = new RelayCommand(LoadEditImage);
+                return _loadEditImage;
+            }
+        }
+        private ICommand _loadCreatingImage;
+        public ICommand LoadCreatingImageCommand
+        {
+            get
+            {
+                if (_loadCreatingImage == null)
+                    _loadCreatingImage = new RelayCommand(LoadCreatingImage);
+                return _loadCreatingImage;
+            }
+        }
+        private ProgressDialogController progressDialog = null;
         private IConnectionWebApi _currentWebApi;
+        private IDialogCoordinator _dialogCoordinator;
 
-        public ListGameViewModel(IConnectionWebApi webApi)
+        public ListGameViewModel(IConnectionWebApi webApi, IDialogCoordinator dialogCoordinator)
         {
             _currentWebApi = webApi;
+            _dialogCoordinator = dialogCoordinator;
             AvailableGenres = new ObservableCollection<Genre>(_currentWebApi.GetGenres());
             AvailableGenres.Add(default(Genre));
             AvailablePlatforms = new ObservableCollection<Platform>(_currentWebApi.GetPlatforms());
@@ -176,12 +192,7 @@ namespace uPlayAgain.GameImporter.ViewModel
             BindingOperations.EnableCollectionSynchronization(GamesDto, _lock);
             _mapper = new MapperConfiguration(MapperGameImport).CreateMapper();
         }
-
-        private void CloseLoadingPopup()
-        {
-            LoadingPopupOpen = !LoadingPopupOpen;
-        }
-
+        
         private void MapperGameImport(IMapperConfiguration map)
         {
             map.CreateMap<Game, GameDto>().ReverseMap();
@@ -189,27 +200,43 @@ namespace uPlayAgain.GameImporter.ViewModel
 
         public async Task LoadFromuPlayAgain()
         {
-            IEnumerable<Game> gs;
+            List<Game> gs = null;
             Game GameFilter = new Game();
             await Task.Factory.StartNew(async () =>
             {
+                GiochiCaricati = string.Empty;
+                await App.Current.Dispatcher.BeginInvoke((Action)async delegate ()
+                {
+                    progressDialog = await _dialogCoordinator.ShowProgressAsync(this, "Attendi...", "Attendi mentre carico la lista dei giochi", false, new MetroDialogSettings()
+                    {
+                        ColorScheme = MetroDialogColorScheme.Accented
+                    });
+                    progressDialog.SetIndeterminate();
+                });
+
                 if (GamesDto.Count > 0)
                     GamesDto.Clear();
-
-
+                
                 // Create oData Filter and count
                 if (CurrentPlatform != default(Platform))
                     GameFilter.PlatformId = CurrentPlatform.PlatformId;
                 if (CurrentGenre != default(Genre))
                     GameFilter.GenreId = CurrentGenre.GenreId;
 
-                gs = await _currentWebApi.GetGameIds(GameFilter);
+                gs = (await _currentWebApi.GetGameIds(GameFilter)).ToList();
 
-                double percentageToIncrement = (double)100 / gs.Count();
+                await App.Current.Dispatcher.BeginInvoke((Action)async delegate ()
+                {
+                    await progressDialog.CloseAsync();
+                });
+
+                int numGiochi = gs.Count;
+                int giocoCorrente = 0;
+                double percentageToIncrement = (double)100 / numGiochi;
                 ProgressBarValue = 0;
 
                 // apply oData Filter and load data
-                gs.ToList().ForEach(async currentGameSummary =>
+                gs.ForEach(async currentGameSummary =>
                 {
                     try
                     {
@@ -226,10 +253,19 @@ namespace uPlayAgain.GameImporter.ViewModel
                     }
                     finally
                     {
+                        giocoCorrente++;
+                        GiochiCaricati = string.Format("{0} / {1}", giocoCorrente, numGiochi);
                         ProgressBarValue += percentageToIncrement;
-                        if (ProgressBarValue >= (100 - percentageToIncrement))
+                        if (numGiochi == giocoCorrente)
                             // Apro il popup di segnalazione. Finita importazione
-                            LoadingPopupOpen = true;
+                            await App.Current.Dispatcher.BeginInvoke((Action)async delegate ()
+                            {
+                                await _dialogCoordinator.ShowMessageAsync(this, "Caricamento completato...", "Puoi modificare i giochi o crearne di nuovi", MessageDialogStyle.Affirmative, new MetroDialogSettings()
+                                {
+                                    ColorScheme = MetroDialogColorScheme.Accented,
+                                    AnimateShow = true
+                                });
+                            });
                     }
                 });
             });
@@ -241,11 +277,18 @@ namespace uPlayAgain.GameImporter.ViewModel
             DeleteSelectedGame(SelectedGameDto);
             GamesDto.Add(dtoToUpdate);            
             await _currentWebApi.UpdateGame(_mapper.Map<Game>(dtoToUpdate));
+            IsGameDtoEditMode = false;
+            IsGameDtoCreateMode = false;
         }
 
         public async Task InsertNewGame()
         {
+            CreatedGameDto.GenreId = CreatedGameDto.Genre.GenreId;
+            CreatedGameDto.PlatformId = CreatedGameDto.Platform.PlatformId;
             await _currentWebApi.InsertGame(_mapper.Map<Game>(CreatedGameDto));
+            CreatedGameDto = null;
+            IsGameDtoEditMode = false;
+            IsGameDtoCreateMode = false;
         }
        
         public void EnableEditMode(GameDto game)
@@ -263,8 +306,35 @@ namespace uPlayAgain.GameImporter.ViewModel
             CreatedGameDto = new GameDto()
             {
                 Genre = new Genre(),
-                Platform = new Platform()
+                Platform = new Platform(),
+                RegistrationDate = DateTime.Now
             };
+        }
+
+        public void LoadEditImage()
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();            
+            fileDialog.ShowDialog();
+
+            if (fileDialog.ShowDialog().HasValue && fileDialog.ShowDialog().Value)
+            {
+                SelectedGameDto.Image = File.ReadAllBytes(fileDialog.FileName);
+                SelectedGameDto.ImageThumb = SelectedGameDto.Resize();
+                RaisePropertyChanged("SelectedGameDto");
+            }
+        }
+
+        public void LoadCreatingImage()
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            bool? result = fileDialog.ShowDialog();
+
+            if (result.HasValue && result.Value)
+            {
+                CreatedGameDto.Image = File.ReadAllBytes(fileDialog.FileName);
+                CreatedGameDto.ImageThumb = CreatedGameDto.Resize();
+                RaisePropertyChanged("CreatedGameDto");
+            }
         }
     }
 }

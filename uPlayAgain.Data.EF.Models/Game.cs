@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 using System.IO;
 using System;
 using System.Drawing;
+using System.ComponentModel.DataAnnotations;
+using uPlayAgain.Data.Utils.Images;
 
 namespace uPlayAgain.Data.EF.Models
 {
@@ -41,9 +42,9 @@ namespace uPlayAgain.Data.EF.Models
                     Image img = System.Drawing.Image.FromStream(ms);
                     int fixedWidth = 65;
                     double widthPercentage = (double)fixedWidth / (double)img.Width;
-                    img = img.GetThumbnailImage(fixedWidth, (int)(img.Height * widthPercentage), () => false, IntPtr.Zero);
+                    Bitmap b = ImageUtilities.ResizeImage(img, fixedWidth, (int)(img.Height * widthPercentage));
                     ImageConverter converter = new ImageConverter();
-                    return (byte[])converter.ConvertTo(img, typeof(byte[]));
+                    return (byte[])converter.ConvertTo(b, typeof(byte[]));
                 }
             }
             return null;

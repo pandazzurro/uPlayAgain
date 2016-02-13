@@ -8,6 +8,8 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
+        xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+        Dialog:DialogParticipation.Register="{Binding}"             
         Icon="favicon.ico"
         IconBitmapScalingMode="HighQuality"
         Title="UPlayAgainImporter" 

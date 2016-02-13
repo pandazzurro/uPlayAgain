@@ -14,6 +14,7 @@
 
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
+using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Practices.ServiceLocation;
 using uPlayAgain.GameImporter.Service;
 
@@ -33,8 +34,10 @@ namespace uPlayAgain.GameImporter.ViewModel
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
             SimpleIoc.Default.Register<IConfigurationApplication, ConfigurationApplication>();
-            SimpleIoc.Default.Register<IConnectionWebApi, ConnectionWebApi>();           
-            
+            SimpleIoc.Default.Register<IConnectionWebApi, ConnectionWebApi>();
+            SimpleIoc.Default.Register<IDialogCoordinator, DialogCoordinator>();
+
+
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<ImportGameViewModel>();
             SimpleIoc.Default.Register<ListGameViewModel>();
@@ -46,7 +49,23 @@ namespace uPlayAgain.GameImporter.ViewModel
             {   
                 return ServiceLocator.Current.GetInstance<MainViewModel>();
             }
-        }       
+        }
+
+        public ImportGameViewModel ImportGameView
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<ImportGameViewModel>();
+            }
+        }
+
+        public ListGameViewModel ListGameView
+        {
+            get
+            {
+                return ServiceLocator.Current.GetInstance<ListGameViewModel>();
+            }
+        }
 
         public static void Cleanup()
         { }
