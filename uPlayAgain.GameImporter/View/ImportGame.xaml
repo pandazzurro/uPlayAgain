@@ -121,7 +121,7 @@
                 </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid> 
-        <Metro:Flyout Theme="Accent" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Header="Modifica gioco" Position="Right" MaxWidth="900" IsOpen="{Binding IsGameDtoEditMode, Mode=TwoWay}" IsEnabled="True">
+        <Metro:Flyout Theme="Accent" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Header="Modifica gioco" Position="Right" MaxWidth="1200" MinWidth="400" IsOpen="{Binding IsGameDtoEditMode, Mode=TwoWay}" IsEnabled="True">
             <Grid Margin="5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="35"></RowDefinition>
@@ -134,10 +134,19 @@
                 </Grid.RowDefinitions>
                 <TextBox Grid.Row="0" Text="{Binding SelectedGameDto.ShortName}" Metro:TextBoxHelper.Watermark="Nome corto" Metro:TextBoxHelper.ClearTextButton="True" Height="20" MaxLength="30"></TextBox>
                 <TextBox Grid.Row="1" Text="{Binding SelectedGameDto.Title}" Metro:TextBoxHelper.Watermark="Titolo" Height="20"  Metro:TextBoxHelper.ClearTextButton="True" ></TextBox>
-                <TextBox Grid.Row="2" Text="{Binding SelectedGameDto.Genre.Name}" Metro:TextBoxHelper.Watermark="Genere" Height="20" IsReadOnly="True" IsEnabled="False"></TextBox>
-                <TextBox Grid.Row="3" Text="{Binding SelectedGameDto.Platform.Name}"  Metro:TextBoxHelper.Watermark="Piattaforma" Height="20" IsReadOnly="True" IsEnabled="False"></TextBox>
+                <Metro:SplitButton Grid.Row="2" ItemsSource="{Binding Path=AvailableGenres}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedGameDto.Genre}" Width="180" Margin="5" Height="20"></Metro:SplitButton>
+                <Metro:SplitButton Grid.Row="3" ItemsSource="{Binding Path=AvailablePlatforms}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedGameDto.Platform}" Width="180" Margin="5" Height="20"></Metro:SplitButton>
                 <TextBox Grid.Row="4" Text="{Binding SelectedGameDto.Description}" Metro:TextBoxHelper.Watermark="Descrizione" Metro:TextBoxHelper.ClearTextButton="True" Margin="0,5,0,0" TextWrapping="WrapWithOverflow"></TextBox>
-                <Image Grid.Row="5" Source="{Binding SelectedGameDto.SourceImage}" Margin="0,5,0,5" RenderOptions.BitmapScalingMode="HighQuality"></Image>
+                <StackPanel Orientation="Horizontal" Grid.Row="5" Margin="0,5,0,5" HorizontalAlignment="Center">
+                    <Image  Source="{Binding SelectedGameDto.SourceImage, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,5" RenderOptions.BitmapScalingMode="HighQuality"></Image>
+                    <Button Style="{DynamicResource MetroCircleButtonStyle}" Command="{Binding Path=LoadEditImageCommand}" ToolTip="Carica nuova immagine" Height="45" Width="45" Margin="0,5,0,5">
+                        <Rectangle Width="24" Height="24">
+                            <Rectangle.Fill>
+                                <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_disk_upload}" />
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Button>
+                </StackPanel>
                 <Button Style="{DynamicResource SquareButtonStyle}" Command="{Binding SaveSelectedGame, Mode=TwoWay}" Content="Conferma" Width="150" Margin="5" Height="30" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="6"></Button>
             </Grid>
         </Metro:Flyout>

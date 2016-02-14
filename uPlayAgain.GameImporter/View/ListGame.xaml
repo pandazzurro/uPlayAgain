@@ -16,8 +16,8 @@
       d:DesignHeight="300" d:DesignWidth="600">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"></RowDefinition>
-            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="45"></RowDefinition>
+            <RowDefinition Height="45"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
        
@@ -37,7 +37,7 @@
                 </Rectangle>
             </Button>
             <TextBlock VerticalAlignment="Center" Text="{Binding GiochiCaricati}" Margin="5"></TextBlock>
-            <Metro:MetroProgressBar Value="{Binding ProgressBarValue, Mode=TwoWay}" Height="20" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Margin="5" Minimum="0" Maximum="100"></Metro:MetroProgressBar>
+            <Metro:MetroProgressBar Value="{Binding ProgressBarValue, Mode=TwoWay}" Height="20" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Margin="5" Minimum="0" Maximum="100" Width="400"></Metro:MetroProgressBar>
         </StackPanel>
         <DataGrid Grid.Row="2" ItemsSource="{Binding Path=GamesDto}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedGameDto}" Margin="5" IsReadOnly="True">
             <DataGrid.Columns>
@@ -63,7 +63,7 @@
                 <DataGridTextColumn Binding="{Binding Title}" Header="Titolo"></DataGridTextColumn>
                 <DataGridTextColumn Binding="{Binding Genre.Name}" Header="Genere"></DataGridTextColumn>
                 <DataGridTextColumn Binding="{Binding Platform.Name}" Header="Piattaforma"></DataGridTextColumn>
-                <DataGridTextColumn Binding="{Binding Description}" Header="Descrizione">
+                <DataGridTextColumn Binding="{Binding Description}" Header="Descrizione" MaxWidth="900">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
@@ -73,7 +73,7 @@
                 </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <Metro:Flyout Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Header="Modifica gioco" Position="Right" MaxWidth="900" IsOpen="{Binding IsGameDtoEditMode, Mode=TwoWay}" IsEnabled="True">
+        <Metro:Flyout Theme="Accent" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Header="Modifica gioco" Position="Right" MaxWidth="1200" MinWidth="400" IsOpen="{Binding IsGameDtoEditMode, Mode=TwoWay}" IsEnabled="True">
             <Grid Margin="5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="35"></RowDefinition>
@@ -86,8 +86,8 @@
                 </Grid.RowDefinitions>
                 <TextBox Grid.Row="0" Text="{Binding SelectedGameDto.ShortName}" Metro:TextBoxHelper.Watermark="Nome corto" Metro:TextBoxHelper.ClearTextButton="True" Height="20" MaxLength="30"></TextBox>
                 <TextBox Grid.Row="1" Text="{Binding SelectedGameDto.Title}" Metro:TextBoxHelper.Watermark="Titolo" Height="20"  Metro:TextBoxHelper.ClearTextButton="True" ></TextBox>
-                <TextBox Grid.Row="2" Text="{Binding SelectedGameDto.Genre.Name}" Metro:TextBoxHelper.Watermark="Genere" Height="20" IsReadOnly="True" IsEnabled="False"></TextBox>
-                <TextBox Grid.Row="3" Text="{Binding SelectedGameDto.Platform.Name}"  Metro:TextBoxHelper.Watermark="Piattaforma" Height="20" IsReadOnly="True" IsEnabled="False"></TextBox>
+                <Metro:SplitButton Grid.Row="2" ItemsSource="{Binding Path=AvailableGenres}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedGameDto.Genre}" Width="180" Margin="5" Height="20"></Metro:SplitButton>
+                <Metro:SplitButton Grid.Row="3" ItemsSource="{Binding Path=AvailablePlatforms}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedGameDto.Platform}" Width="180" Margin="5" Height="20"></Metro:SplitButton>
                 <TextBox Grid.Row="4" Text="{Binding SelectedGameDto.Description}" Metro:TextBoxHelper.Watermark="Descrizione" Metro:TextBoxHelper.ClearTextButton="True" Margin="0,5,0,0" TextWrapping="WrapWithOverflow"></TextBox>
                 <StackPanel Orientation="Horizontal" Grid.Row="5" Margin="0,5,0,5" HorizontalAlignment="Center">
                     <Image  Source="{Binding SelectedGameDto.SourceImage, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,5" RenderOptions.BitmapScalingMode="HighQuality"></Image>
@@ -102,7 +102,7 @@
                 <Button Style="{DynamicResource SquareButtonStyle}" Command="{Binding UpdateGameCommand}" Content="Aggiorna" Width="150" Margin="5" Height="30" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="6"></Button>
             </Grid>
         </Metro:Flyout>
-        <Metro:Flyout Theme="Accent" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Header="Crea gioco" Position="Right" MinWidth="300" MaxWidth="900" IsOpen="{Binding IsGameDtoCreateMode, Mode=TwoWay}" IsEnabled="True">
+        <Metro:Flyout Theme="Accent" Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" Header="Crea gioco" Position="Right" MaxWidth="1200" MinWidth="400" IsOpen="{Binding IsGameDtoCreateMode, Mode=TwoWay}" IsEnabled="True">
             <Grid Margin="5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="35"></RowDefinition>

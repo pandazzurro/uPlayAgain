@@ -8,14 +8,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using uPlayAgain.Data.EF.Models;
 using uPlayAgain.GameImporter.Model;
 using uPlayAgain.GameImporter.Service;
-using uPlayAgain.Http.TheGamesDB;
 
 namespace uPlayAgain.GameImporter.ViewModel
 {
@@ -205,15 +203,6 @@ namespace uPlayAgain.GameImporter.ViewModel
             await Task.Factory.StartNew(async () =>
             {
                 GiochiCaricati = string.Empty;
-                await App.Current.Dispatcher.BeginInvoke((Action)async delegate ()
-                {
-                    progressDialog = await _dialogCoordinator.ShowProgressAsync(this, "Attendi...", "Attendi mentre carico la lista dei giochi", false, new MetroDialogSettings()
-                    {
-                        ColorScheme = MetroDialogColorScheme.Accented
-                    });
-                    progressDialog.SetIndeterminate();
-                });
-
                 if (GamesDto.Count > 0)
                     GamesDto.Clear();
                 
@@ -224,18 +213,12 @@ namespace uPlayAgain.GameImporter.ViewModel
                     GameFilter.GenreId = CurrentGenre.GenreId;
 
                 gs = (await _currentWebApi.GetGameIds(GameFilter)).ToList();
-
-                await App.Current.Dispatcher.BeginInvoke((Action)async delegate ()
-                {
-                    await progressDialog.CloseAsync();
-                });
-
+                
                 int numGiochi = gs.Count;
                 int giocoCorrente = 0;
                 double percentageToIncrement = (double)100 / numGiochi;
                 ProgressBarValue = 0;
-
-                // apply oData Filter and load data
+                
                 gs.ForEach(async currentGameSummary =>
                 {
                     try
@@ -279,6 +262,14 @@ namespace uPlayAgain.GameImporter.ViewModel
             await _currentWebApi.UpdateGame(_mapper.Map<Game>(dtoToUpdate));
             IsGameDtoEditMode = false;
             IsGameDtoCreateMode = false;
+            await System.Windows.Application.Current.Dispatcher.BeginInvoke((Action)async delegate ()
+            {
+                await _dialogCoordinator.ShowMessageAsync(this, "Aggiornamento completato...", "Aggiornamento completato", MessageDialogStyle.Affirmative, new MetroDialogSettings()
+                {
+                    ColorScheme = MetroDialogColorScheme.Accented,
+                    AnimateShow = true
+                });
+            });
         }
 
         public async Task InsertNewGame()
@@ -289,6 +280,14 @@ namespace uPlayAgain.GameImporter.ViewModel
             CreatedGameDto = null;
             IsGameDtoEditMode = false;
             IsGameDtoCreateMode = false;
+            await System.Windows.Application.Current.Dispatcher.BeginInvoke((Action)async delegate ()
+            {
+                await _dialogCoordinator.ShowMessageAsync(this, "Inserimento completato...", "Inserimento completato", MessageDialogStyle.Affirmative, new MetroDialogSettings()
+                {
+                    ColorScheme = MetroDialogColorScheme.Accented,
+                    AnimateShow = true
+                });
+            });
         }
        
         public void EnableEditMode(GameDto game)
@@ -314,9 +313,9 @@ namespace uPlayAgain.GameImporter.ViewModel
         public void LoadEditImage()
         {
             OpenFileDialog fileDialog = new OpenFileDialog();            
-            fileDialog.ShowDialog();
+            bool? result = fileDialog.ShowDialog();
 
-            if (fileDialog.ShowDialog().HasValue && fileDialog.ShowDialog().Value)
+            if (result.HasValue && result.Value)
             {
                 SelectedGameDto.Image = File.ReadAllBytes(fileDialog.FileName);
                 SelectedGameDto.ImageThumb = SelectedGameDto.Resize();

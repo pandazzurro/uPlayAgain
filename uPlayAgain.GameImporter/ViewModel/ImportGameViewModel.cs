@@ -2,9 +2,11 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using MahApps.Metro.Controls.Dialogs;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Data;
@@ -206,6 +208,16 @@ namespace uPlayAgain.GameImporter.ViewModel
                 return _deleteAllGameSelectedCommand;
             }
         }
+        private ICommand _loadEditImage;
+        public ICommand LoadEditImageCommand
+        {
+            get
+            {
+                if (_loadEditImage == null)
+                    _loadEditImage = new RelayCommand(LoadEditImage);
+                return _loadEditImage;
+            }
+        }
         private ProgressDialogController progressDialog = null;
         private IConnectionWebApi _currentWebApi;
         private IDialogCoordinator _dialogCoordinator;
@@ -216,12 +228,14 @@ namespace uPlayAgain.GameImporter.ViewModel
             _dialogCoordinator = dialogCoordinator;
 
             AvailableGenres = new ObservableCollection<Genre>(_currentWebApi.GetGenres());
-            AvailableGenres.Add(default(Genre));
+            AvailableGenres.Add(new Genre { Name = "Tutti", GenreId = "Tutti" });
             AvailablePlatforms = new ObservableCollection<Platform>(_currentWebApi.GetPlatforms());
-            AvailablePlatforms.Add(default(Platform));
+            AvailablePlatforms.Add(new Platform() { Name = "Tutti", PlatformId = "Tutti"});
             BindingOperations.EnableCollectionSynchronization(GamesDto, _lock);
             _mapper = new MapperConfiguration(MapperGameImport).CreateMapper();
             BindingOperations.EnableCollectionSynchronization(GamesDto, _lock);
+            DataInizio = DateTime.Now.AddMonths(-3);
+            DataFine = DateTime.Now;
             IsReadOnlyTitleSearch = true;
         }
         
@@ -248,10 +262,10 @@ namespace uPlayAgain.GameImporter.ViewModel
                 if (GamesDto.Count > 0)
                     GamesDto.Clear();
                 List<GameSummary> gs = new List<GameSummary>();
-                if (CurrentPlatform != default(Platform))
+                if (CurrentPlatform.Name != "Tutti")
                     gs = await _currentWebApi.TheGamesDBGameListByPlatform(DataInizio, DataFine, CurrentPlatform);
                 else
-                    AvailablePlatforms.Where(x => x != default(Platform)).ToList().ForEach(async _currentPlatform =>
+                    AvailablePlatforms.Where(x => x.Name != "Tutti").ToList().ForEach(async _currentPlatform =>
                     {
                         gs.AddRange(await _currentWebApi.TheGamesDBGameListByPlatform(DataInizio, DataFine, _currentPlatform));
                     });
@@ -361,5 +375,18 @@ namespace uPlayAgain.GameImporter.ViewModel
             GamesDto.ToList().ForEach(game => game.IsChecked = !check);
             GamesDto = new ObservableCollection<GameDto>(GamesDto);
         }
+        public void LoadEditImage()
+        {
+            OpenFileDialog fileDialog = new OpenFileDialog();
+            bool? result = fileDialog.ShowDialog();
+
+            if (result.HasValue && result.Value)
+            {
+                SelectedGameDto.Image = File.ReadAllBytes(fileDialog.FileName);
+                SelectedGameDto.ImageThumb = SelectedGameDto.Resize();
+                RaisePropertyChanged("SelectedGameDto");
+            }
+        }
+
     }
 }

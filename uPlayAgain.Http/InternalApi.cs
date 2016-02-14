@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System.IO;
 using NLog;
 using System.Runtime.ExceptionServices;
+using System.Net.Http;
 
 namespace uPlayAgain.Http
 {
@@ -23,7 +24,11 @@ namespace uPlayAgain.Http
             _client = new ODataClient(new ODataClientSettings
             {
                 BaseUri = new Uri(uri),
-                OnTrace = (x, y) => _log.Info(string.Format(x, y))
+                OnTrace = (x, y) => _log.Info(string.Format(x, y)),
+                BeforeRequest = (HttpRequestMessage message) =>
+                {
+                    message.Headers.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.111 Safari/537.36");                    
+                }
             });
         }
 

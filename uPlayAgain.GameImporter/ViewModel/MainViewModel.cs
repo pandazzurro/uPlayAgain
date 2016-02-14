@@ -1,7 +1,6 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using System.Windows.Input;
-using System;
 
 namespace uPlayAgain.GameImporter.ViewModel
 {
