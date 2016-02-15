@@ -71,8 +71,8 @@ namespace uPlayAgain.Controllers
             SearchGames result = new SearchGames()
             {
                 SearchGame = await q.OrderBy(u => u.Distance)
-                                    .Take(take.Value)
                                     .Skip(skip.Value)
+                                    .Take(take.Value)
                                     .ToListAsync(),
                 Count = await q.CountAsync()
             };

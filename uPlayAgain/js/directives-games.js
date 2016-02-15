@@ -20,6 +20,8 @@ app.directive('exchangeSearch', ['factories', 'user-service', 'games-service', '
             _this.searchPerformed = false;
             _this.results = [];
             _this.searchParameter = {};
+            _this.itemsOnPage = 20;
+            _this.pagination = UIkit.pagination("#gridPagination");
            
             this.setGenre = function (genre) {
                 _this.params.genre = genre;
@@ -67,7 +69,9 @@ app.directive('exchangeSearch', ['factories', 'user-service', 'games-service', '
                 return Math.round(value * 100) / 100;
             };
 
-            this.startSearch = function () {
+            this.startSearch = function (skip) {
+                if (skip == undefined)
+                    skip = 0;
                 _this.results = [];                
 
                 var queryParameters = {
@@ -76,18 +80,28 @@ app.directive('exchangeSearch', ['factories', 'user-service', 'games-service', '
                     genreId: _this.params.genre === undefined ? '' : _this.params.genre.genreId,
                     platformId: _this.params.platform === undefined ? '' : _this.params.platform.platformId,
                     distance: _this.params.distance === undefined ? 1000000 : _this.params.distance,
-                    skip: 0,
-                    take: 10000
+                    skip: skip * _this.itemsOnPage,
+                    take: _this.itemsOnPage
                 };
 
                 $cookies.putObject('exchangeSearch', _this.params);
 
                 _this.results = gxcFct.game.search(queryParameters, function (success) {
                     _this.searchPerformed = true;
-                    angular.forEach(success.searchGame, function (value) {
+                    _this.pagination.options.currentPage = skip + 1;
+                    _this.pagination.options.items = success.count;
+                    _this.pagination.options.itemsOnPage = _this.itemsOnPage;
+                    
+                    angular.forEach(success.searchGame, function (value, index) {
                         if (value.game.image == undefined || value.game.image == "" || value.game.image == null)
                             value.game.image = gameSrv.getDefaultImage();
+
+                        if (success.searchGame.length == index + 1) {
+                            _this.pagination.init();
+                        }
                     });
+                    //_this.pagination.init();
+                    _this.startPagination = false;
                 });
             };
 
@@ -118,11 +132,18 @@ app.directive('exchangeSearch', ['factories', 'user-service', 'games-service', '
                 else
                 {
                     _this.params = $cookies.getObject('exchangeSearch');
-                    _this.startSearch();
+                    _this.startSearch(0);                    
                 }
             }
 
             _this.startSearchByCookiesHistory();
+            _this.startPagination = false;
+            _this.pagination.options.onSelectPage = function (e, pageIndex) {
+                if (!_this.startPagination) {
+                    _this.startPagination = true;
+                    _this.startSearch(e);                    
+                }
+            };            
         },
         controllerAs: 'search'
     };
