@@ -70,7 +70,7 @@
 
 <form class="uk-form" ng-show="search.searchPerformed">
     <fieldset>
-        <legend>Risultati <i>Trovati {{search.results.searchGame.length}} record</i></legend>
+        <legend>Risultati <i>Trovati {{search.results.searchGame.count}} record</i></legend>
     </fieldset>
     <table class="uk-table">
         <thead>
@@ -85,8 +85,8 @@
         <tbody>
             <tr ng-repeat="game in search.results.searchGame">
                 <td><a href="#details" ng-click="search.showDetails(game)" data-uk-modal>{{ game.game.title }}</a></td>
-                <td>{{ search.getGenreById(game.game.genre.genreId).name }}</td>
-                <td><span class="{{ search.getPlatformById(game.game.platform.platformId).class }}"></span> {{ search.getPlatformById(game.game.platform.platformId).name }}</td>
+                <td>{{ search.getGenreById(game.genre.genreId).name }}</td>
+                <td><span style="margin-left:-70px;" class="{{ search.getPlatformById(game.platform.platformId).class }}"></span> {{ search.getPlatformById(game.platform.platformId).name }}</td>
                 <td>{{ search.round(game.distance) }} km</td>
                 <td><user-link data-user="{{ game.user.id }}"></user-link></td>
             </tr>

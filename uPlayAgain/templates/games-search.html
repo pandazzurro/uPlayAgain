@@ -49,7 +49,7 @@
 </form>
 <form class="uk-form" ng-show="search.searchPerformed">
     <fieldset>
-        <legend>Risultati <i>Trovati {{search.results.length}} record</i></legend>
+        <legend>Risultati <i>Trovati {{search.results.count}} record</i></legend>
     </fieldset>
     <table class="uk-table">
         <thead>
@@ -67,9 +67,9 @@
                         <i class="fa fa-plus"></i>
                     </button>
                 </td>
-                <td>{{game.title}}</td>
-                <td>{{search.getGenreById(game.genreId).name}}</td>
-                <td><span class="{{search.getPlatformById(game.platformId).class}}"></span>{{search.getPlatformById(game.platformId).name}}</td>
+                <td >{{game.title}}</td>
+                <td >{{search.getGenreById(game.genre.genreId).name}}</td>
+                <td ><span style="margin-left: -70px" class="{{search.getPlatformById(game.platform.platformId).class}}"></span>{{search.getPlatformById(game.platform.platformId).name}}</td>
             </tr>
         </tbody>
         <tfoot>
