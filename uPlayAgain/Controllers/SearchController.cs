@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Spatial;
 using System.Linq;
 using System.Threading.Tasks;
@@ -82,19 +83,39 @@ namespace uPlayAgain.Controllers
 
         // TODO --> fare ricerca per il gioco semplice ma con i parametri
         [HttpGet]
-        [Route("api/Games/Search/")]
-        [Route("api/Games/Search/{gameTitle?}/")]
-        [Route("api/Games/Search/{gameTitle?}/{platformId?}")]
-        [Route("api/Games/Search/{gameTitle?}/{platformId?}/{genreId?}")]
-        [ResponseType(typeof(Game))]
-        public IQueryable<Game> SearchGame(string gameTitle = "", string platformId = "", string genreId = "")
+        [Route("api/Games/Search/{take?}/{skip?}")]
+        [Route("api/Games/Search/{take?}/{skip?}/{gameTitle?}")]
+        [Route("api/Games/Search/{take?}/{skip?}/{gameTitle?}/{platformId?}")]
+        [Route("api/Games/Search/{take?}/{skip?}/{gameTitle?}/{platformId?}/{genreId?}")]
+        public async Task<IHttpActionResult> SearchGame(int take = 10000, int skip = 0, string gameTitle = "", string platformId = "", string genreId = "")
         {
-            return db.Games
-                     .Include(p => p.Platform)
-                     .Include(p => p.Genre)
-                     .Where(g => string.IsNullOrEmpty(gameTitle) || g.Title.Contains(gameTitle))
-                     .Where(gr => string.IsNullOrEmpty(genreId) || string.Equals(gr.Genre.GenreId, genreId))
-                     .Where(p => string.IsNullOrEmpty(platformId) || string.Equals(p.Platform.PlatformId, platformId));            
+            IQueryable<Game> q =  db.Games
+                                    .Include(p => p.Platform)
+                                    .Include(p => p.Genre)
+                                    .Where(g => string.IsNullOrEmpty(gameTitle) || g.Title.Contains(gameTitle))
+                                    .Where(gr => string.IsNullOrEmpty(genreId) || string.Equals(gr.Genre.GenreId, genreId))
+                                    .Where(p => string.IsNullOrEmpty(platformId) || string.Equals(p.Platform.PlatformId, platformId));
+
+            return Ok(new
+            {
+                Count = q.Count(),
+                Games = q.OrderBy(p => p.ShortName)
+                       .Skip(skip)
+                       .Take(take)
+                       .Select(x =>
+                       new
+                       {
+                           Description = x.Description,
+                           GameId = x.GameId,
+                           Genre = x.Genre,
+                           GenreId = x.GenreId,
+                           ImageThumb = x.ImageThumb,
+                           Platform = x.Platform,
+                           ShortName = x.ShortName,
+                           Title = x.Title,
+                           Count = q.Count()
+                       })
+            });
         }        
     }
 }

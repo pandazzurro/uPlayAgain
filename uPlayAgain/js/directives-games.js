@@ -20,7 +20,7 @@ app.directive('exchangeSearch', ['factories', 'user-service', 'games-service', '
             _this.searchPerformed = false;
             _this.results = [];
             _this.searchParameter = {};
-            _this.itemsOnPage = 20;
+            _this.itemsOnPage = 10;
             _this.pagination = UIkit.pagination("#gridPagination");
            
             this.setGenre = function (genre) {
@@ -167,6 +167,8 @@ app.directive('gamesSearch', ['factories', 'user-service', 'games-service', func
             _this.results = [];
             _this.addingGame = undefined;
             _this.gameSrv = gameSrv;
+            _this.itemsOnPage = 10;
+            _this.pagination = UIkit.pagination("#gridPagination");
 
             this.setGenre = function (genre) {
                 _this.params.genre = genre;
@@ -206,17 +208,27 @@ app.directive('gamesSearch', ['factories', 'user-service', 'games-service', func
                 return result;
             }
 
-            this.startSearch = function () {
+            this.startSearch = function (skip) {
+                if (skip == undefined)
+                    skip = 0;
                 _this.results = [];
 
                 var queryParameters = {
                     gameTitle: _this.params.string,
                     genreId: _this.params.genre === undefined ? undefined : _this.params.genre.genreId,
-                    platformId: _this.params.platform === undefined ? undefined : _this.params.platform.platformId
+                    platformId: _this.params.platform === undefined ? undefined : _this.params.platform.platformId,
+                    skip: skip * _this.itemsOnPage,
+                    take: _this.itemsOnPage
                 };
 
                 _this.results = gxcFct.game.query(queryParameters, function (success) {
                     _this.searchPerformed = true;
+                    _this.pagination.options.currentPage = skip + 1;
+                    _this.pagination.options.items = success.count;
+                    _this.pagination.options.itemsOnPage = _this.itemsOnPage;
+
+                    _this.pagination.init();
+                    _this.startPagination = false;
                 });
             }
 
@@ -290,7 +302,14 @@ app.directive('gamesSearch', ['factories', 'user-service', 'games-service', func
                     modal.show();
                 }
             }
-            
+
+            _this.startPagination = false;
+            _this.pagination.options.onSelectPage = function (e, pageIndex) {
+                if (!_this.startPagination) {
+                    _this.startPagination = true;
+                    _this.startSearch(e);
+                }
+            };            
         },
         controllerAs: 'search'
     };

@@ -334,8 +334,11 @@ namespace uPlayAgain.GameImporter.ViewModel
                     if (await _currentWebApi.GetGameByFieldSearch(new Game() { ImportId = game.ImportId }) == default(Game))
                     {
                         await _currentWebApi.InsertGame(_mapper.Map<Game>(game));
-                        // Rimuovo i giochi già processati
-                        GamesDto.Remove(game);
+                        await App.Current.Dispatcher.BeginInvoke((Action)delegate ()
+                        {
+                            // Rimuovo i giochi già processati
+                            GamesDto.Remove(game);
+                        });
                     }
                 });
             });

@@ -24,7 +24,7 @@ app.factory('factories', ['$resource', function ($resource) {
                 query: { method: 'GET', isArray: true }
             }),
             game: $resource(app.webapi, {}, {
-                query: { url: app.webapi + '/api/games/search', method: 'GET', isArray: true },
+                query: { url: app.webapi + '/api/games/search/:take/:skip/:gameTitle/:platformId/:genreId', method: 'GET', isArray: false, params: { take: '@take', skip: '@skip', gameTitle: '@gameTitle', platformId: '@platformId', genreId: '@genreId' } },
                 get: { url: app.webapi + '/api/games/:gameId', method: 'GET', isArray: false },
                 byUser: { url: app.webapi + '/api/games/byUser/:userId', method: 'GET', isArray: true, params: { userId: '@userId' } },                
                 search: { url: app.webapi + '/api/search', method: 'GET', isArray: false },

@@ -60,13 +60,8 @@
                 <th>Piattaforma</th>
             </tr>
         </thead>
-        <tfoot>
-            <tr>
-                <td colspan="4"></td>
-            </tr>
-        </tfoot>
         <tbody>
-            <tr ng-repeat="game in search.results">
+            <tr ng-repeat="game in search.results.games">
                 <td>
                     <button class="uk-button" data-uk-tooltip title="Aggiungi alla libreria" data-uk-modal="{target:'#gameAdd'}" ng-click="search.populateAddGame(game)">
                         <i class="fa fa-plus"></i>
@@ -77,25 +72,32 @@
                 <td><span class="{{search.getPlatformById(game.platformId).class}}"></span>{{search.getPlatformById(game.platformId).name}}</td>
             </tr>
         </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4">
+                    <ul class="uk-pagination" id="gridPagination"></ul>
+                </td>
+            </tr>
+        </tfoot>
     </table>
 </form>
 
 <!-- Modale di aggiunta alla libreria -->
 <div id="gameAdd" class="uk-modal">
-    <div class="uk-modal-dialog">
+    <div class="uk-modal-dialog uk-modal-dialog-large">
         <a class="uk-modal-close uk-close"></a>
-        <div class="uk-grid">
-            <div class="uk-width-1-4">
+        <div class="uk-grid uk-grid-medium uk-grid-small">
+            <div class="uk-width-large-4-10 uk-width-small-4-10 uk-width-medium-4-10">
                 <img class="uk-comment-avatar" ng-src="data:image/gif;base64,{{search.addingGame.gameData.imageThumb}}" alt="{{search.addingGame.gameData.title}}" style="max-height: 250px;max-width: 200px;"
                      ng-click="search.loadImage(search.addingGame.gameData.gameId)" data-uk-tooltip title="Clicca per ingrandire" data-uk-modal="{target:'#gameImage'}">
             </div>
-            <div class="uk-width-3-4">
-                <form class="uk-form uk-form-horizontal">
+            <div class="uk-width-large-4-10 uk-width-small-4-10 uk-width-medium-4-10">
+                <form class="uk-form uk-form-horizontal uk-form-width-large uk-form-width-medium uk-form-width-small">
                     <fieldset data-uk-margin>
                         <legend>{{search.addingGame.gameData.title}}</legend>
                         <div class="uk-form-row">
                             <div class="uk-form-label">Lingua</div>
-                            <div class="uk-form-controls">
+                            <div class="uk-form-controls  uk-form-width-large uk-form-width-medium uk-form-width-small">
                                 <div class="uk-button-dropdown" data-uk-dropdown="{mode:'click'}">
                                     <button class="uk-button">
                                         <span>{{search.addingGame.gameData.language.description}}</span>
@@ -114,7 +116,7 @@
 
                         <div class="uk-form-row">                            
                             <div class="uk-form-label">Stato</div>
-                            <div class="uk-form-controls">
+                            <div class="uk-form-controls uk-form-width-large uk-form-width-medium uk-form-width-small">
                                 <div class="uk-button-dropdown" data-uk-dropdown="{mode:'click'}">
                                     <button class="uk-button">
                                         <span>{{search.addingGame.gameData.status.description}}</span>
@@ -132,7 +134,7 @@
                         </div>
                         <div class="uk-form-row">
                             <div class="uk-form-label">Note<br /><small>caratteri rimanenti: {{search.getRemainingChars()}}</small></div>
-                            <div class="uk-form-controls uk-form-width-medium">
+                            <div class="uk-form-controls uk-form-width-large uk-form-width-medium uk-form-width-small">
                                 <textarea maxlength="200" ng-model="search.addingGame.gameData.note"></textarea>
                             </div>                            
                         </div>

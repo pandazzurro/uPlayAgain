@@ -21,25 +21,25 @@ namespace uPlayAgain.Controllers
         [ResponseType(typeof(Library))]
         public async Task<IHttpActionResult> GetLibrary(int id)
         {
-            Library library = await db.Libraries
-                                      .Include(t => t.LibraryComponents)
-                                      .Include(t => t.User)
-                                      .Where(t => t.LibraryId == id)                                                                
-                                      .SingleOrDefaultAsync();
-
-            for(int i = library.LibraryComponents.Count - 1; i >= 0; i--)
-            {
-                LibraryComponent lc = library.LibraryComponents.ElementAt(i);
-                if (lc.IsDeleted == true)
-                    library.LibraryComponents.Remove(lc);
-            }
-            
-            if (library == null)
+            if (await db.Libraries.FindAsync(id) == null)
             {
                 return NotFound();
             }
-
-            return Ok(library);
+            
+            return Ok(
+                await db.Libraries
+                        .Include(t => t.LibraryComponents)
+                        .Include(t => t.User)
+                        .Where(t => t.LibraryId == id)
+                        .Select(x => new
+                        {
+                            LibraryComponents = x.LibraryComponents,
+                            LibraryId = x.LibraryId,
+                            User = x.User,
+                            UserId = x.UserId
+                        })
+                        .SingleOrDefaultAsync()
+                    );
         }
 
         // PUT: api/Libraries/5
