@@ -91,6 +91,8 @@ app.directive('exchangeSearch', ['factories', 'user-service', 'games-service', '
                     _this.pagination.options.currentPage = skip + 1;
                     _this.pagination.options.items = success.count;
                     _this.pagination.options.itemsOnPage = _this.itemsOnPage;
+                    _this.pagination.options.lblNext = ">";
+                    _this.pagination.options.lblPrev = "<";
                     
                     angular.forEach(success.searchGame, function (value, index) {
                         if (value.game.image == undefined || value.game.image == "" || value.game.image == null)
@@ -214,9 +216,9 @@ app.directive('gamesSearch', ['factories', 'user-service', 'games-service', func
                 _this.results = [];
 
                 var queryParameters = {
-                    gameTitle: _this.params.string,
-                    genreId: _this.params.genre === undefined ? undefined : _this.params.genre.genreId,
-                    platformId: _this.params.platform === undefined ? undefined : _this.params.platform.platformId,
+                    gameTitle: _this.params.string === undefined ? ' ' : _this.params.string,
+                    genreId: _this.params.genre === undefined ? ' ' : _this.params.genre.genreId,
+                    platformId: _this.params.platform === undefined ? ' ' : _this.params.platform.platformId,
                     skip: skip * _this.itemsOnPage,
                     take: _this.itemsOnPage
                 };
@@ -226,6 +228,8 @@ app.directive('gamesSearch', ['factories', 'user-service', 'games-service', func
                     _this.pagination.options.currentPage = skip + 1;
                     _this.pagination.options.items = success.count;
                     _this.pagination.options.itemsOnPage = _this.itemsOnPage;
+                    _this.pagination.options.lblNext = ">";
+                    _this.pagination.options.lblPrev = "<";
 
                     _this.pagination.init();
                     _this.startPagination = false;
