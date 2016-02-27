@@ -1,15 +1,16 @@
 <!-- Top navbar -->
-<nav class="uk-navbar uk-navbar-attached">
-    <a href="#navbar-side" class="uk-navbar-toggle uk-visible-small" data-uk-offcanvas></a>
+<nav class="uk-navbar uk-navbar-attached">    
+    <!--<a href="#navbar-side" class="uk-navbar-toggle uk-visible-small" data-uk-offcanvas></a>-->
+    <a href="#navbar-side" class="uk-navbar-toggle uk-visible-small uk-touch" data-uk-offcanvas></a>
     <ul class="uk-navbar-nav">
         <li><a href="#"><img src="../css/images/logoMaxi.svg" style="width:40px; height:40px;" /></a></li>
         <li><a href="#/contacts">Chi siamo</a></li>
     </ul>
-    <div class="uk-navbar-flip uk-hidden-small">
+    <div class="uk-navbar-flip uk-hidden-touch uk-hidden-small">
         <ul class="uk-navbar-nav" ng-show="userCtrl.isLoggedIn()">
             <li>
                 <a href="#/feedback-vote" class="uk-navbar-nav-subtitle">
-                    <i class="fa fa-star"/><i class="fa fa-star-half-o"/><i class="fa fa-star-o"/> Feedback
+                    <i class="fa fa-star" /><i class="fa fa-star-half-o" /><i class="fa fa-star-o" /> Feedback
                     <div>assegna i feedback mancanti</div>
                 </a>
             </li>

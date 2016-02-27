@@ -1,6 +1,6 @@
 'use strict';
 var app = angular.module('gxc', [
-    'LocalStorageModule',
+    'LocalStorageModule','SignalR',
     'ngRoute', 'ngResource', 'ngCookies', 'ngImgCrop',
     'angular-loading-bar', 'angular-svg-round-progress',
     'uiGmapgoogle-maps']);

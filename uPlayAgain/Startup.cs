@@ -19,6 +19,7 @@ using System.Net;
 using uPlayAgain.Data.EF.Context;
 using uPlayAgain.Data.EF.Models;
 using System.Web.Mvc;
+using Microsoft.AspNet.SignalR;
 
 [assembly: OwinStartup(typeof(uPlayAgain.Startup))]
 namespace uPlayAgain
@@ -49,7 +50,8 @@ namespace uPlayAgain
             //SqlServerTypes.Utilities.LoadNativeAssemblies(Server.MapPath("~/bin"));
 
             app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
-            app.UseWebApi(config);            
+            app.UseWebApi(config);
+            app.MapSignalR("/signalr", new HubConfiguration());
         }
 
         public void ConfigureOAuth(IAppBuilder app)

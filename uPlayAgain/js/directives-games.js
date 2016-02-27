@@ -101,8 +101,7 @@ app.directive('exchangeSearch', ['factories', 'user-service', 'games-service', '
                         if (success.searchGame.length == index + 1) {
                             _this.pagination.init();
                         }
-                    });
-                    //_this.pagination.init();
+                    });                    
                     _this.startPagination = false;
                 });
             };
@@ -256,10 +255,10 @@ app.directive('gamesSearch', ['factories', 'user-service', 'games-service', func
 
             this.populateAddGame = function (game) {
                 _this.addingGame = { gameData : {} };
-                _this.addingGame.gameData.isExchangeable = true;
                 _this.addingGame.gameData = game;
                 _this.addingGame.gameData.language = { gameLanguageId: 1, description: "Italiano" };
                 _this.addingGame.gameData.status = { statusId: 1, description: "Eccellente" };
+                _this.addingGame.gameData.isExchangeable = true;
             }
 
             this.toggleTrade = function () {

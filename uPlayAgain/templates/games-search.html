@@ -75,7 +75,8 @@
         <tfoot>
             <tr>
                 <td colspan="4">
-                    <ul class="uk-pagination" id="gridPagination"></ul>
+                    <ul class="uk-pagination" id="gridPagination">                        
+                    </ul>
                 </td>
             </tr>
         </tfoot>
@@ -87,11 +88,11 @@
     <div class="uk-modal-dialog">
         <a class="uk-modal-close uk-close"></a>
         <div class="uk-grid uk-grid-medium uk-grid-small">
-            <div class="uk-width-large-4-10 uk-width-small-4-10 uk-width-medium-4-10">
-                <img class="uk-comment-avatar" ng-src="data:image/gif;base64,{{search.addingGame.gameData.imageThumb}}" alt="{{search.addingGame.gameData.title}}" style="max-height: 250px;max-width: 200px;"
+            <div class="uk-width-large-3-10 uk-width-small-3-10 uk-width-medium-3-10">
+                <img class="uk-comment-avatar uk-align-center uk-width-8-10" ng-src="data:image/gif;base64,{{search.addingGame.gameData.imageThumb}}" alt="{{search.addingGame.gameData.title}}"
                      ng-click="search.loadImage(search.addingGame.gameData.gameId)" data-uk-tooltip title="Clicca per ingrandire" data-uk-modal="{target:'#gameImage'}">
             </div>
-            <div class="uk-width-large-4-10 uk-width-small-4-10 uk-width-medium-4-10">
+            <div class="uk-width-large-7-10 uk-width-small-7-10 uk-width-medium-7-10">
                 <form class="uk-form uk-form-horizontal uk-form-width-large uk-form-width-medium uk-form-width-small">
                     <fieldset data-uk-margin>
                         <legend>{{search.addingGame.gameData.title}}</legend>

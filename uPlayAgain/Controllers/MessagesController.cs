@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using Microsoft.AspNet.SignalR;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using uPlayAgain.Data.EF.Models;
+using uPlayAgain.Hubs;
 
 namespace uPlayAgain.Controllers
 {
@@ -75,9 +77,14 @@ namespace uPlayAgain.Controllers
             {
                 return BadRequest(ModelState);
             }
-
+            
             db.Messages.Add(message);
             await db.SaveChangesAsync();
+
+            //TODO sistemare la notifica
+            IHubContext ctx = GlobalHost.ConnectionManager.GetHubContext<MessageConnection>();
+            await ctx.Clients.All.sendMessageHub(message);
+            
 
             return CreatedAtRoute("DefaultApi", new { id = message.MessageId }, message);
         }
