@@ -84,7 +84,7 @@
 
 <!-- Modale di aggiunta alla libreria -->
 <div id="gameAdd" class="uk-modal">
-    <div class="uk-modal-dialog uk-modal-dialog-large">
+    <div class="uk-modal-dialog">
         <a class="uk-modal-close uk-close"></a>
         <div class="uk-grid uk-grid-medium uk-grid-small">
             <div class="uk-width-large-4-10 uk-width-small-4-10 uk-width-medium-4-10">
@@ -97,13 +97,13 @@
                         <legend>{{search.addingGame.gameData.title}}</legend>
                         <div class="uk-form-row">
                             <div class="uk-form-label">Lingua</div>
-                            <div class="uk-form-controls  uk-form-width-large uk-form-width-medium uk-form-width-small">
+                            <div class="uk-form-controls uk-form-width-small">
                                 <div class="uk-button-dropdown" data-uk-dropdown="{mode:'click'}">
                                     <button class="uk-button">
                                         <span>{{search.addingGame.gameData.language.description}}</span>
                                         <i class="uk-icon-caret-down"></i>
                                     </button>
-                                    <div class="uk-dropdown">
+                                    <div class="uk-dropdown uk-button-dropdown">
                                         <ul class="uk-nav uk-nav-dropdown">
                                             <li ng-repeat="language in search.gameSrv.languages">
                                                 <a href="" ng-click="search.setLanguage(language)">{{language.description}}</a>
@@ -116,13 +116,13 @@
 
                         <div class="uk-form-row">                            
                             <div class="uk-form-label">Stato</div>
-                            <div class="uk-form-controls uk-form-width-large uk-form-width-medium uk-form-width-small">
+                            <div class="uk-form-controls uk-form-width-small">
                                 <div class="uk-button-dropdown" data-uk-dropdown="{mode:'click'}">
                                     <button class="uk-button">
                                         <span>{{search.addingGame.gameData.status.description}}</span>
                                         <i class="uk-icon-caret-down"></i>
                                     </button>
-                                    <div class="uk-dropdown">
+                                    <div class="uk-dropdown uk-button-dropdown">
                                         <ul class="uk-nav uk-nav-dropdown">
                                             <li ng-repeat="status in search.gameSrv.statuses">
                                                 <a href="" ng-click="search.setStatus(status)">{{status.description}}</a>
@@ -134,7 +134,7 @@
                         </div>
                         <div class="uk-form-row">
                             <div class="uk-form-label">Note<br /><small>caratteri rimanenti: {{search.getRemainingChars()}}</small></div>
-                            <div class="uk-form-controls uk-form-width-large uk-form-width-medium uk-form-width-small">
+                            <div class="uk-form-controls">
                                 <textarea maxlength="200" ng-model="search.addingGame.gameData.note"></textarea>
                             </div>                            
                         </div>
