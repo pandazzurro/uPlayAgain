@@ -24,8 +24,13 @@ namespace uPlayAgain.Controllers
         {
             foreach (Game g in db.Games.Where(x => x.ImageThumb == null))
             {
-                g.ImageThumb = g.Resize();
-                db.Entry(g).State = EntityState.Modified;
+                try
+                {
+                    g.ImageThumb = g.Resize();
+                    db.Entry(g).State = EntityState.Modified;
+                }
+                catch (System.Exception ex)
+                { }
             }
             await db.SaveChangesAsync();
         }

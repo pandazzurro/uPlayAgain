@@ -6,37 +6,44 @@
                 <form-login-side></form-login-side>
             </li>
         </ul>
-        <ul class="uk-nav uk-nav-offcanvas" data-uk-nav ng-show="userCtrl.isLoggedIn()">
-            <li class="uk-nav-header">
-                Connesso come <span class="nav-header-username">{{ userCtrl.getCurrentUser().Username }}</span>
+        <ul class="uk-nav uk-nav-offcanvas uk-nav-parent-icon" data-uk-nav ng-show="userCtrl.isLoggedIn()">
+            <li class="uk-parent uk-nav-header">
+                Connesso come <span class="nav-header-username">{{ userCtrl.getCurrentUser().userName }}</span>
             </li>
-            <li>
+            <li class="uk-parent">
                 <a href="#" ng-click="userCtrl.logout()">
                     Esci
                 </a>
             </li>
-            <li>
-                <a href="">
+            <li class="uk-parent">
+                <a href="#/edit-register">
                     Il mio profilo
                 </a>
             </li>
-            <li class="uk-nav-divider"></li>
-            <li>
-                <a href="#/exchange" class="uk-navbar-nav-subtitle">
-                    Baratto
-                    <div>cerca e scambia giochi</div>
-                </a>
+            <li class="uk-nav-divider"></li>            
+            <li class="uk-parent uk-nav-header">
+                Funzioni
             </li>
-            <li>
-                <a href="#/library" class="uk-navbar-nav-subtitle">
-                    Libreria
-                    <div>hai registrato {{ userCtrl.getCurrentUser().Games }} giochi</div>
-                </a>
-            </li>
-            <li>
+            <li class="uk-parent">
                 <a href="#/mail" class="uk-navbar-nav-subtitle">
+                    <i class="fa fa-envelope-o fa-status-{{ userCtrl.getCurrentUser().Messages.All > 0 ? 'warn' : 'ok' }}">
+                    </i> 
                     Messaggi
-                    <div>hai {{ userCtrl.getCurrentUser().Messages.All }} messaggi da leggere</div>
+                </a>
+            </li>
+            <li class="uk-parent">
+                <a href="#/library" class="uk-navbar-nav-subtitle">
+                    <i class="fa fa-list"></i> Libreria
+                </a>
+            </li>
+            <li class="uk-parent">
+                <a href="#/exchange" class="uk-navbar-nav-subtitle">
+                    <i class="fa fa-exchange"></i> Baratto
+                </a>
+            </li>
+            <li class="uk-parent">
+                <a href="#/feedback-vote" class="uk-navbar-nav-subtitle">
+                    <i class="fa fa-star" /><i class="fa fa-star-half-o" /><i class="fa fa-star-o" /> Feedback                    
                 </a>
             </li>
         </ul>

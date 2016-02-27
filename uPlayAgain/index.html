@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html lang="it-IT" ng-app="gxc">
 <head>
-    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8" />
     <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,700,400italic,700italic&subset=latin,latin-ext" />
     <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css" />
 
@@ -26,8 +26,8 @@
         <navbar-top></navbar-top>
         <navbar-side></navbar-side>
         <!-- Content -->
-        <div class="content uk-grid" style="min-height:500px">
-            <div class="uk-width-large-1-10 uk-hidden-medium uk-hidden-small">
+        <div class="content uk-grid uk-grid-medium uk-grid-small">
+            <div class="uk-width-large-1-10 uk-hidden-medium uk-hidden-small uk-hidden-touch">
                 <navbar-ads></navbar-ads>
             </div>
             <div class="uk-width-large-8-10 uk-width-medium-1-1 uk-width-small-1-1">
@@ -46,11 +46,13 @@
     </div>
 	<!-- javascript -->
 	<script type="text/javascript" src="Scripts/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="Scripts/jquery.signalR-2.2.0.min.js"></script>
     <script type="text/javascript" src="Scripts/angular.min.js"></script>
 	<script type="text/javascript" src="Scripts/angular-route.min.js"></script>
 	<script type="text/javascript" src="Scripts/angular-resource.min.js"></script>
 	<script type="text/javascript" src="Scripts/angular-cookies.min.js"></script>
-	<script type="text/javascript" src='Scripts/lodash.js'></script>
+    <script type="text/javascript" src="Scripts/signalr-hub.min.js"></script>
+    <script type="text/javascript" src='Scripts/lodash.js'></script>
 	<script type="text/javascript" src='js/core/angular-google-maps.min.js'></script>
 	<script type="text/javascript" src="js/core/ng-img-crop.js"></script>
     <script type="text/javascript" src="js/core/angular-local-storage.min.js"></script>
@@ -75,6 +77,7 @@
     <script type="text/javascript" src="js/services/tokensManagerService.js?v=2"></script>
 	<script type="text/javascript" src="js/services/baseServices.js"></script>
 
+    <script type="text/javascript" src="js/hub-factories.js"></script>
     <script type="text/javascript" src="js/user-controller.js"></script>
 	<script type="text/javascript" src="js/templates.js"></script>
 	<script type="text/javascript" src="js/directives-games.js"></script>

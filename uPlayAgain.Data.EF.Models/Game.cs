@@ -40,7 +40,7 @@ namespace uPlayAgain.Data.EF.Models
                 using (var ms = new MemoryStream(Image))
                 {
                     Image img = System.Drawing.Image.FromStream(ms);
-                    int fixedWidth = 65;
+                    int fixedWidth = 200;
                     double widthPercentage = (double)fixedWidth / (double)img.Width;
                     Bitmap b = ImageUtilities.ResizeImage(img, fixedWidth, (int)(img.Height * widthPercentage));
                     ImageConverter converter = new ImageConverter();
