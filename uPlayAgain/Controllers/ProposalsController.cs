@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNet.SignalR;
+using System;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Validation;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using uPlayAgain.Data.EF.Models;
+using uPlayAgain.Hubs;
 
 namespace uPlayAgain.Controllers
 {
@@ -90,6 +92,18 @@ namespace uPlayAgain.Controllers
             try
             {
                 await db.SaveChangesAsync();
+
+                // Notifico SOLO al client specifico che è stato inviato un messaggio 
+                string userToSend = string.Empty;
+                if (proposal.Direction)
+                    userToSend = proposal.Transaction.UserReceiving_Id;
+                else
+                    userToSend = proposal.Transaction.UserProponent_Id;
+                
+
+                IHubContext ctx = GlobalHost.ConnectionManager.GetHubContext<MessageConnection>();                
+                string ConnectionId = MessageConnection.GetConnectionByUserID(userToSend);
+                await ctx.Clients.Client(ConnectionId).sendProposalHub(proposal, ConnectionId);
             }
             catch (DbEntityValidationException ex)
             {

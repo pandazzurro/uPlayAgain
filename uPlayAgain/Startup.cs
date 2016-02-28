@@ -12,14 +12,12 @@ using Microsoft.Owin.Security.DataProtection;
 using uPlayAgain.Utilities;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.AspNet.Identity;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Threading;
-using System.Net;
 using uPlayAgain.Data.EF.Context;
 using uPlayAgain.Data.EF.Models;
 using System.Web.Mvc;
 using Microsoft.AspNet.SignalR;
+using uPlayAgain.Hubs;
+using Newtonsoft.Json;
 
 [assembly: OwinStartup(typeof(uPlayAgain.Startup))]
 namespace uPlayAgain
@@ -45,13 +43,10 @@ namespace uPlayAgain
             //Webapi
             GlobalConfiguration.Configure(WebApiConfig.Register);
             AreaRegistration.RegisterAllAreas();
-
-            //HibernatingRhinos.Profiler.Appender.EntityFramework.EntityFrameworkProfiler.Initialize();
-            //SqlServerTypes.Utilities.LoadNativeAssemblies(Server.MapPath("~/bin"));
-
+            
             app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
             app.UseWebApi(config);
-            app.MapSignalR("/signalr", new HubConfiguration());
+            SignalRConfig(app);
         }
 
         public void ConfigureOAuth(IAppBuilder app)
@@ -115,6 +110,31 @@ namespace uPlayAgain
 
             // Register disposable OwinContext
             app.CreatePerOwinContext<OwinContextDisposal>((o, c) => new OwinContextDisposal(c));
+        }
+
+        public void SignalRConfig(IAppBuilder app)
+        {
+            // Make long polling connections wait a maximum of 110 seconds for a
+            // response. When that time expires, trigger a timeout command and
+            // make the client reconnect.
+            GlobalHost.Configuration.ConnectionTimeout = TimeSpan.FromSeconds(110);
+
+            // Wait a maximum of 60 seconds after a transport connection is lost
+            // before raising the Disconnected event to terminate the SignalR connection.
+            GlobalHost.Configuration.DisconnectTimeout = TimeSpan.FromSeconds(60);
+
+            // For transports other than long polling, send a keepalive packet every
+            // 10 seconds. 
+            // This value must be no more than 1/3 of the DisconnectTimeout value.
+            GlobalHost.Configuration.KeepAlive = TimeSpan.FromSeconds(20);
+
+            // Serializer
+            JsonSerializer serializer = new JsonSerializer();            
+            serializer.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            serializer.PreserveReferencesHandling = PreserveReferencesHandling.None;
+            GlobalHost.DependencyResolver.Register(typeof(JsonSerializer), () => serializer);
+
+            app.MapSignalR("/signalr", new HubConfiguration());
         }
     }    
 }

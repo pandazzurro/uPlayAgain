@@ -56,27 +56,14 @@ app.controller('UserController', ['$scope', '$cookies', 'user-service', 'authSer
     //}
 
     var _this = this;
-    //$scope.Messages = Messages;
-    //$scope.Messages.pushMessage();
-
+    
     this.login = function () {
         $scope.loginData.userName = $scope.username,
         $scope.loginData.password = $scope.password;
         authService.login($scope.loginData).then(function (response) {
             // Redirect verso una pagina particolare?
             UIkit.notify('Benvenuto ' + response.userName, { status: 'success', timeout: 1500 });
-            
-            //MessageHubProxy.client.connection = function (name, message) {
-            //    console.log(name + ' ' + message);
-            //};
-
-            $.connection.hub.start().done(function () {
-                // Wire up Send button to call NewContosoChatMessage on the server.
-                $('#newContosoChatMessage').click(function () {
-                    contosoChatHubProxy.server.newContosoChatMessage($('#displayname').val(), $('#message').val());
-                    $('#message').val('').focus();
-                });
-            });
+            Messages.createHub(userSrv.getCurrentUser().id);
         },
          function (err) {
              $scope.message = err.error_description;
@@ -94,6 +81,7 @@ app.controller('UserController', ['$scope', '$cookies', 'user-service', 'authSer
             if (authService.userId() != undefined) {
                 userSrv.loadData(authService.userId());
                 requestaLoginData = false;
+                Messages.createHub(authService.userId());
             }
         }
         return authService.isAuth();

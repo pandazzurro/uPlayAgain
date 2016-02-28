@@ -81,11 +81,11 @@ namespace uPlayAgain.Controllers
             db.Messages.Add(message);
             await db.SaveChangesAsync();
 
-            //TODO sistemare la notifica
+            // Notifico SOLO al client specifico che è stato inviato un messaggio 
             IHubContext ctx = GlobalHost.ConnectionManager.GetHubContext<MessageConnection>();
-            await ctx.Clients.All.sendMessageHub(message);
+            string ConnectionId = MessageConnection.GetConnectionByUserID(message.UserReceiving_Id);
+            await ctx.Clients.Client(ConnectionId).sendMessageHub(message, ConnectionId);
             
-
             return CreatedAtRoute("DefaultApi", new { id = message.MessageId }, message);
         }
 

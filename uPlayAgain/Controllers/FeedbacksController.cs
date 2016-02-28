@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNet.SignalR;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using uPlayAgain.Data.Dto;
 using uPlayAgain.Data.EF.Models;
+using uPlayAgain.Hubs;
 using uPlayAgain.Models;
 
 namespace uPlayAgain.Controllers
@@ -138,6 +140,13 @@ namespace uPlayAgain.Controllers
                 try
                 {
                     await db.SaveChangesAsync();
+
+
+                    // Notifico SOLO al client specifico che è stato inviato un messaggio 
+                    IHubContext ctx = GlobalHost.ConnectionManager.GetHubContext<MessageConnection>();
+                    string ConnectionId = MessageConnection.GetConnectionByUserID(feedback.UserId);
+                    await ctx.Clients.Client(ConnectionId).sendFeedbackHub(feedback, tran, ConnectionId);
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -174,6 +183,12 @@ namespace uPlayAgain.Controllers
             {
                 db.Feedbacks.Add(feedback);
                 await db.SaveChangesAsync();
+
+
+                // Notifico SOLO al client specifico che è stato inviato un messaggio 
+                IHubContext ctx = GlobalHost.ConnectionManager.GetHubContext<MessageConnection>();
+                string ConnectionId = MessageConnection.GetConnectionByUserID(feedback.UserId);
+                await ctx.Clients.Client(ConnectionId).sendFeedbackHub(feedback, tran, ConnectionId);
             }
             else
             {
