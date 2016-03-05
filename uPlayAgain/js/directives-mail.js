@@ -335,9 +335,13 @@ app.directive('mailbox', ['factories', 'user-service', 'games-service', '$locati
                 });
             }
 
+            this.initPage = function () {                
+                _this.getMessages(_this.params.direction, _this.params.page);
+                _this.loadCounter();
+            }
+
             //init
-            _this.getMessages(_this.params.direction, _this.params.page);
-            _this.loadCounter();
+            _this.initPage();
         },
         controllerAs: 'mailbox'
     }

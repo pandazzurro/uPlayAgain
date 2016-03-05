@@ -7,29 +7,26 @@
             listeners: {
                 'newConnection': function (id) {
                     Messages.connected.push(id.ConnectionID);
-                    $rootScope.$apply();
+                    //$rootScope.$apply();
                     console.log("New Login: " + id.UserId);
                 },
                 'removeConnection': function (id) {
                     Messages.connected.splice(Messages.connected.indexOf(id), 1);
                     console.log("Disconnected: " + id);
-                    $rootScope.$apply();
+                    //$rootScope.$apply();
                 },
                 'sendMessageHub': function (message, id) {
                     var user = find(id);
-                    console.log(message);
-                    $rootScope.$apply();
+                    $rootScope.$emit('newMessage', message);
                 },
                 'sendProposalHub': function (proposal, id) {
                     var user = find(id);
                     console.log(proposal);
-                    $rootScope.$apply();
+                    $rootScope.$emit('newProposal', proposal);
                 },
                 'sendFeedbackHub': function (feedback, tran, id) {
                     var user = find(id);
-                    console.log(feedback);
-                    console.log(tran);
-                    $rootScope.$apply();
+                    $rootScope.$emit('newFeedback', [feedback, tran]);
                 }
             },
             queryParams : {

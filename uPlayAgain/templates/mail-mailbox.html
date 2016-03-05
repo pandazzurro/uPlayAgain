@@ -13,6 +13,9 @@
             <li ng-class="mailbox.params.direction==='transactions' ? 'uk-active' : ''">
                 <a href="#/mail/transaction/1"><i class="fa fa-archive"></i> Scambi({{ mailbox.messagesCount.trn }})</a>
             </li>
+            <li>
+                <a ng-click="mailbox.initPage()"><i class="fa fa-refresh"></i> Aggiorna</a>
+            </li>
         </ul>
         <div class="uk-width-medium-5-6">
             <table class="uk-table uk-table-condensed" ng-show="!mailbox.showTransactions">

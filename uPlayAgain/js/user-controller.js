@@ -1,7 +1,7 @@
 ﻿/// <reference path="services/authService.js" />
 /// <reference path="services/baseServices.js" />
 
-app.controller('UserController', ['$scope', '$cookies', 'user-service', 'authService', 'Messages', function ($scope, $cookies, userSrv, authService, Messages) {
+app.controller('UserController', ['$scope', '$cookies', 'user-service', 'authService', 'Messages', '$rootScope', function ($scope, $cookies, userSrv, authService, Messages, $rootScope) {
     $scope.loginData = {
         userName: "",
         password: "",
@@ -98,4 +98,20 @@ app.controller('UserController', ['$scope', '$cookies', 'user-service', 'authSer
     this.resetPassword = function () {
         userSrv.resetPassword($scope.mailReset);
     }
+
+    $rootScope.$on('newMessage', function (event, message) {
+        if(message !== undefined)
+            UIkit.notify("<i class='uk-icon-envelope-o'></i> Nuovo messaggio. Controlla la posta", { pos: 'top-center', status: 'info' });
+    });
+
+    $rootScope.$on('newProposal', function (event, proposal) {
+        if (proposal !== undefined)
+            UIkit.notify("<i class='uk-icon-exchange'></i> Nuovo scambio. Controlla la posta", { pos: 'top-center', status: 'info' });
+    });
+
+    $rootScope.$on('newFeedback', function (event, value) {
+        if (value !== undefined)
+            UIkit.notify("<i class='uk-icon-star-half-o'></i> Nuovo feedback. Controlla la posta", { pos: 'top-center', status: 'info' });
+    });
+
 }]);
