@@ -105,7 +105,7 @@ app.directive('mailbox', ['factories', 'user-service', 'games-service', '$locati
                                     _this.transactions.splice(i, 1);
                                     // rifiuto
                                     if (newState == 2) {
-                                        userSrv.getInfoUser(_this.currentUserId)
+                                        userSrv.getInfoUser(tran.userId)
                                         .then(function (userToChangeInfo) {
                                             var queryParams = {
                                                 messageText: "Ciao, Lo scambio da te proposto con l'utente " + userToChangeInfo.username + " è stato rifiutato.",
